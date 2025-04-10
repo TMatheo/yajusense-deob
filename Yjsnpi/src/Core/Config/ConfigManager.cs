@@ -37,25 +37,6 @@ public static class ConfigManager
         LoadConfig();
     }
     
-    private static void EnsureConfigFileExists()
-    {
-        try
-        {
-            FileUtility.EnsureDirectoryExists(ConfigDirectory);
-                
-            if (!File.Exists(ConfigPath))
-            {
-                var initialData = new Dictionary<string, Dictionary<string, object>>();
-                File.WriteAllText(ConfigPath, JsonSerializer.Serialize(initialData, JsonOptions));
-                YjPlugin.Log.LogInfo("[Yjsnpi] Created new config file: " + ConfigPath);
-            }
-        }
-        catch (Exception ex)
-        {
-            YjPlugin.Log.LogError($"[Yjsnpi] Config file creation failed: {ex}");
-        }
-    }
-    
     public static void LoadConfig()
     {
         try
@@ -86,23 +67,22 @@ public static class ConfigManager
         _configData ??= new();
     }
     
-    private static void TryCreateBackup()
+    public static void SaveConfig()
     {
+        UpdateConfigData();
+            
         try
         {
-            string backupPath = ConfigPath + ".corrupted_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            if (File.Exists(ConfigPath))
-            {
-                File.Move(ConfigPath, backupPath);
-                YjPlugin.Log.LogInfo($"[Yjsnpi] Created backup of corrupted config: {backupPath}");
-            }
+            FileUtility.EnsureDirectoryExists(ConfigDirectory);
+            var json = JsonSerializer.Serialize(_configData, JsonOptions);
+            File.WriteAllText(ConfigPath, json);
         }
-        catch (Exception backupEx)
+        catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"[Yjsnpi] Backup creation failed: {backupEx}");
+            YjPlugin.Log.LogError($"Config save error: {ex}");
         }
     }
-
+    
     public static void RegisterModuleConfig(BaseModule module)
     {
         var type = module.GetType();
@@ -148,20 +128,45 @@ public static class ConfigManager
         ModuleConfigProperties[module] = moduleConfigs;
         SaveConfig();
     }
-
-    public static void SaveConfig()
+    
+    public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
     {
-        UpdateConfigData();
-            
+        return ModuleConfigProperties.TryGetValue(module, out properties);
+    }
+    
+    private static void EnsureConfigFileExists()
+    {
         try
         {
             FileUtility.EnsureDirectoryExists(ConfigDirectory);
-            var json = JsonSerializer.Serialize(_configData, JsonOptions);
-            File.WriteAllText(ConfigPath, json);
+                
+            if (!File.Exists(ConfigPath))
+            {
+                var initialData = new Dictionary<string, Dictionary<string, object>>();
+                File.WriteAllText(ConfigPath, JsonSerializer.Serialize(initialData, JsonOptions));
+                YjPlugin.Log.LogInfo("[Yjsnpi] Created new config file: " + ConfigPath);
+            }
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Config save error: {ex}");
+            YjPlugin.Log.LogError($"[Yjsnpi] Config file creation failed: {ex}");
+        }
+    }
+    
+    private static void TryCreateBackup()
+    {
+        try
+        {
+            string backupPath = ConfigPath + ".corrupted_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            if (File.Exists(ConfigPath))
+            {
+                File.Move(ConfigPath, backupPath);
+                YjPlugin.Log.LogInfo($"[Yjsnpi] Created backup of corrupted config: {backupPath}");
+            }
+        }
+        catch (Exception backupEx)
+        {
+            YjPlugin.Log.LogError($"[Yjsnpi] Backup creation failed: {backupEx}");
         }
     }
 
@@ -181,15 +186,5 @@ public static class ConfigManager
         }
     }
 
-    private class ConfigProperty
-    {
-        public PropertyInfo Property { get; }
-        public ConfigAttribute Attribute { get; }
-
-        public ConfigProperty(PropertyInfo property, ConfigAttribute attribute)
-        {
-            Property = property;
-            Attribute = attribute;
-        }
-    }
+    
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Yjsnpi.Core.Config;
 
 namespace Yjsnpi.Modules;
 
@@ -7,8 +8,10 @@ public abstract class BaseModule
     public string Name { get; }
     public string Description { get; }
     public ModuleType Type { get; }
-    public KeyCode ToggleKey { get; private set; }
     public bool Enabled { get; private set; }
+    
+    [Config("Toggle Key", "Key to enable/disable this module")]
+    public KeyCode ToggleKey { get; private set; }
 
     protected BaseModule(string name, string description, ModuleType type, KeyCode toggleKey = KeyCode.None)
     {
