@@ -6,11 +6,11 @@ namespace Yjsnpi.Utilities;
 
 public static class VRCUtility
 {
-    public static VRCPlayerApi GetLocalPlayer()
+    public static VRCPlayerApi GetLocalVRCPlayerApi()
     {
         if (Networking.LocalPlayer == null)
         {
-            YjPlugin.Log.LogDebug("Attempted to get local player, but it is not in world");
+            YjPlugin.Log.LogDebug("Attempted to get local VRCPlayerApi, but it was null");
             return null;
         }
         
@@ -19,6 +19,6 @@ public static class VRCUtility
 
     public static bool IsInWorld()
     {
-        return GetLocalPlayer() != null;
+        return GetLocalVRCPlayerApi() != null;
     }
 }

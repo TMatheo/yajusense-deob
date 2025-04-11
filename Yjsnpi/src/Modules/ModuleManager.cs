@@ -14,6 +14,8 @@ public static class ModuleManager
     
     public static void Initialize()
     {
+        RegisterModule(new Flight());
+        
         RegisterModule(new UdonInspector());
         RegisterModule(new Menu());
     }
@@ -53,7 +55,7 @@ public static class ModuleManager
         {
             if (module.Enabled)
             {
-                module.OnRender();
+                module.OnGUI();
             }
         }
     }

@@ -13,7 +13,7 @@ namespace Yjsnpi.Modules.Visual;
 
 public class UdonInspector : BaseModule
 {
-    private Window _window;
+    private readonly Window _window;
     private Vector2 _scrollPos;
     private readonly Dictionary<UdonBehaviour, string> _udonCache = new();
     private KeyValuePair<UdonBehaviour, string> _selectedUdon;
@@ -43,7 +43,7 @@ public class UdonInspector : BaseModule
         _selectedUdon = default;
     }
 
-    public override void OnRender()
+    public override void OnGUI()
     {
         if (!VRCUtility.IsInWorld()) return;
         _window.Begin();

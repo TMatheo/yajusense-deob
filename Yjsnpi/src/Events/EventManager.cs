@@ -8,7 +8,7 @@ public static class EventManager
 {
     private static readonly Dictionary<Type, Delegate> _eventTable = new();
 
-    public static void Subscribe<T>(Action<T> handler)
+    public static void AddEventListener<T>(Action<T> handler)
     {
         if (handler == null)
         {
@@ -26,7 +26,7 @@ public static class EventManager
         }
     }
     
-    public static void Unsubscribe<T>(Action<T> handler)
+    public static void RemoveEventListener<T>(Action<T> handler)
     {
         if (_eventTable.TryGetValue(typeof(T), out var existing))
         {

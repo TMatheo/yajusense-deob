@@ -5,6 +5,7 @@ using BepInEx.Unity.IL2CPP;
 using UnityEngine;
 using Yjsnpi.Core.Config;
 using Yjsnpi.Modules;
+using Yjsnpi.UI;
 
 namespace Yjsnpi.Core;
 
@@ -40,5 +41,6 @@ public class YjMonoBehaviour : MonoBehaviour
     private void OnGUI()
     {
         ModuleManager.RenderModules();
+        NotificationManager.OnGUI();
     }
 }

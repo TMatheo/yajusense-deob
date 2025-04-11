@@ -48,7 +48,7 @@ public static class ConfigManager
                 if (string.IsNullOrWhiteSpace(json))
                 {
                     _configData = new();
-                    YjPlugin.Log.LogInfo("[Yjsnpi] Config file was empty, initialized with defaults");
+                    YjPlugin.Log.LogInfo("Config file was empty, initialized with defaults");
                 }
                 else
                 {
@@ -58,7 +58,7 @@ public static class ConfigManager
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"[Yjsnpi] Config load error: {ex}");
+            YjPlugin.Log.LogError($"Config load error: {ex}");
             _configData = new();
             
             TryCreateBackup();
@@ -144,12 +144,12 @@ public static class ConfigManager
             {
                 var initialData = new Dictionary<string, Dictionary<string, object>>();
                 File.WriteAllText(ConfigPath, JsonSerializer.Serialize(initialData, JsonOptions));
-                YjPlugin.Log.LogInfo("[Yjsnpi] Created new config file: " + ConfigPath);
+                YjPlugin.Log.LogInfo("Created new config file: " + ConfigPath);
             }
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"[Yjsnpi] Config file creation failed: {ex}");
+            YjPlugin.Log.LogError($"Config file creation failed: {ex}");
         }
     }
     
@@ -161,12 +161,12 @@ public static class ConfigManager
             if (File.Exists(ConfigPath))
             {
                 File.Move(ConfigPath, backupPath);
-                YjPlugin.Log.LogInfo($"[Yjsnpi] Created backup of corrupted config: {backupPath}");
+                YjPlugin.Log.LogInfo($"Created backup of corrupted config: {backupPath}");
             }
         }
         catch (Exception backupEx)
         {
-            YjPlugin.Log.LogError($"[Yjsnpi] Backup creation failed: {backupEx}");
+            YjPlugin.Log.LogError($"Backup creation failed: {backupEx}");
         }
     }
 

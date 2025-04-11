@@ -20,7 +20,7 @@ namespace Yjsnpi.Modules.Visual
             _window = new Window(new Rect(0, 0, 300f, Screen.height - 40), "Yjsnpi");
         }
 
-        public override void OnRender()
+        public override void OnGUI()
         {
             _window.Begin();
             {

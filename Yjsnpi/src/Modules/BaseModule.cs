@@ -22,7 +22,7 @@ public abstract class BaseModule
     }
 
     public virtual void OnUpdate() { }
-    public virtual void OnRender() { }
+    public virtual void OnGUI() { }
     public virtual void OnEnable() { }
     public virtual void OnDisable() { }
 
