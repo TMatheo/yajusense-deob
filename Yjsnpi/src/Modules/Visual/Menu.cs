@@ -4,7 +4,7 @@ using UnityEngine;
 using Yjsnpi.Core;
 using Yjsnpi.Core.Config;
 using Yjsnpi.UI;
-using Yjsnpi.Utilities;
+using Yjsnpi.Utils;
 
 namespace Yjsnpi.Modules.Visual
 {
@@ -14,6 +14,8 @@ namespace Yjsnpi.Modules.Visual
         private Vector2 _scrollPos;
         private Vector2 _moduleSettingsScrollPos;
         private BaseModule _selectedModule;
+        private bool _isDetectingKey = false;
+        private ConfigProperty _detectingProp = null;
 
         public Menu() : base("Menu", "Provides configuration menu for all modules", ModuleType.Visual, KeyCode.Insert) 
         {
@@ -60,8 +62,8 @@ namespace Yjsnpi.Modules.Visual
                     }
                     
                     string toggleText = module.Enabled ? 
-                        "ON".Color(RichTextUtility.Colors.Green) : 
-                        "OFF".Color(RichTextUtility.Colors.Red);
+                        "ON".Color(Color.green) : 
+                        "OFF".Color(Color.red);
 
                     if (GUILayout.Button(toggleText, GUILayout.Width(120)))
                     {
@@ -71,7 +73,7 @@ namespace Yjsnpi.Modules.Visual
                 GUILayout.EndHorizontal();
 
                 GUILayout.Label(
-                    module.Description.Italic().Color(RichTextUtility.Colors.Gray)
+                    module.Description.Italic().Color(Color.gray)
                 );
             }
             GUILayout.EndVertical();
@@ -95,6 +97,8 @@ namespace Yjsnpi.Modules.Visual
                 {
                     foreach (var prop in configProps)
                     {
+                        if (prop.Attribute.Hidden) continue;
+                        
                         DrawConfigProperty(prop);
                     }
                 }
@@ -102,7 +106,7 @@ namespace Yjsnpi.Modules.Visual
                 {
                     GUILayout.Label(
                         "No configurable properties found."
-                            .Color(RichTextUtility.Colors.Orange)
+                            .Color(Colors.Orange)
                     );
                 }
             }
@@ -128,7 +132,7 @@ namespace Yjsnpi.Modules.Visual
                 GUILayout.Label(
                     prop.Attribute.Description
                         .Italic()
-                        .Color(RichTextUtility.Colors.Gray)
+                        .Color(Color.gray)
                 );
             }
         }
@@ -143,51 +147,97 @@ namespace Yjsnpi.Modules.Visual
                 case bool b:
                     newValue = GUILayout.Toggle(b, "");
                     break;
-
+                
                 case float f:
+                    GUILayout.BeginHorizontal();
                     newValue = GUILayout.HorizontalSlider(f, prop.Attribute.Min, prop.Attribute.Max);
+                    GUILayout.Label(f.ToString("F2"), GUILayout.Width(50));
+                    GUILayout.EndHorizontal();
                     break;
 
                 case int i:
+                    GUILayout.BeginHorizontal();
                     newValue = (int)GUILayout.HorizontalSlider(i, prop.Attribute.Min, prop.Attribute.Max);
-                    break;
-
-                case string s:
-                    newValue = GUILayout.TextField(s);
+                    GUILayout.Label(i.ToString(), GUILayout.Width(50));
+                    GUILayout.EndHorizontal();
                     break;
 
                 case KeyCode key:
-                    if (GUILayout.Button(key.ToString()))
+                    if (GUILayout.Button(_isDetectingKey && _detectingProp == prop ? "Press any key...".Color(Color.yellow) : key.ToString()))
                     {
-                        CoroutineRunner.StartCoroutine(DetectKeyPress(prop));
+                        if (!_isDetectingKey)
+                        {
+                            StartDetectKeyPress(prop);
+                        }
                     }
+                    break;
+                
+                default:
+                    GUILayout.Label($"Unsupported type: {currentValue.GetType().Name}");
                     break;
             }
 
-            if (!Equals(newValue, currentValue))
+            if (!Equals(newValue, currentValue) && !(currentValue is KeyCode))
             {
-                prop.Property.SetValue(_selectedModule, newValue);
-                ConfigManager.SaveConfig();
+                try
+                {
+                    prop.Property.SetValue(_selectedModule, newValue);
+                    ConfigManager.UpdatePropertyValue(_selectedModule, prop.Property.Name, newValue);
+                }
+                catch (Exception ex)
+                {
+                    YjPlugin.Log.LogError($"Failed to set property {prop.Property.Name}: {ex}");
+                }
             }
         }
         
-        private IEnumerator DetectKeyPress(ConfigProperty prop)
+        private void StartDetectKeyPress(ConfigProperty prop)
         {
-            GUILayout.Button("<color=green>Press any key...</color>");
+            _detectingProp = prop;
+            _isDetectingKey = true;
+            CoroutineRunner.StartCoroutine(DetectKeyPressCoroutine(prop));
+        }
 
-            while (!Input.anyKeyDown)
+        private IEnumerator DetectKeyPressCoroutine(ConfigProperty prop)
+        {
+            while (_isDetectingKey)
             {
+                if (Input.anyKeyDown)
+                {
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        _isDetectingKey = false;
+                        _detectingProp = null;
+                        yield break;
+                    }
+
+                    foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
+                    {
+                        if (key == KeyCode.None || key >= KeyCode.Mouse0 && key <= KeyCode.Mouse6) continue;
+
+                        if (Input.GetKeyDown(key))
+                        {
+                            try
+                            {
+                                prop.Property.SetValue(_selectedModule, key);
+                                ConfigManager.UpdatePropertyValue(_selectedModule, prop.Property.Name, key);
+                                _isDetectingKey = false;
+                                _detectingProp = null;
+                                yield break;
+                            }
+                            catch (Exception ex)
+                            {
+                                YjPlugin.Log.LogError($"Failed to set KeyCode property {prop.Property.Name}: {ex}");
+                                _isDetectingKey = false;
+                                _detectingProp = null;
+                                yield break;
+                            }
+                        }
+                    }
+                }
                 yield return null;
             }
-
-            foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
-            {
-                if (Input.GetKeyDown(key))
-                {
-                    prop.Property.SetValue(_selectedModule, key);
-                    break;
-                }
-            }
+            _detectingProp = null;
         }
 
         private void DrawConfigSection()

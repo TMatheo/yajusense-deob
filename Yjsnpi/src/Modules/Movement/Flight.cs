@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using Yjsnpi.Core.Config;
+using Yjsnpi.Utils;
+
+namespace Yjsnpi.Modules.Movement;
+
+public class Flight : BaseModule
+{
+    [Config("Flight speed", "Flight speed", false,1.0f, 50.0f)]
+    public float Speed { get; set; } = 5.0f;
+
+    public Flight() : base("Flight", "Allows you to fly", ModuleType.Movement, KeyCode.F) {}
+
+    public override void OnUpdate()
+    {
+        if (!VRCUtils.IsInWorld()) return;
+        
+        var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+        
+        if (Input.GetKey(KeyCode.W))
+            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+        
+        if (Input.GetKey(KeyCode.S))
+            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+        
+        if (Input.GetKey(KeyCode.A))
+            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+        
+        if (Input.GetKey(KeyCode.D))
+            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+        
+        localPlayer.SetVelocity(Vector3.zero);
+    }
+
+    public override void OnEnable()
+    {
+        if (!VRCUtils.IsInWorld()) return;
+        
+        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
+    }
+
+    public override void OnDisable()
+    {
+        if (!VRCUtils.IsInWorld()) return;
+        
+        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
+    }
+}

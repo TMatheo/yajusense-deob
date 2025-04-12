@@ -1,10 +1,9 @@
-using UnityEngine;
 using VRC.SDKBase;
 using Yjsnpi.Core;
 
-namespace Yjsnpi.Utilities;
+namespace Yjsnpi.Utils;
 
-public static class VRCUtility
+public static class VRCUtils
 {
     public static VRCPlayerApi GetLocalVRCPlayerApi()
     {

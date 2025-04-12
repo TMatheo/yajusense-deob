@@ -4,187 +4,256 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using UnityEngine;
+using System.Text.Json.Nodes;
 using Yjsnpi.Core.Config.JsonConverters;
 using Yjsnpi.Modules;
-using Yjsnpi.Utilities;
+using Yjsnpi.Utils;
 
-namespace Yjsnpi.Core.Config;
-
-public static class ConfigManager
+namespace Yjsnpi.Core.Config
 {
-    private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), "Yjsnpi");
-    private static string ConfigPath => Path.Combine(ConfigDirectory, "ModuleConfig.cock");
-    
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    public static class ConfigManager
     {
-        WriteIndented = true,
-        Converters =
-        {
-            new ColorJsonConverter(),
-            new KeyCodeJsonConverter(),
-            new UnityVector2JsonConverter(),
-            new UnityVector3JsonConverter()
-        }
-    };
+        private const string ConfigDirectoryName = "Yjsnpi";
+        private const string ConfigFileName = "ModuleConfig.cock";
+        private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), ConfigDirectoryName);
+        private static string ConfigPath => Path.Combine(ConfigDirectory, ConfigFileName);
 
-    private static Dictionary<string, Dictionary<string, object>> _configData = new();
-    private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
-
-    public static void Initialize()
-    {
-        EnsureConfigFileExists();
-        LoadConfig();
-    }
-    
-    public static void LoadConfig()
-    {
-        try
+        private static readonly JsonSerializerOptions JsonOptions = new()
         {
-            if (File.Exists(ConfigPath))
+            WriteIndented = true,
+            Converters =
             {
+                new ColorJsonConverter(),
+                new KeyCodeJsonConverter(),
+                new UnityVector2JsonConverter(),
+                new UnityVector3JsonConverter()
+            },
+        };
+
+        private static JsonObject _configData = new();
+        private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
+        private static bool _isDirty = false;
+
+        public static void Initialize()
+        {
+            LoadConfig();
+        }
+
+        public static void LoadConfig()
+        {
+            try
+            {
+                EnsureConfigFileExists();
+
                 var json = File.ReadAllText(ConfigPath);
-                
+
                 if (string.IsNullOrWhiteSpace(json))
                 {
-                    _configData = new();
-                    YjPlugin.Log.LogInfo("Config file was empty, initialized with defaults");
+                    _configData = new JsonObject();
+                    YjPlugin.Log.LogInfo("Config file was empty, starting with empty config.");
                 }
                 else
                 {
-                    _configData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(json, JsonOptions);
+                    var parsedNode = JsonNode.Parse(json);
+                    if (parsedNode is JsonObject jsonObject)
+                    {
+                        _configData = jsonObject;
+                        YjPlugin.Log.LogInfo("Config loaded successfully.");
+                    }
+                    else
+                    {
+                        YjPlugin.Log.LogError("Config file root is not a JSON object. Resetting config.");
+                        _configData = new JsonObject();
+                        TryCreateBackup("InvalidFormat");
+                    }
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            YjPlugin.Log.LogError($"Config load error: {ex}");
-            _configData = new();
-            
-            TryCreateBackup();
-        }
-            
-        _configData ??= new();
-    }
-    
-    public static void SaveConfig()
-    {
-        UpdateConfigData();
-            
-        try
-        {
-            FileUtility.EnsureDirectoryExists(ConfigDirectory);
-            var json = JsonSerializer.Serialize(_configData, JsonOptions);
-            File.WriteAllText(ConfigPath, json);
-        }
-        catch (Exception ex)
-        {
-            YjPlugin.Log.LogError($"Config save error: {ex}");
-        }
-    }
-    
-    public static void RegisterModuleConfig(BaseModule module)
-    {
-        var type = module.GetType();
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.GetCustomAttribute<ConfigAttribute>() != null)
-            .ToList();
-
-        var moduleConfigs = new List<ConfigProperty>();
-
-        foreach (var prop in properties)
-        {
-            var configAttr = prop.GetCustomAttribute<ConfigAttribute>();
-            var defaultValue = prop.GetValue(module);
-
-            if (!_configData.TryGetValue(module.Name, out var moduleSettings))
+            catch (JsonException jsonEx)
             {
-                moduleSettings = new();
-                _configData[module.Name] = moduleSettings;
+                YjPlugin.Log.LogError($"Config load error (JSON Parsing): {jsonEx.Message}. Resetting config.");
+                _configData = new JsonObject();
+                TryCreateBackup("CorruptedJson");
             }
-
-            if (moduleSettings.TryGetValue(prop.Name, out var savedValue))
+            catch (Exception ex)
             {
-                try
+                YjPlugin.Log.LogError($"Config load error (General): {ex}. Resetting config.");
+                _configData = new JsonObject();
+                TryCreateBackup("LoadError");
+            }
+            _isDirty = false;
+        }
+
+        public static void SaveConfig(bool forceSave = false)
+        {
+            if (!_isDirty && !forceSave) return;
+
+            try
+            {
+                UpdateConfigDataFromModules();
+
+                FileUtils.EnsureDirectoryExists(ConfigDirectory);
+                var json = JsonSerializer.Serialize(_configData, JsonOptions);
+                File.WriteAllText(ConfigPath, json);
+                _isDirty = false;
+                YjPlugin.Log.LogInfo("Config saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                YjPlugin.Log.LogError($"Config save error: {ex}");
+            }
+        }
+
+        public static void RegisterModuleConfig(BaseModule module)
+        {
+            var type = module.GetType();
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.GetCustomAttribute<ConfigAttribute>() != null)
+                .ToList();
+
+            var moduleConfigs = new List<ConfigProperty>();
+            var moduleNodeName = module.Name;
+
+            if (!_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) || !(moduleNode is JsonObject))
+            {
+                moduleNode = new JsonObject();
+                _configData[moduleNodeName] = moduleNode;
+                _isDirty = true;
+            }
+            var moduleSettings = (JsonObject)moduleNode;
+
+            foreach (var prop in properties)
+            {
+                var configAttr = prop.GetCustomAttribute<ConfigAttribute>();
+                var propName = prop.Name;
+                var defaultValue = prop.GetValue(module);
+
+                if (moduleSettings.TryGetPropertyValue(propName, out var savedValueNode) && savedValueNode != null)
                 {
-                    var jsonValue = JsonSerializer.SerializeToElement(savedValue);
-                    var typedValue = jsonValue.Deserialize(prop.PropertyType, JsonOptions);
-                    prop.SetValue(module, typedValue);
+                    try
+                    {
+                        var typedValue = savedValueNode.Deserialize(prop.PropertyType, JsonOptions);
+                        prop.SetValue(module, typedValue);
+                    }
+                    catch (Exception ex)
+                    {
+                        YjPlugin.Log.LogWarning($"Config value conversion failed for {moduleNodeName}.{propName}. Using default value. Error: {ex.Message}");
+                        prop.SetValue(module, defaultValue);
+                        try
+                        {
+                           moduleSettings[propName] = JsonSerializer.SerializeToNode(defaultValue, JsonOptions);
+                           _isDirty = true;
+                        }
+                        catch (Exception innerEx)
+                        {
+                             YjPlugin.Log.LogError($"Failed to serialize default value for {moduleNodeName}.{propName}: {innerEx.Message}");
+                        }
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    YjPlugin.Log.LogError($"Config value conversion failed for {module.Name}.{prop.Name}: {ex}");
                     prop.SetValue(module, defaultValue);
+                    try
+                    {
+                        moduleSettings[propName] = JsonSerializer.SerializeToNode(defaultValue, JsonOptions);
+                       _isDirty = true;
+                    }
+                    catch (Exception ex)
+                    {
+                         YjPlugin.Log.LogError($"Failed to serialize default value for {moduleNodeName}.{propName}: {ex.Message}");
+                    }
+                }
+
+                moduleConfigs.Add(new ConfigProperty(prop, configAttr));
+            }
+
+            ModuleConfigProperties[module] = moduleConfigs;
+        }
+
+        public static void UpdatePropertyValue(BaseModule module, string propertyName, object newValue)
+        {
+             var moduleNodeName = module.Name;
+             if (_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) && moduleNode is JsonObject moduleSettings)
+             {
+                 try
+                 {
+                     moduleSettings[propertyName] = JsonSerializer.SerializeToNode(newValue, JsonOptions);
+                     _isDirty = true;
+                     // SaveConfig(); autosave shit
+                 }
+                 catch (Exception ex)
+                 {
+                     YjPlugin.Log.LogError($"Failed to update property value for {moduleNodeName}.{propertyName}: {ex.Message}");
+                 }
+             }
+        }
+
+
+        public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
+        {
+            return ModuleConfigProperties.TryGetValue(module, out properties);
+        }
+
+        private static void EnsureConfigFileExists()
+        {
+            try
+            {
+                FileUtils.EnsureDirectoryExists(ConfigDirectory);
+
+                if (!File.Exists(ConfigPath))
+                {
+                    File.WriteAllText(ConfigPath, "{}");
+                    YjPlugin.Log.LogInfo($"Created new config file: {ConfigPath}");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                moduleSettings[prop.Name] = defaultValue;
-            }
-
-            moduleConfigs.Add(new(prop, configAttr));
-        }
-
-        ModuleConfigProperties[module] = moduleConfigs;
-        SaveConfig();
-    }
-    
-    public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
-    {
-        return ModuleConfigProperties.TryGetValue(module, out properties);
-    }
-    
-    private static void EnsureConfigFileExists()
-    {
-        try
-        {
-            FileUtility.EnsureDirectoryExists(ConfigDirectory);
-                
-            if (!File.Exists(ConfigPath))
-            {
-                var initialData = new Dictionary<string, Dictionary<string, object>>();
-                File.WriteAllText(ConfigPath, JsonSerializer.Serialize(initialData, JsonOptions));
-                YjPlugin.Log.LogInfo("Created new config file: " + ConfigPath);
+                YjPlugin.Log.LogError($"Config file/directory creation failed: {ex}");
+                throw;
             }
         }
-        catch (Exception ex)
+
+        private static void TryCreateBackup(string suffix = "Corrupted")
         {
-            YjPlugin.Log.LogError($"Config file creation failed: {ex}");
-        }
-    }
-    
-    private static void TryCreateBackup()
-    {
-        try
-        {
-            string backupPath = ConfigPath + ".corrupted_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            if (File.Exists(ConfigPath))
+            if (!File.Exists(ConfigPath)) return;
+
+            try
             {
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string backupPath = $"{ConfigPath}.{suffix}_{timestamp}.bak";
                 File.Move(ConfigPath, backupPath);
-                YjPlugin.Log.LogInfo($"Created backup of corrupted config: {backupPath}");
+                YjPlugin.Log.LogWarning($"Created backup of potentially corrupted config: {backupPath}");
             }
-        }
-        catch (Exception backupEx)
-        {
-            YjPlugin.Log.LogError($"Backup creation failed: {backupEx}");
-        }
-    }
-
-    private static void UpdateConfigData()
-    {
-        foreach (var (module, configProps) in ModuleConfigProperties)
-        {
-            var moduleSettings = new Dictionary<string, object>();
-                
-            foreach (var configProp in configProps)
+            catch (Exception backupEx)
             {
-                var value = configProp.Property.GetValue(module);
-                moduleSettings[configProp.Property.Name] = value;
+                YjPlugin.Log.LogError($"Backup creation failed: {backupEx}");
             }
+        }
 
-            _configData[module.Name] = moduleSettings;
+        private static void UpdateConfigDataFromModules()
+        {
+            foreach (var (module, configProps) in ModuleConfigProperties)
+            {
+                var moduleNodeName = module.Name;
+                if (!_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) || !(moduleNode is JsonObject))
+                {
+                    moduleNode = new JsonObject();
+                    _configData[moduleNodeName] = moduleNode;
+                }
+                var moduleSettings = (JsonObject)moduleNode;
+
+                foreach (var configProp in configProps)
+                {
+                    try
+                    {
+                        var currentValue = configProp.Property.GetValue(module);
+                        moduleSettings[configProp.Property.Name] = JsonSerializer.SerializeToNode(currentValue, JsonOptions);
+                    }
+                    catch (Exception ex)
+                    {
+                         YjPlugin.Log.LogError($"Failed to serialize property value for {moduleNodeName}.{configProp.Property.Name} during save: {ex.Message}");
+                    }
+                }
+            }
         }
     }
-
-    
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Yjsnpi.Utilities;
+using Yjsnpi.Utils;
 
 namespace Yjsnpi.UI;
 
@@ -9,30 +10,39 @@ public static class NotificationManager
     private class Notification
     {
         public string Message { get; }
-        public string FormattedMessage { get; }
+        public NotificationType Type { get; }
+        public Vector2 CurrentPos { get; set; }
         public float Duration { get; }
         public float StartTime { get; }
-        public NotificationType Type { get; }
+        public int OriginalIndex { get; }
+        public bool IsScrollingOut { get; set; }
+        
         public bool IsExpired => Time.time > StartTime + Duration;
 
-        public Notification(string message, float duration, NotificationType type)
+        public Notification(string message, NotificationType type, float duration, int index)
         {
             Message = message;
-            Duration = duration;
             Type = type;
+            CurrentPos = new(Screen.width, Screen.height);
+            Duration = duration;
             StartTime = Time.time;
-            FormattedMessage = FormatMessage(message, type);
+            OriginalIndex = index;
+            IsScrollingOut = false;
         }
 
-        private string FormatMessage(string message, NotificationType type)
+        public Color GetTextColor()
         {
-            return type switch
+            switch (Type)
             {
-                NotificationType.Success => message.Color(RichTextUtility.Colors.Green),
-                NotificationType.Warning => message.Color(RichTextUtility.Colors.Orange),
-                NotificationType.Error => message.Color(RichTextUtility.Colors.Red),
-                _ => message.Color(RichTextUtility.Colors.White)
-            };
+                case NotificationType.Success:
+                    return Color.green;
+                case NotificationType.Warning:
+                    return Colors.Orange;
+                case NotificationType.Error:
+                    return Color.red;
+                default:
+                    return Color.white;
+            }
         }
     }
     
@@ -46,47 +56,63 @@ public static class NotificationManager
     
     private static readonly List<Notification> Notifications = new();
     private const float DefaultDuration = 3f;
-    private const float NotificationSpacing = 5f;
-    private const float MaxWidth = 300f;
-    private const float Margin = 10f;
+    private const float RectSizeX = 400f;
+    private const float RectSizeY = 50f;
+    private const float ProgressBarSizeY = 2f;
+    private const float Spacing = 20f;
+    private const float PaddingX = 10f;
+    private const float AnimSpeed = 4f;
+    private const int FontSize = 18;
     
-    public static void AddNotification(string message, NotificationType type = NotificationType.Info, float duration = DefaultDuration)
+    public static void ShowNotification(string message, NotificationType type = NotificationType.Info, float duration = DefaultDuration)
     {
-        Notifications.Add(new Notification(message, duration, type));
+        Notifications.Add(new Notification(message, type, duration, Notifications.Count));
     }
     
     public static void OnGUI()
     {
-        Notifications.RemoveAll(n => n.IsExpired);
+        Notifications.RemoveAll(n => n.IsScrollingOut && n.CurrentPos.x >= Screen.width - 50);
         
-        float startX = Screen.width - MaxWidth - Margin;
-        float currentY = Screen.height - Margin;
-        
+        foreach (var notification in Notifications.FindAll(n => n.IsExpired && !n.IsScrollingOut))
+        {
+            notification.IsScrollingOut = true;
+        }
+
+        int index = 0;
         foreach (var notification in Notifications)
         {
-            DrawNotification(notification, startX, ref currentY);
-        }
-    }
+            float targetRectX, targetRectY;
+            
+            if (notification.IsScrollingOut)
+            {
+                targetRectX = Screen.width;
+                targetRectY = Screen.height;
+            }
+            else
+            {
+                targetRectX = Screen.width - (RectSizeX + Spacing);
+                targetRectY = Screen.height - (index + 1) * (RectSizeY + Spacing);
+            }
+            
+            notification.CurrentPos = Vector2.Lerp(notification.CurrentPos, new(targetRectX, targetRectY), AnimSpeed * Time.deltaTime);
 
-    private static void DrawNotification(Notification notification, float x, ref float y)
-    {
-        var content = new GUIContent(notification.FormattedMessage);
-        var style = new GUIStyle(GUI.skin.box)
-        {
-            alignment = TextAnchor.MiddleLeft,
-            padding = new RectOffset(10, 10, 5, 5),
-            wordWrap = true
-        };
-        
-        var size = style.CalcSize(content);
-        size.x = Mathf.Min(size.x, MaxWidth);
-        size.y = style.CalcHeight(content, size.x);
-        
-        y -= size.y;
-        var rect = new Rect(x, y, size.x, size.y);
-        
-        GUI.Box(rect, content, style);
-        
-        y -= NotificationSpacing;
+            Rect rect = new(notification.CurrentPos, new Vector2(RectSizeX, RectSizeY));
+            Drawer.DrawFilledRect(rect, new(0f, 0f, 0f, 0.3f));
+            
+            Vector2 progressBarPos = new(rect.x, rect.yMax - ProgressBarSizeY);
+            float timeElapsed = Time.time - notification.StartTime;
+            float progress = Mathf.Clamp01(timeElapsed / notification.Duration);
+            Vector2 progressBarSize = new(RectSizeX * (1f - progress), ProgressBarSizeY);
+            Rect progressBarRect = new(progressBarPos, progressBarSize);
+            Drawer.DrawFilledRect(progressBarRect, ColorUtils.GetRainbowColor(index * 0.05f));
+            
+            string text = notification.Message;
+            Vector2 textSize = IMGUIUtils.CalcTextSize(text, FontSize);
+            float textPosY = rect.center.y - textSize.y * 0.5f;
+            Vector2 textPos = new(rect.x + PaddingX, textPosY);
+            Drawer.DrawText(text, textPos, notification.GetTextColor(), FontSize);
+            
+            index++;
+        }
     }
 }

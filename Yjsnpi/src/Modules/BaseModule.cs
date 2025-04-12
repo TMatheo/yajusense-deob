@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Yjsnpi.Core.Config;
+using Yjsnpi.UI;
 
 namespace Yjsnpi.Modules;
 
@@ -8,17 +9,20 @@ public abstract class BaseModule
     public string Name { get; }
     public string Description { get; }
     public ModuleType Type { get; }
-    public bool Enabled { get; private set; }
+    
+    [Config("Enabled", "Is this module enabled?", true)]
+    public bool Enabled { get; set; }
     
     [Config("Toggle Key", "Key to enable/disable this module")]
-    public KeyCode ToggleKey { get; private set; }
+    public KeyCode ToggleKey { get; set; }
 
-    protected BaseModule(string name, string description, ModuleType type, KeyCode toggleKey = KeyCode.None)
+    protected BaseModule(string name, string description, ModuleType type, KeyCode toggleKey = KeyCode.None, bool enabled = false)
     {
         Name = name;
         Description = description;
         Type = type;
         ToggleKey = toggleKey;
+        Enabled = enabled;
     }
 
     public virtual void OnUpdate() { }
@@ -32,10 +36,12 @@ public abstract class BaseModule
         if (Enabled)
         {
             OnEnable();
+            NotificationManager.ShowNotification($"Enabled {Name}");
         }
         else
         {
             OnDisable();
+            NotificationManager.ShowNotification($"Disabled {Name}");
         }
     }
 

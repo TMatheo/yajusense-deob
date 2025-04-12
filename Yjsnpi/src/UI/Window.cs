@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Yjsnpi.Utilities;
 
 namespace Yjsnpi.UI;
 

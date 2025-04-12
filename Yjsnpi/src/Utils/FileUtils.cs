@@ -1,8 +1,8 @@
 using System.IO;
 
-namespace Yjsnpi.Utilities;
+namespace Yjsnpi.Utils;
 
-public static class FileUtility
+public static class FileUtils
 {
     public static void EnsureDirectoryExists(string dir)
     {

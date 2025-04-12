@@ -2,6 +2,7 @@
 using UnityEngine;
 using Yjsnpi.Core;
 using Yjsnpi.Core.Config;
+using Yjsnpi.Modules.Movement;
 using Yjsnpi.Modules.Visual;
 
 namespace Yjsnpi.Modules;

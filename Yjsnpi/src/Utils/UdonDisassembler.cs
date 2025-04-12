@@ -8,7 +8,7 @@ using VRC.Udon.VM;
 using VRC.Udon.VM.Common;
 using Yjsnpi.Core;
 
-namespace Yjsnpi.Utilities;
+namespace Yjsnpi.Utils;
 
 public static class UdonDisassembler
 {

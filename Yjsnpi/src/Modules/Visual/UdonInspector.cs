@@ -7,7 +7,7 @@ using UnityEngine;
 using VRC.Udon;
 using Yjsnpi.Core;
 using Yjsnpi.UI;
-using Yjsnpi.Utilities;
+using Yjsnpi.Utils;
 
 namespace Yjsnpi.Modules.Visual;
 
@@ -45,7 +45,7 @@ public class UdonInspector : BaseModule
 
     public override void OnGUI()
     {
-        if (!VRCUtility.IsInWorld()) return;
+        if (!VRCUtils.IsInWorld()) return;
         _window.Begin();
         {
             DrawControls();
@@ -161,7 +161,7 @@ public class UdonInspector : BaseModule
             }
             
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            FileUtility.EnsureDirectoryExists(_saveDir);
+            FileUtils.EnsureDirectoryExists(_saveDir);
             string savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
             File.WriteAllText(savePath, output.ToString());
             YjPlugin.Log.LogInfo($"Saved event table dump to: {savePath}");
@@ -174,7 +174,7 @@ public class UdonInspector : BaseModule
     
     private void RefreshUdonCache()
     {
-        if (!VRCUtility.IsInWorld()) return;
+        if (!VRCUtils.IsInWorld()) return;
         
         _udonCache.Clear();
         var allObjs = UnityEngine.Object.FindObjectsOfType<GameObject>();
