@@ -6,13 +6,13 @@ namespace Yjsnpi.Extensions;
 
 public static class ModuleEventExtensions
 {
-    public static void SubscribeEvent<T>(this BaseModule module, Action<T> handler)
+    public static void Subscribe<T>(this BaseModule module, Action<T> handler) where T : struct
     {
-        EventManager.AddEventListener(handler);
+        EventManager.Subscribe(handler);
     }
-    
-    public static void PublishEvent<T>(this BaseModule module, T eventData)
+
+    public static void SendEvent<T>(this BaseModule module, in T eventData) where T : struct
     {
-        EventManager.Publish(eventData);
+        EventManager.Send(in eventData);
     }
 }

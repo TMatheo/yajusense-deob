@@ -6,39 +6,26 @@ namespace Yjsnpi.Events;
 
 public static class EventManager
 {
-    private static readonly Dictionary<Type, Delegate> _eventTable = new();
-
-    public static void AddEventListener<T>(Action<T> handler)
+    private static class EventType<T> where T : struct
     {
-        if (handler == null)
+        public static readonly List<Action<T>> Listeners = new List<Action<T>>(4);
+    }
+    
+    public static void Subscribe<T>(Action<T> handler) where T : struct
+    {
+        EventType<T>.Listeners.Add(handler);
+    }
+    
+    public static void Send<T>(in T eventData) where T : struct
+    {
+        foreach (var handler in EventType<T>.Listeners)
         {
-            YjPlugin.Log.LogError(nameof(handler) + " is null");
-            return;
-        }
-        
-        if (_eventTable.TryGetValue(typeof(T), out var existing))
-        {
-            _eventTable[typeof(T)] = Delegate.Combine(existing, handler);
-        }
-        else
-        {
-            _eventTable[typeof(T)] = handler;
+            handler?.Invoke(eventData);
         }
     }
     
-    public static void RemoveEventListener<T>(Action<T> handler)
+    public static void Clear<T>() where T : struct
     {
-        if (_eventTable.TryGetValue(typeof(T), out var existing))
-        {
-            _eventTable[typeof(T)] = Delegate.Remove(existing, handler);
-        }
-    }
-    
-    public static void Publish<T>(T eventData)
-    {
-        if (_eventTable.TryGetValue(typeof(T), out var action))
-        {
-            (action as Action<T>)?.Invoke(eventData);
-        }
+        EventType<T>.Listeners.Clear();
     }
 }
