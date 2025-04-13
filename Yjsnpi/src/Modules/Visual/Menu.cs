@@ -19,7 +19,7 @@ public class Menu : BaseModule
 
     public Menu() : base("Menu", "Provides configuration menu for all modules", ModuleType.Visual, KeyCode.Insert) 
     {
-        _window = new Window(new Rect(0, 0, 300f, Screen.height - 40), "Yjsnpi");
+        _window = new Window(new Rect(0, 0, 600f, 500f), "Yjsnpi");
     }
 
     public override void OnGUI()
