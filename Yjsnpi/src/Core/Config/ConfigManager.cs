@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using UnityEngine;
 using Yjsnpi.Core.Config.JsonConverters;
 using Yjsnpi.Modules;
 using Yjsnpi.Utils;
@@ -33,6 +35,7 @@ public static class ConfigManager
     private static JsonObject _configData = new();
     private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
     private static bool _isDirty = false;
+    private static Coroutine _autoSaveTimer;
 
     public static void Initialize()
     {
@@ -177,8 +180,7 @@ public static class ConfigManager
             try
             {
                 moduleSettings[propertyName] = JsonSerializer.SerializeToNode(newValue, JsonOptions);
-                _isDirty = true;
-                // SaveConfig(); autosave shit
+                SetDirty();
             }
             catch (Exception ex)
             {
@@ -186,7 +188,6 @@ public static class ConfigManager
             }
         }
     }
-
 
     public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
     {
@@ -254,5 +255,21 @@ public static class ConfigManager
                 }
             }
         }
+    }
+    
+    private static void SetDirty()
+    {
+        _isDirty = true;
+        if (_autoSaveTimer == null)
+        {
+            _autoSaveTimer = CoroutineRunner.StartCoroutine(AutoSaveCoroutine());
+        }
+    }
+    
+    private static IEnumerator AutoSaveCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        SaveConfig();
+        _autoSaveTimer = null;
     }
 }
