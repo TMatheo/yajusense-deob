@@ -13,6 +13,9 @@ public class Window
     private Rect _resizeHandleRect;
     private const float ResizeHandleSize = 20f;
 
+    private const float Thickness = 2f;
+    private const float Length = 20f;
+
     public Window(Rect position, string title = "")
     {
         _position = position;

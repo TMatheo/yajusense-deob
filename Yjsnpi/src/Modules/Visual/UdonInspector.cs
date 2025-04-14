@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -8,6 +7,7 @@ using VRC.Udon;
 using Yjsnpi.Core;
 using Yjsnpi.UI;
 using Yjsnpi.Utils;
+using Object = UnityEngine.Object;
 
 namespace Yjsnpi.Modules.Visual;
 
@@ -177,7 +177,7 @@ public class UdonInspector : BaseModule
         if (!VRCUtils.IsInWorld()) return;
         
         _udonCache.Clear();
-        var allObjs = UnityEngine.Object.FindObjectsOfType<GameObject>();
+        var allObjs = Object.FindObjectsOfType<GameObject>();
         foreach (var go in allObjs)
         {
             if (go.TryGetComponent<UdonBehaviour>(out var ub))

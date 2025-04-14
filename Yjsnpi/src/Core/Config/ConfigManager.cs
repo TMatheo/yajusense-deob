@@ -34,7 +34,7 @@ public static class ConfigManager
 
     private static JsonObject _configData = new();
     private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
-    private static bool _isDirty = false;
+    private static bool _isDirty;
     private static Coroutine _autoSaveTimer;
 
     public static void Initialize()

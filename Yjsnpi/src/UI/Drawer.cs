@@ -76,15 +76,11 @@ public static class Drawer
             wrapMode = TextureWrapMode.Clamp
         };
 
-        if (horizontal)
-        {
-            gradientTex.SetPixels(new[] { color1, color2, color1, color2 });
-        }
-        else
-        {
-            gradientTex.SetPixels(new[] { color1, color1, color2, color2 });
-        }
-        
+        gradientTex.SetPixels(horizontal
+            ? new[] { color1, color2, color1, color2 }
+            : new[] { color1, color1, color2, color2 }
+        );
+
         gradientTex.Apply();
         
         GUI.DrawTexture(rect, gradientTex);
@@ -136,7 +132,7 @@ public static class Drawer
         foreach (var c in text)
         {
             string str = c.ToString();
-            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset);
+            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset, 0.3f);
  
             DrawText(str, position + new Vector2(xOffset, 0), color, fontSize, shadow);
             

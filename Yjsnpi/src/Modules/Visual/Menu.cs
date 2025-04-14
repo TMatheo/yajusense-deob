@@ -14,8 +14,9 @@ public class Menu : BaseModule
     private Vector2 _scrollPos;
     private Vector2 _moduleSettingsScrollPos;
     private BaseModule _selectedModule;
-    private bool _isDetectingKey = false;
-    private ConfigProperty _detectingProp = null;
+    private bool _isDetectingKey;
+    private ConfigProperty _detectingProp;
+    private ModuleType _selectedCategory = ModuleType.Visual;
 
     public Menu() : base("Menu", "Provides configuration menu for all modules", ModuleType.Visual, KeyCode.Insert) 
     {
@@ -26,22 +27,47 @@ public class Menu : BaseModule
     {
         _window.Begin();
         {
+            DrawCategoryTabs();
+            
             _scrollPos = GUILayout.BeginScrollView(_scrollPos);
             {
                 DrawModules();
                 DrawSelectedModuleConfig();
-                GUILayout.Space(20);
-                DrawConfigSection();
             }
             GUILayout.EndScrollView();
+            
+            GUILayout.FlexibleSpace();
+            DrawConfigSection();
         }
         _window.End();
     }
+    
+    private void DrawCategoryTabs()
+    {
+        GUILayout.BeginHorizontal();
+        {
+            foreach (ModuleType category in Enum.GetValues(typeof(ModuleType)))
+            {
+                bool isSelected = _selectedCategory == category;
+                string buttonText = isSelected ? category.ToString().Bold() : category.ToString();
+                
+                if (GUILayout.Button(buttonText))
+                {
+                    _selectedCategory = category;
+                    _selectedModule = null;
+                }
+            }
+        }
+        GUILayout.EndHorizontal();
+    }
+
 
     private void DrawModules()
     {
         foreach (var module in ModuleManager.GetModules())
         {
+            if (module.Type != _selectedCategory) continue;
+            
             DrawModuleControls(module);
         }
     }

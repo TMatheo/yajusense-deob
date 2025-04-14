@@ -17,6 +17,7 @@ public static class ModuleManager
     {
         RegisterModule(new Flight());
         
+        RegisterModule(new Watermark());
         RegisterModule(new UdonInspector());
         RegisterModule(new Menu());
     }
