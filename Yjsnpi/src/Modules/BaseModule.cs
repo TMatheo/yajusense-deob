@@ -33,6 +33,9 @@ public abstract class BaseModule
     public void Toggle()
     {
         Enabled = !Enabled;
+        
+        ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
+        
         if (Enabled)
         {
             OnEnable();

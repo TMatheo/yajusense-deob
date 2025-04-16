@@ -4,6 +4,7 @@ using Yjsnpi.Core;
 using Yjsnpi.Core.Config;
 using Yjsnpi.Modules.Movement;
 using Yjsnpi.Modules.Visual;
+using Yjsnpi.Modules.Visual.HUD;
 
 namespace Yjsnpi.Modules;
 
@@ -18,6 +19,7 @@ public static class ModuleManager
         RegisterModule(new Flight());
         
         RegisterModule(new Watermark());
+        RegisterModule(new HUDEditor());
         RegisterModule(new UdonInspector());
         RegisterModule(new Menu());
     }

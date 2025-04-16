@@ -7,7 +7,8 @@ namespace Yjsnpi.UI;
 public static class Drawer
 {
     private static Texture2D _whiteTexture;
-    public static Texture2D WhiteTexture
+
+    private static Texture2D WhiteTexture
     {
         get
         {
@@ -19,6 +20,22 @@ public static class Drawer
             }
             return _whiteTexture;
         }
+    }
+    
+    public static void DrawHLine(Vector2 start, float length, float thickness, Color color)
+    {
+        Rect rect = new Rect(start.x, start.y - thickness * 0.5f, length, thickness);
+        GUI.color = color;
+        GUI.DrawTexture(rect, WhiteTexture);
+        GUI.color = Color.white;
+    }
+    
+    public static void DrawVLine(Vector2 start, float length, float thickness, Color color)
+    {
+        Rect rect = new Rect(start.x - thickness * 0.5f, start.y, thickness, length);
+        GUI.color = color;
+        GUI.DrawTexture(rect, WhiteTexture);
+        GUI.color = Color.white;
     }
     
     public static void DrawLine(Vector2 start, Vector2 end, float thickness, Color color)

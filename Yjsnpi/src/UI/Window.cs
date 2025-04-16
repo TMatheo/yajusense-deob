@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Yjsnpi.Utils;
 
 namespace Yjsnpi.UI;
 
@@ -13,9 +14,6 @@ public class Window
     private Rect _resizeHandleRect;
     private const float ResizeHandleSize = 20f;
 
-    private const float Thickness = 2f;
-    private const float Length = 20f;
-
     public Window(Rect position, string title = "")
     {
         _position = position;
@@ -29,7 +27,7 @@ public class Window
         {
             if (!string.IsNullOrEmpty(_title))
             {
-                GUILayout.Label($"<b>{_title}</b>", new GUIStyle(GUI.skin.label)
+                GUILayout.Label(_title.Bold(), new GUIStyle(GUI.skin.label)
                 {
                     alignment = TextAnchor.MiddleCenter,
                     fontSize = 14
@@ -95,9 +93,6 @@ public class Window
                 break;
 
             case EventType.MouseDrag:
-                if (GUIUtility.hotControl != 0) 
-                    break;
-
                 if (_isDragging)
                 {
                     _position.position = mousePos - _dragOffset;
