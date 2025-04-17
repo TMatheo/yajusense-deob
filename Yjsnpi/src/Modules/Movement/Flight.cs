@@ -13,36 +13,39 @@ public class Flight : BaseModule
 
     public override void OnUpdate()
     {
-        if (!VRCUtils.IsInWorld()) return;
+        VRCUtils.SafeExecuteInWorld(() =>
+        {
+            var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
         
-        var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+            if (Input.GetKey(KeyCode.W))
+                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
         
-        if (Input.GetKey(KeyCode.W))
-            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.S))
+                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
         
-        if (Input.GetKey(KeyCode.S))
-            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.A))
+                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
         
-        if (Input.GetKey(KeyCode.A))
-            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.D))
+                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
         
-        if (Input.GetKey(KeyCode.D))
-            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
-        
-        localPlayer.SetVelocity(Vector3.zero);
+            localPlayer.SetVelocity(Vector3.zero);
+        });
     }
 
     public override void OnEnable()
     {
-        if (!VRCUtils.IsInWorld()) return;
-        
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
+        VRCUtils.SafeExecuteInWorld(() =>
+        {
+            VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
+        });
     }
 
     public override void OnDisable()
     {
-        if (!VRCUtils.IsInWorld()) return;
-        
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
+        VRCUtils.SafeExecuteInWorld(() =>
+        {
+            VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
+        });
     }
 }

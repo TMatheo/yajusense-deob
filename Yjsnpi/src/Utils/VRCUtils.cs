@@ -1,3 +1,4 @@
+using System;
 using VRC.SDKBase;
 using Yjsnpi.Core;
 
@@ -16,8 +17,12 @@ public static class VRCUtils
         return Networking.LocalPlayer;
     }
 
-    public static bool IsInWorld()
+    public static bool IsInWorld() => GetLocalVRCPlayerApi() != null;
+    
+    public static void SafeExecuteInWorld(Action action)
     {
-        return GetLocalVRCPlayerApi() != null;
+        if (!IsInWorld()) return;
+        
+        action();
     }
 }
