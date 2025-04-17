@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using UnityEngine;
 using Yjsnpi.Core.Config.JsonConverters;
 using Yjsnpi.Modules;
 using Yjsnpi.Utils;
@@ -34,8 +32,6 @@ public static class ConfigManager
 
     private static JsonObject _configData = new();
     private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
-    private static bool _isDirty;
-    private static Coroutine _autoSaveTimer;
 
     public static void Initialize()
     {
@@ -83,13 +79,10 @@ public static class ConfigManager
             _configData = new JsonObject();
             TryCreateBackup("LoadError");
         }
-        _isDirty = false;
     }
 
-    public static void SaveConfig(bool forceSave = false)
+    public static void SaveConfig()
     {
-        if (!_isDirty && !forceSave) return;
-
         try
         {
             UpdateConfigDataFromModules();
@@ -97,7 +90,6 @@ public static class ConfigManager
             FileUtils.EnsureDirectoryExists(ConfigDirectory);
             var json = JsonSerializer.Serialize(_configData, JsonOptions);
             File.WriteAllText(ConfigPath, json);
-            _isDirty = false;
             YjPlugin.Log.LogInfo("Config saved successfully.");
         }
         catch (Exception ex)
@@ -120,7 +112,6 @@ public static class ConfigManager
         {
             moduleNode = new JsonObject();
             _configData[moduleNodeName] = moduleNode;
-            _isDirty = true;
         }
         var moduleSettings = (JsonObject)moduleNode;
 
@@ -144,7 +135,6 @@ public static class ConfigManager
                     try
                     {
                         moduleSettings[propName] = JsonSerializer.SerializeToNode(defaultValue, JsonOptions);
-                        _isDirty = true;
                     }
                     catch (Exception innerEx)
                     {
@@ -158,7 +148,6 @@ public static class ConfigManager
                 try
                 {
                     moduleSettings[propName] = JsonSerializer.SerializeToNode(defaultValue, JsonOptions);
-                    _isDirty = true;
                 }
                 catch (Exception ex)
                 {
@@ -180,7 +169,7 @@ public static class ConfigManager
             try
             {
                 moduleSettings[propertyName] = JsonSerializer.SerializeToNode(newValue, JsonOptions);
-                SetDirty();
+                // SaveConfig(); // auto-save 
             }
             catch (Exception ex)
             {
@@ -255,21 +244,5 @@ public static class ConfigManager
                 }
             }
         }
-    }
-    
-    private static void SetDirty()
-    {
-        _isDirty = true;
-        if (_autoSaveTimer == null)
-        {
-            _autoSaveTimer = CoroutineRunner.StartCoroutine(AutoSaveCoroutine());
-        }
-    }
-    
-    private static IEnumerator AutoSaveCoroutine()
-    {
-        yield return new WaitForSeconds(2f);
-        SaveConfig();
-        _autoSaveTimer = null;
     }
 }
