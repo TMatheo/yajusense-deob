@@ -118,7 +118,7 @@ public class UdonInspector : BaseModule
         GUILayout.Space(15);
         if (GUILayout.Button($"Disassemble {_selectedUdon.Key}"))
         {
-            UdonDisassembler.Disassemble(_selectedUdon.Key, _selectedUdon.Value, ["_ReadSave"]);
+            UdonDisassembler.Disassemble(_selectedUdon.Key, _selectedUdon.Value);
         }
     }
 
