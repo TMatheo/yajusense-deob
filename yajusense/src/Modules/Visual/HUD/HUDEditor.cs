@@ -63,7 +63,7 @@ public class HUDEditor : BaseModule
                 _isDragging = false;
                 if (_selectedHUD != null)
                 {
-                    ConfigManager.UpdatePropertyValue(_selectedHUD, nameof(BaseHUD.Position), _selectedHUD.Position);
+                    ConfigManager.UpdatePropertyValue(_selectedHUD, nameof(BaseHUD.HUDPosition), _selectedHUD.HUDPosition);
                 }
                 break;
             
@@ -91,7 +91,7 @@ public class HUDEditor : BaseModule
                 {
                     _selectedHUD = hud;
                     _isDragging = true;
-                    _dragOffset = mousePos - hud.Position;
+                    _dragOffset = mousePos - hud.HUDPosition;
                     break;
                 }
             }
@@ -119,7 +119,7 @@ public class HUDEditor : BaseModule
         newPosition.x = Mathf.Clamp(newPosition.x, 0, Screen.width - _selectedHUD.Size.x);
         newPosition.y = Mathf.Clamp(newPosition.y, 0, Screen.height - _selectedHUD.Size.y);
     
-        _selectedHUD.Position = newPosition;
+        _selectedHUD.HUDPosition = newPosition;
     }
 
     private void DrawHUDOutlines()
@@ -140,7 +140,7 @@ public class HUDEditor : BaseModule
                 {
                     Drawer.DrawText(
                         hud.Name,
-                        hud.Position + new Vector2(0, -20),
+                        hud.HUDPosition + new Vector2(0, -20),
                         Color.white,
                         12,
                         true
@@ -155,7 +155,7 @@ public class HUDEditor : BaseModule
         if (_selectedHUD == null) return;
 
         string infoText = $"{_selectedHUD.Name}\n" +
-                         $"Position: {_selectedHUD.Position.x:F0}, {_selectedHUD.Position.y:F0}";
+                         $"Position: {_selectedHUD.HUDPosition.x:F0}, {_selectedHUD.HUDPosition.y:F0}";
         
         Vector2 infoPos = new Vector2(20, Screen.height - 100);
         
@@ -175,6 +175,6 @@ public class HUDEditor : BaseModule
 
     private Rect GetHUDRect(BaseHUD hud)
     {
-        return new Rect(hud.Position, hud.Size);
+        return new Rect(hud.HUDPosition, hud.Size);
     }
 }

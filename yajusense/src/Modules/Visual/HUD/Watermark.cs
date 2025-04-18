@@ -20,9 +20,9 @@ public class Watermark : BaseHUD
             _initialized = true;
         }
         
-        Drawer.DrawText("yaju", Position, Color.white, FontSize, true);
+        Drawer.DrawText("yaju", HUDPosition, Color.white, FontSize, true);
         
         float yajuTextSizeX = IMGUIUtils.CalcTextSize("yaju", FontSize).x;
-        Drawer.DrawRainbowText("sense", Position + new Vector2(yajuTextSizeX, 0), FontSize, true);
+        Drawer.DrawRainbowText("sense", HUDPosition + new Vector2(yajuTextSizeX, 0), FontSize, true);
     }
 }

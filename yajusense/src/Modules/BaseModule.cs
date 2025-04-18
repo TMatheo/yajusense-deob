@@ -16,6 +16,8 @@ public abstract class BaseModule
     [Config("Toggle Key", "Key to enable/disable this module")]
     public KeyCode ToggleKey { get; set; }
 
+    public Vector2 ArrayListPosition { get; set; } = new(Screen.width - 20f, 20f);
+
     protected BaseModule(string name, string description, ModuleType type, KeyCode toggleKey = KeyCode.None, bool enabled = false)
     {
         Name = name;

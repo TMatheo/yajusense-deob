@@ -118,7 +118,7 @@ public static class Drawer
 
         if (shadow)
         {
-            Vector2 offset = new Vector2(2, 2);
+            Vector2 offset = new Vector2(1f, 1f);
             
             string shadowText = text.Color(color.Darken(0.1f));
             
@@ -138,7 +138,7 @@ public static class Drawer
         GUI.Label(new Rect(position, dummy), text); 
     }
 
-    public static void DrawRainbowText(string text, Vector2 position, int fontSize = 12, bool shadow = false)
+    public static void DrawRainbowText(string text, Vector2 position, int fontSize = 12, bool shadow = false, float colorOffset = 0f)
     {
         if (string.IsNullOrEmpty(text)) return;
         
@@ -149,7 +149,7 @@ public static class Drawer
         foreach (var c in text)
         {
             string str = c.ToString();
-            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset, 0.3f);
+            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset + colorOffset, 0.3f);
  
             DrawText(str, position + new Vector2(xOffset, 0), color, fontSize, shadow);
             

@@ -21,6 +21,7 @@ public static class ModuleManager
         RegisterModule(new Watermark());
         RegisterModule(new HUDEditor());
         RegisterModule(new UdonInspector());
+        RegisterModule(new ArrayList());
         RegisterModule(new Menu());
     }
     
