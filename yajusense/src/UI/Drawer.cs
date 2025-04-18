@@ -1,6 +1,6 @@
 using UnityEngine;
-using yajusense.Utils;
 using yajusense.Extensions;
+using yajusense.Utils;
 
 namespace yajusense.UI;
 
@@ -149,7 +149,7 @@ public static class Drawer
         foreach (var c in text)
         {
             string str = c.ToString();
-            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset + colorOffset, 0.3f);
+            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset + colorOffset);
  
             DrawText(str, position + new Vector2(xOffset, 0), color, fontSize, shadow);
             

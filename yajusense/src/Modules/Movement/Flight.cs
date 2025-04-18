@@ -28,6 +28,12 @@ public class Flight : BaseModule
         
             if (Input.GetKey(KeyCode.D))
                 localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+            
+            if (Input.GetKey(KeyCode.Space))
+                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
+            
+            if (Input.GetKey(KeyCode.LeftShift))
+                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
         
             localPlayer.SetVelocity(Vector3.zero);
         });

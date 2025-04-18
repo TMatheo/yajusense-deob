@@ -1,5 +1,4 @@
 using UnityEngine;
-using yajusense.Core.Config;
 
 namespace yajusense.Modules.Visual.HUD;
 

@@ -7,7 +7,7 @@ namespace yajusense.Modules.Visual.HUD;
 public class Watermark : BaseHUD
 {
     private const int FontSize = 60;
-    private bool _initialized = false;
+    private bool _initialized;
 
     public Watermark() : base("Watermark", "Shows watermark for this client", new Vector2(20f, 20f), 
         new Vector2(0, 0), true) {}

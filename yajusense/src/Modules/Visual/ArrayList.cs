@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using yajusense.Extensions;
 using yajusense.UI;
 using yajusense.Utils;
 
@@ -10,12 +11,10 @@ public class ArrayList : BaseModule
 {
     private const float MarginX = 5f;
     private const float AnimationSpeed = 8f;
-    private const int FontSize = 26;
+    private const int FontSize = 22;
     private const float LineWidth = 2f;
-    private const float RainbowColorStep = 0.05f;
+    private const float RainbowColorStep = 0.03f;
     private const float OffScreenMargin = 2f;
-
-    private readonly Color _baseRectColor = new(0.6f, 0.6f, 0.6f, 0.3f);
     
     public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleType.Visual, KeyCode.None, true) {}
     
@@ -37,6 +36,7 @@ public class ArrayList : BaseModule
             float targetY = rectSize.y * visibleModuleIndex;
             Vector2 targetPosition = new Vector2(targetX, targetY);
             
+            
             module.ArrayListPosition = Vector2.Lerp(module.ArrayListPosition, targetPosition, AnimationSpeed * Time.deltaTime);
             
             bool isAlmostOffScreen = module.ArrayListPosition.x >= Screen.width - OffScreenMargin;
@@ -47,9 +47,11 @@ public class ArrayList : BaseModule
             
             Rect currentRect = new Rect(module.ArrayListPosition, rectSize);
             
-            Drawer.DrawFilledRect(currentRect, _baseRectColor);
-            
             Color color = ColorUtils.GetRainbowColor(visibleModuleIndex * RainbowColorStep);
+            
+            Color rectColor = color.Darken(0.2f);
+            rectColor.a = 0.5f;
+            Drawer.DrawFilledRect(currentRect, rectColor);
             
             Drawer.DrawVLine(currentRect.position, currentRect.height, LineWidth, color);
             

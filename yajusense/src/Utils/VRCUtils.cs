@@ -10,7 +10,6 @@ public static class VRCUtils
     {
         if (Networking.LocalPlayer == null)
         {
-            YjPlugin.Log.LogDebug("Attempted to get local VRCPlayerApi, but it was null");
             return null;
         }
         

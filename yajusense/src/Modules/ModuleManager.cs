@@ -19,6 +19,7 @@ public static class ModuleManager
         RegisterModule(new Flight());
         
         RegisterModule(new Watermark());
+        RegisterModule(new Information());
         RegisterModule(new HUDEditor());
         RegisterModule(new UdonInspector());
         RegisterModule(new ArrayList());

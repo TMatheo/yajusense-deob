@@ -4,7 +4,7 @@ namespace yajusense.Utils;
 
 public static class ColorUtils
 {
-    public static Color GetRainbowColor(float offset = 0f, float hueSpeed = 0.2f)
+    public static Color GetRainbowColor(float offset = 0f, float hueSpeed = 0.4f)
     {
         offset = Mathf.Clamp01(offset);
         
