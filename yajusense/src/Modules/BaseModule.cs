@@ -8,7 +8,7 @@ public abstract class BaseModule
 {
     public string Name { get; }
     public string Description { get; }
-    public ModuleType Type { get; }
+    public ModuleCategory Category { get; }
     
     [Config("Enabled", "Is this module enabled?", true)]
     public bool Enabled { get; set; }
@@ -16,13 +16,11 @@ public abstract class BaseModule
     [Config("Toggle Key", "Key to enable/disable this module")]
     public KeyCode ToggleKey { get; set; }
 
-    public Vector2 ArrayListPosition { get; set; } = new(Screen.width - 20f, 20f);
-
-    protected BaseModule(string name, string description, ModuleType type, KeyCode toggleKey = KeyCode.None, bool enabled = false)
+    protected BaseModule(string name, string description, ModuleCategory category, KeyCode toggleKey = KeyCode.None, bool enabled = false)
     {
         Name = name;
         Description = description;
-        Type = type;
+        Category = category;
         ToggleKey = toggleKey;
         Enabled = enabled;
     }
@@ -49,12 +47,11 @@ public abstract class BaseModule
             NotificationManager.ShowNotification($"Disabled {Name}");
         }
     }
-
-    public void SetToggleKey(KeyCode key) => ToggleKey = key;
 }
 
-public enum ModuleType
+public enum ModuleCategory
 {
     Visual,
     Movement,
+    ClientSettings
 }

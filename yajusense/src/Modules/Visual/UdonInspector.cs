@@ -20,7 +20,7 @@ public class UdonInspector : BaseModule
     
     private readonly string _saveDir = Path.Combine(Directory.GetCurrentDirectory(), "yajusense", "UdonInspector");
 
-    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleType.Visual, KeyCode.F10)
+    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleCategory.Visual, KeyCode.F10)
     {
         _window = new(new(0, 0, 600f, 500f), "Udon Inspector");
     }

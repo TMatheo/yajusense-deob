@@ -9,7 +9,7 @@ public class Flight : BaseModule
     [Config("Flight speed", "Flight speed", false,1.0f, 50.0f)]
     public float Speed { get; set; } = 5.0f;
 
-    public Flight() : base("Flight", "Allows you to fly", ModuleType.Movement, KeyCode.F) {}
+    public Flight() : base("Flight", "Allows you to fly", ModuleCategory.Movement, KeyCode.F) {}
 
     public override void OnUpdate()
     {

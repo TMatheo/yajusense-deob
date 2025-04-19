@@ -10,162 +10,126 @@ namespace yajusense.Modules.Visual;
 
 public class Menu : BaseModule
 {
-    private Window _window;
-    private Vector2 _scrollPos;
-    private Vector2 _moduleSettingsScrollPos;
-    private BaseModule _selectedModule;
+    private readonly Window _window;
+    private ModuleCategory _selectedCategory = ModuleCategory.Visual;
+    
+    private const int FontSizeHeader = 14;
+    private const int FontSize = 12;
+    private readonly Color _descColor = new(0.5f, 0.5f, 0.5f);
+    
     private bool _isDetectingKey;
-    private ConfigProperty _detectingProp;
-    private ModuleType _selectedCategory = ModuleType.Visual;
+    private ConfigProperty _keyDetectingProp;
 
-    public Menu() : base("Menu", "Provides configuration menu for all modules", ModuleType.Visual, KeyCode.Insert) 
+    public Menu() : base("Menu", "Menu", ModuleCategory.Visual, KeyCode.Insert)
     {
         _window = new Window(new Rect(0, 0, 600f, 500f), "yajusense");
+    }
+
+    public override void OnEnable()
+    {
+        CursorUnlocker.UpdateCursorControl();
+    }
+
+    public override void OnDisable()
+    {
+        CursorUnlocker.UpdateCursorControl();
     }
 
     public override void OnGUI()
     {
         _window.Begin();
         {
-            DrawCategoryTabs();
+            DrawTab();
+            DrawModules();
             
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos);
-            {
-                DrawModules();
-                DrawSelectedModuleConfig();
-            }
-            GUILayout.EndScrollView();
+            if (_selectedCategory == ModuleCategory.ClientSettings)
+                DrawClientSettings();
             
             GUILayout.FlexibleSpace();
-            DrawConfigSection();
+            DrawConfigControls();
         }
         _window.End();
     }
-    
-    private void DrawCategoryTabs()
+
+    private void DrawTab()
     {
         GUILayout.BeginHorizontal();
         {
-            foreach (ModuleType category in Enum.GetValues(typeof(ModuleType)))
+            foreach (ModuleCategory category in Enum.GetValues(typeof(ModuleCategory)))
             {
-                bool isSelected = _selectedCategory == category;
-                string buttonText = isSelected ? category.ToString().Bold() : category.ToString();
+                string text = category.ToString().Size(FontSizeHeader);
+
+                if (category == ModuleCategory.ClientSettings)
+                    text = "Settings".Size(FontSizeHeader);
                 
-                if (GUILayout.Button(buttonText))
+                if (GUILayout.Button(category == _selectedCategory ? text.Bold() : text))
                 {
                     _selectedCategory = category;
-                    _selectedModule = null;
                 }
             }
         }
         GUILayout.EndHorizontal();
     }
-
 
     private void DrawModules()
     {
         foreach (var module in ModuleManager.GetModules())
         {
-            if (module.Type != _selectedCategory) continue;
+            if (module.Category != _selectedCategory) 
+                continue;
             
-            DrawModuleControls(module);
+            GUILayout.BeginVertical("box");
+            {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(module.Name.Size(FontSizeHeader));
+                    GUILayout.FlexibleSpace();
+                    module.Enabled = GUILayout.Toggle(module.Enabled, "Enabled");
+                }
+                GUILayout.EndHorizontal();
+                
+                GUILayout.Label(module.Description.Size(FontSize).Color(_descColor));
+                
+                GUILayout.Space(10);
+                DrawModuleConfig(module);
+            }
+            GUILayout.EndVertical();
         }
     }
-
-    private void DrawModuleControls(BaseModule module)
+    
+    private void DrawModuleConfig(BaseModule module)
     {
-        GUILayout.BeginVertical("box");
+        if (ConfigManager.TryGetConfigProperties(module, out var configProps))
         {
-            GUILayout.BeginHorizontal();
+            foreach (var prop in configProps)
             {
-                bool isSelected = _selectedModule == module;
-                    
-                var formattedText = isSelected ? module.Name.Bold() : module.Name;
-                    
-                if (GUILayout.Button(formattedText))
-                {
-                    _selectedModule = isSelected ? null : module;
-                }
-                    
-                string toggleText = module.Enabled ? 
-                    "ON".Color(Color.green) : 
-                    "OFF".Color(Color.red);
-
-                if (GUILayout.Button(toggleText, GUILayout.Width(120)))
-                {
-                    module.Toggle();
-                }
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.Label(
-                module.Description.Italic().Color(Color.gray)
-            );
-        }
-        GUILayout.EndVertical();
-    }
-
-    private void DrawSelectedModuleConfig()
-    {
-        if (_selectedModule == null) return;
-
-        GUILayout.Space(10);
-            
-        GUILayout.Label(
-            $"{_selectedModule.Name} Settings"
-                .Bold()
-                .Size(14)
-        );
-
-        _moduleSettingsScrollPos = GUILayout.BeginScrollView(_moduleSettingsScrollPos, GUILayout.Height(200));
-        {
-            if (ConfigManager.TryGetConfigProperties(_selectedModule, out var configProps))
-            {
-                foreach (var prop in configProps)
-                {
-                    if (prop.Attribute.Hidden) continue;
-                        
-                    DrawConfigProperty(prop);
-                }
-            }
-            else
-            {
-                GUILayout.Label(
-                    "No configurable properties found."
-                        .Color(Colors.Orange)
-                );
+                if (prop.Attribute.Hidden) 
+                    continue;
+                
+                DrawModuleProperty(module, prop);
             }
         }
-        GUILayout.EndScrollView();
     }
 
-    private void DrawConfigProperty(ConfigProperty prop)
+    private void DrawModuleProperty(BaseModule module, ConfigProperty prop)
     {
         GUILayout.BeginHorizontal();
         {
-            GUILayout.Label(
-                prop.Attribute.DisplayName
-                    .Bold(), 
-                GUILayout.Width(150)
-            );
+            GUILayout.Label(prop.Attribute.DisplayName.Size(FontSizeHeader));
                 
-            DrawPropertyField(prop);
+            DrawPropertyField(module, prop);
         }
         GUILayout.EndHorizontal();
 
         if (!string.IsNullOrEmpty(prop.Attribute.Description))
         {
-            GUILayout.Label(
-                prop.Attribute.Description
-                    .Italic()
-                    .Color(Color.gray)
-            );
+            GUILayout.Label(prop.Attribute.Description.Color(_descColor).Size(FontSize));
         }
     }
-
-    private void DrawPropertyField(ConfigProperty prop)
+    
+    private void DrawPropertyField(BaseModule module, ConfigProperty prop)
     {
-        object currentValue = prop.Property.GetValue(_selectedModule);
+        object currentValue = prop.Property.GetValue(module);
         object newValue = currentValue;
 
         switch (currentValue)
@@ -189,42 +153,31 @@ public class Menu : BaseModule
                 break;
 
             case KeyCode key:
-                if (GUILayout.Button(_isDetectingKey && _detectingProp == prop ? "Press any key...".Color(Color.yellow) : key.ToString()))
+                if (GUILayout.Button(_isDetectingKey && _keyDetectingProp == prop ? "Press any key..." : key.ToString()))
                 {
                     if (!_isDetectingKey)
                     {
-                        StartDetectKeyPress(prop);
+                        StartDetectKeyPress(module, prop);
                     }
                 }
-                break;
-                
-            default:
-                GUILayout.Label($"Unsupported type: {currentValue.GetType().Name}");
                 break;
         }
 
         if (!Equals(newValue, currentValue) && !(currentValue is KeyCode))
         {
-            try
-            {
-                prop.Property.SetValue(_selectedModule, newValue);
-                ConfigManager.UpdatePropertyValue(_selectedModule, prop.Property.Name, newValue);
-            }
-            catch (Exception ex)
-            {
-                YjPlugin.Log.LogError($"Failed to set property {prop.Property.Name}: {ex}");
-            }
+            prop.Property.SetValue(module, newValue);
+            ConfigManager.UpdatePropertyValue(module, prop.Property.Name, newValue);
         }
     }
-        
-    private void StartDetectKeyPress(ConfigProperty prop)
+    
+    private void StartDetectKeyPress(BaseModule module, ConfigProperty prop)
     {
-        _detectingProp = prop;
+        _keyDetectingProp = prop;
         _isDetectingKey = true;
-        CoroutineRunner.StartCoroutine(DetectKeyPressCoroutine(prop));
+        CoroutineRunner.StartManagedCoroutine(DetectKeyPressCoroutine(module, prop));
     }
 
-    private IEnumerator DetectKeyPressCoroutine(ConfigProperty prop)
+    private IEnumerator DetectKeyPressCoroutine(BaseModule module, ConfigProperty prop)
     {
         while (_isDetectingKey)
         {
@@ -233,40 +186,48 @@ public class Menu : BaseModule
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     _isDetectingKey = false;
-                    _detectingProp = null;
+                    _keyDetectingProp = null;
                     yield break;
                 }
 
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
-                    if (key == KeyCode.None || key >= KeyCode.Mouse0 && key <= KeyCode.Mouse6) continue;
+                    if (key == KeyCode.None)
+                        continue;
 
-                    if (Input.GetKeyDown(key))
-                    {
-                        try
-                        {
-                            prop.Property.SetValue(_selectedModule, key);
-                            ConfigManager.UpdatePropertyValue(_selectedModule, prop.Property.Name, key);
-                            _isDetectingKey = false;
-                            _detectingProp = null;
-                            yield break;
-                        }
-                        catch (Exception ex)
-                        {
-                            YjPlugin.Log.LogError($"Failed to set KeyCode property {prop.Property.Name}: {ex}");
-                            _isDetectingKey = false;
-                            _detectingProp = null;
-                            yield break;
-                        }
-                    }
+                    if (!Input.GetKeyDown(key))
+                        continue;
+
+                    prop.Property.SetValue(module, key);
+                    ConfigManager.UpdatePropertyValue(module, prop.Property.Name, key);
+                    
+                    _isDetectingKey = false;
+                    _keyDetectingProp = null;
+                    yield break;
                 }
             }
             yield return null;
         }
-        _detectingProp = null;
+        _keyDetectingProp = null;
     }
 
-    private void DrawConfigSection()
+    private void DrawClientSettings()
+    {
+        var module = ModuleManager.ClientSettings;
+        
+        if (ConfigManager.TryGetConfigProperties(module, out var configProps))
+        {
+            foreach (var prop in configProps)
+            {
+                if (prop.Attribute.Hidden || prop.Attribute.DisplayName == "Toggle Key") 
+                    continue;
+                
+                DrawModuleProperty(module, prop);
+            }
+        }
+    }
+    
+    private void DrawConfigControls()
     {
         GUILayout.BeginHorizontal();
         {

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Modules.Movement;
+using yajusense.Modules.Other;
 using yajusense.Modules.Visual;
 using yajusense.Modules.Visual.HUD;
 
@@ -11,16 +13,26 @@ namespace yajusense.Modules;
 public static class ModuleManager
 {
     private static readonly List<BaseModule> Modules = new();
+    public static ClientSettings ClientSettings { get; private set; }
     
     public static IEnumerable<BaseModule> GetModules() => Modules.AsReadOnly();
-    
+
+    public static T GetModule<T>() where T : BaseModule
+    {
+        return Modules.OfType<T>().FirstOrDefault();
+    }
+
     public static void Initialize()
     {
+        ClientSettings = new ClientSettings();
+        ConfigManager.RegisterModuleConfig(ClientSettings);
+        
+        // movement
         RegisterModule(new Flight());
         
+        // visual
         RegisterModule(new Watermark());
         RegisterModule(new Information());
-        RegisterModule(new HUDEditor());
         RegisterModule(new UdonInspector());
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
@@ -48,10 +60,11 @@ public static class ModuleManager
             {
                 module.OnUpdate();
             }
-            if (Input.GetKeyDown(module.ToggleKey))
+            if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey))
             {
                 module.Toggle();
             }
+
         }
     }
 

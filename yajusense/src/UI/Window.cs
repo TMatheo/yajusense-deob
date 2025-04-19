@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using yajusense.Core;
 using yajusense.Utils;
 
 namespace yajusense.UI;
@@ -13,6 +14,8 @@ public class Window
     private Vector2 _dragOffset;
     private Rect _resizeHandleRect;
     private const float ResizeHandleSize = 20f;
+    
+    private Vector2 _scrollPosition;
 
     public Window(Rect position, string title = "")
     {
@@ -30,7 +33,7 @@ public class Window
                 GUILayout.Label(_title.Bold(), new GUIStyle(GUI.skin.label)
                 {
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = 14
+                    fontSize = 18
                 });
             }
             
@@ -38,11 +41,15 @@ public class Window
             GUILayout.Space(5);
             GUILayout.BeginVertical();
             GUILayout.Space(5);
+
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         }
     }
 
     public void End()
     {
+        GUILayout.EndScrollView();
+        
         GUILayout.EndVertical();
         GUILayout.Space(5);
         GUILayout.EndHorizontal();

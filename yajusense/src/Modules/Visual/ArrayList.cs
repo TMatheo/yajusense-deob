@@ -13,10 +13,11 @@ public class ArrayList : BaseModule
     private const float AnimationSpeed = 8f;
     private const int FontSize = 22;
     private const float LineWidth = 2f;
-    private const float RainbowColorStep = 0.03f;
     private const float OffScreenMargin = 2f;
     
-    public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleType.Visual, KeyCode.None, true) {}
+    private readonly Dictionary<BaseModule, Vector2> _modulePositions = new();
+    
+    public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleCategory.Visual, KeyCode.None, true) {}
     
     public override void OnGUI()
     {
@@ -36,18 +37,23 @@ public class ArrayList : BaseModule
             float targetY = rectSize.y * visibleModuleIndex;
             Vector2 targetPosition = new Vector2(targetX, targetY);
             
+            if (!_modulePositions.TryGetValue(module, out var currentPosition))
+            {
+                currentPosition = new Vector2(Screen.width, 20f);
+                _modulePositions[module] = currentPosition;
+            }
             
-            module.ArrayListPosition = Vector2.Lerp(module.ArrayListPosition, targetPosition, AnimationSpeed * Time.deltaTime);
+            _modulePositions[module] = Vector2.Lerp(currentPosition, targetPosition, AnimationSpeed * Time.deltaTime);
             
-            bool isAlmostOffScreen = module.ArrayListPosition.x >= Screen.width - OffScreenMargin;
+            bool isAlmostOffScreen = _modulePositions[module].x >= Screen.width - OffScreenMargin;
             if (!module.Enabled && isAlmostOffScreen)
             {
                 continue;
             }
             
-            Rect currentRect = new Rect(module.ArrayListPosition, rectSize);
+            Rect currentRect = new Rect(_modulePositions[module], rectSize);
             
-            Color color = ColorUtils.GetRainbowColor(visibleModuleIndex * RainbowColorStep);
+            Color color = ColorUtils.GetRainbowColor(visibleModuleIndex * ModuleManager.ClientSettings.RainbowColorStep);
             
             Color rectColor = color.Darken(0.2f);
             rectColor.a = 0.5f;
@@ -61,9 +67,9 @@ public class ArrayList : BaseModule
             {
                 BaseModule nextEnabledModule = FindNextEnabledModule(modules, i + 1);
 
-                if (nextEnabledModule != null)
+                if (nextEnabledModule != null && _modulePositions.TryGetValue(nextEnabledModule, out var nextPosition))
                 {
-                    horizontalLineLength = nextEnabledModule.ArrayListPosition.x - currentRect.x;
+                    horizontalLineLength = nextPosition.x - currentRect.x;
                 }
             }
             

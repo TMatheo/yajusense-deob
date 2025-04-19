@@ -61,4 +61,8 @@
         <HintPath>libs\VRCSDKBase.dll</HintPath>
       </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="resources\shaderbundle.bundle" />
+    </ItemGroup>
 </Project>

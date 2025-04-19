@@ -356,7 +356,7 @@ public static class UdonDisassembler
         public IEnumerable<string> TargetEventNames { get; set; }
         public StringBuilder Output { get; set; }
         public Dictionary<uint, string> Constants { get; set; }
-        public HashSet<uint> EventAddresses { get; set; } = new HashSet<uint>();
+        public HashSet<uint> EventAddresses { get; set; } = new();
         
         public bool Initialize()
         {

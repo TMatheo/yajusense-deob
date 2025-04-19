@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using yajusense.Modules;
 using yajusense.Utils;
 
 namespace yajusense.UI;
@@ -114,7 +115,7 @@ public static class NotificationManager
         float progress = Mathf.Clamp01(elapsedTime / notification.Duration);
         float width = RectWidth * (1f - progress);
         
-        var progressBarColor = ColorUtils.GetRainbowColor(displayIndex * 0.05f);
+        var progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.RainbowColorStep);
         progressBarColor.a = notification.CurrentAlpha;
 
         var progressBarRect = new Rect(
