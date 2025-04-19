@@ -17,11 +17,4 @@ public static class VRCUtils
     }
 
     public static bool IsInWorld() => GetLocalVRCPlayerApi() != null;
-    
-    public static void SafeExecuteInWorld(Action action)
-    {
-        if (!IsInWorld()) return;
-        
-        action();
-    }
 }

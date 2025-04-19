@@ -65,4 +65,8 @@
     <ItemGroup>
       <None Remove="resources\shaderbundle.bundle" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="modern.bundle" />
+    </ItemGroup>
 </Project>

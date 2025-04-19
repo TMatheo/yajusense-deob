@@ -13,45 +13,48 @@ public class Flight : BaseModule
 
     public override void OnUpdate()
     {
-        VRCUtils.SafeExecuteInWorld(() =>
-        {
-            var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
-        
-            if (Input.GetKey(KeyCode.W))
-                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
-        
-            if (Input.GetKey(KeyCode.S))
-                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
-        
-            if (Input.GetKey(KeyCode.A))
-                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
-        
-            if (Input.GetKey(KeyCode.D))
-                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
-            
-            if (Input.GetKey(KeyCode.Space))
-                localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
-            
-            if (Input.GetKey(KeyCode.LeftShift))
-                localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
-        
-            localPlayer.SetVelocity(Vector3.zero);
-        });
-    }
+        if (!VRCUtils.IsInWorld())
+            return;
 
+        var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+
+        if (Input.GetKey(KeyCode.W))
+            localPlayer.gameObject.transform.position +=
+                localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.S))
+            localPlayer.gameObject.transform.position -=
+                localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.A))
+            localPlayer.gameObject.transform.position -=
+                localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.D))
+            localPlayer.gameObject.transform.position +=
+                localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.Space))
+            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
+
+        localPlayer.SetVelocity(Vector3.zero);
+    }
+    
     public override void OnEnable()
     {
-        VRCUtils.SafeExecuteInWorld(() =>
-        {
-            VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
-        });
+        if (!VRCUtils.IsInWorld())
+            return;
+        
+        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
     }
 
     public override void OnDisable()
     {
-        VRCUtils.SafeExecuteInWorld(() =>
-        {
-            VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
-        });
+        if (!VRCUtils.IsInWorld())
+            return;
+        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
     }
 }

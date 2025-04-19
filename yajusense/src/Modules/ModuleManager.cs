@@ -27,10 +27,11 @@ public static class ModuleManager
         ClientSettings = new ClientSettings();
         ConfigManager.RegisterModuleConfig(ClientSettings);
         
-        // movement
+        // Movement
         RegisterModule(new Flight());
+        RegisterModule(new ThirdPerson());
         
-        // visual
+        // Visual
         RegisterModule(new Watermark());
         RegisterModule(new Information());
         RegisterModule(new UdonInspector());

@@ -31,11 +31,11 @@ public class Information : BaseModule
         _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f;
         
         string positionText = "XYZ: N/A";
-        VRCUtils.SafeExecuteInWorld(() =>
+        if (VRCUtils.IsInWorld())
         {
             Vector3 position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
             positionText = $"XYZ: {position.x:F0}, {position.y:F0}, {position.z:F0}";
-        });
+        }
 
         float currentY = Screen.height - 10f;
         for (int i = 0; i < _textInfos.Count; i++)

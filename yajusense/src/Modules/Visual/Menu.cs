@@ -84,7 +84,9 @@ public class Menu : BaseModule
                 {
                     GUILayout.Label(module.Name.Size(FontSizeHeader));
                     GUILayout.FlexibleSpace();
-                    module.Enabled = GUILayout.Toggle(module.Enabled, "Enabled");
+                    bool enabled = GUILayout.Toggle(module.Enabled, "Enabled");
+                    if (enabled != module.Enabled)
+                        module.Toggle();
                 }
                 GUILayout.EndHorizontal();
                 

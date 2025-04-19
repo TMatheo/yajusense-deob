@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
+using yajusense.Core;
 using yajusense.Extensions;
 using yajusense.UI;
 using yajusense.Utils;
@@ -10,7 +13,7 @@ namespace yajusense.Modules.Visual;
 public class ArrayList : BaseModule
 {
     private const float MarginX = 5f;
-    private const float AnimationSpeed = 8f;
+    private const float AnimationSpeed = 10f;
     private const int FontSize = 22;
     private const float LineWidth = 2f;
     private const float OffScreenMargin = 2f;
@@ -18,7 +21,7 @@ public class ArrayList : BaseModule
     private readonly Dictionary<BaseModule, Vector2> _modulePositions = new();
     
     public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleCategory.Visual, KeyCode.None, true) {}
-    
+
     public override void OnGUI()
     {
         List<BaseModule> modules = ModuleManager.GetModules()
