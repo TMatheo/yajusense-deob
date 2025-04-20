@@ -32,11 +32,12 @@ public static class ModuleManager
 
         // Movement
         RegisterModule(new Flight());
-        RegisterModule(new ThirdPerson());
+        RegisterModule(new Speed());
 
         // Visual
         RegisterModule(new Watermark());
         RegisterModule(new Information());
+        RegisterModule(new ThirdPerson());
         RegisterModule(new UdonInspector());
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
@@ -53,7 +54,7 @@ public static class ModuleManager
         ConfigManager.RegisterModuleConfig(module);
 
         Modules.Add(module);
-        YjPlugin.Log.LogDebug($"Module registered: {module.Name}");
+        YjPlugin.Log.LogInfo($"Module registered: {module.Name}");
     }
 
     public static void UpdateModules()

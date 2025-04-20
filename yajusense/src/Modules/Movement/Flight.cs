@@ -11,7 +11,7 @@ public class Flight : BaseModule
     }
 
     [Config("Flight speed", "Flight speed", false, 1.0f, 50.0f)]
-    public float Speed { get; set; } = 5.0f;
+    public float Speed { get; set; } = 10.0f;
 
     public override void OnUpdate()
     {

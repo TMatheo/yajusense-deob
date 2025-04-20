@@ -175,7 +175,7 @@ public static class UdonDisassembler
         switch (opcode)
         {
             case (uint)OpCode.NOP:
-                YjPlugin.Log.LogDebug("Resolving NOP");
+                YjPlugin.Log.LogInfo("Resolving NOP");
                 context.Output.AppendLine($"0x{address:X}  NOP");
                 address += 4;
                 break;
@@ -183,7 +183,7 @@ public static class UdonDisassembler
             case (uint)OpCode.PUSH:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving PUSH");
+                YjPlugin.Log.LogInfo("Resolving PUSH");
 
                 var pushOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
 
@@ -208,7 +208,7 @@ public static class UdonDisassembler
                 break;
 
             case (uint)OpCode.POP:
-                YjPlugin.Log.LogDebug("Resolving POP");
+                YjPlugin.Log.LogInfo("Resolving POP");
                 context.Output.AppendLine($"0x{address:X}  POP");
                 address += 4;
                 break;
@@ -216,7 +216,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP_IF_FALSE:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving JUMP_IF_FALSE");
+                YjPlugin.Log.LogInfo("Resolving JUMP_IF_FALSE");
                 var jneOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JUMP_IF_FALSE 0x{jneOffset:X}");
                 address += 8;
@@ -225,7 +225,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving JMP");
+                YjPlugin.Log.LogInfo("Resolving JMP");
 
                 var jumpOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JMP 0x{jumpOffset:X}");
@@ -235,7 +235,7 @@ public static class UdonDisassembler
             case (uint)OpCode.EXTERN:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving EXTERN");
+                YjPlugin.Log.LogInfo("Resolving EXTERN");
 
                 var externAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object externObj = heap.GetHeapVariable(externAddr);
@@ -256,7 +256,7 @@ public static class UdonDisassembler
             case (uint)OpCode.ANNOTATION:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving ANNOTATION");
+                YjPlugin.Log.LogInfo("Resolving ANNOTATION");
 
                 var annotationAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object annotationObj = heap.GetHeapVariable(annotationAddr);
@@ -269,7 +269,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP_INDIRECT:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogDebug("Resolving JMP_INDIRECT");
+                YjPlugin.Log.LogInfo("Resolving JMP_INDIRECT");
 
                 var indirectAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 var targetSymbol = symbolTable.HasSymbolForAddress(indirectAddr)
@@ -281,7 +281,7 @@ public static class UdonDisassembler
                 break;
 
             case (uint)OpCode.COPY:
-                YjPlugin.Log.LogDebug("Resolving COPY");
+                YjPlugin.Log.LogInfo("Resolving COPY");
                 context.Output.AppendLine($"0x{address:X}  COPY");
                 address += 4;
                 break;

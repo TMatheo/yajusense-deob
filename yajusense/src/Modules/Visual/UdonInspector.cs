@@ -163,6 +163,6 @@ public class UdonInspector : BaseModule
             if (go.TryGetComponent<UdonBehaviour>(out var ub))
                 _udonCache.Add(ub, go.name);
 
-        YjPlugin.Log.LogDebug($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
+        YjPlugin.Log.LogInfo($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
     }
 }

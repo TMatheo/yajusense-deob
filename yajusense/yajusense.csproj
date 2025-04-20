@@ -24,11 +24,17 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="Assembly-CSharp">
+          <HintPath>libs\Assembly-CSharp.dll</HintPath>
+        </Reference>
         <Reference Include="Il2Cppmscorlib">
             <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
         </Reference>
         <Reference Include="Il2CppSystem.Collections.Immutable">
             <HintPath>libs\Il2CppSystem.Collections.Immutable.dll</HintPath>
+        </Reference>
+        <Reference Include="Photon-DotNet">
+          <HintPath>libs\Photon-DotNet.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>

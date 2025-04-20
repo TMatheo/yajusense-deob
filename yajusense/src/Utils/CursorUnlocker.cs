@@ -5,43 +5,56 @@ using UnityEngine;
 using yajusense.Core;
 using yajusense.Modules;
 using yajusense.Modules.Visual;
+using yajusense.Patches;
 
 namespace yajusense.Utils;
 
 public static class CursorUnlocker
 {
+    private const string PatchIdCursorLock = "CursorLockStatePatch";
+    private const string PatchIdCursorVisible = "CursorVisiblePatch";
+        
     private static bool _currentlySettingCursor;
     private static CursorLockMode _lastLockMode = CursorLockMode.None;
     private static bool _lastVisibleState = true;
-
     private static Coroutine _unlockCoroutine;
     private static readonly WaitForEndOfFrame WaitForEndOfFrame = new();
 
-    private static Harmony _harmony;
-
-    private static bool ShouldUnlock => IsAnyUIShowing();
-
-    public static void Init(Harmony harmonyInstance)
+    public static void Init()
     {
-        _harmony = harmonyInstance ?? throw new ArgumentNullException(nameof(harmonyInstance));
+        _lastLockMode = Cursor.lockState;
+        _lastVisibleState = Cursor.visible;
 
-        try
+        ApplyPatches();
+        UpdateCursorControl();
+
+        if (_unlockCoroutine != null)
+            CoroutineRunner.StopManagedCoroutine(_unlockCoroutine);
+                
+        _unlockCoroutine = CoroutineRunner.StartManagedCoroutine(UnlockCoroutine());
+    }
+    
+    private static void ApplyPatches()
+    {
+
+        var lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
+        if (lockStateSetter != null)
         {
-            _lastLockMode = Cursor.lockState;
-            _lastVisibleState = Cursor.visible;
-
-            InitPatches();
-            UpdateCursorControl();
-
-            if (_unlockCoroutine != null)
-                CoroutineRunner.StopManagedCoroutine(_unlockCoroutine);
-            _unlockCoroutine = CoroutineRunner.StartManagedCoroutine(UnlockCoroutine());
-
-            YjPlugin.Log.LogInfo("CursorUnlocker initialized.");
+            HarmonyPatcher.ApplyPatch(
+                PatchIdCursorLock,
+                lockStateSetter,
+                new HarmonyMethod(typeof(CursorUnlocker).GetMethod(nameof(Prefix_set_lockState)))
+            );
         }
-        catch (Exception ex)
+            
+        var visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
+        if (visibleSetter != null)
         {
-            YjPlugin.Log.LogWarning($"Exception initializing CursorUnlocker: {ex}");
+            HarmonyPatcher.ApplyPatch(
+                PatchIdCursorVisible,
+                visibleSetter,
+                new HarmonyMethod(typeof(CursorUnlocker).GetMethod(nameof(Prefix_set_visible)))
+            );
         }
     }
 
@@ -62,7 +75,7 @@ public static class CursorUnlocker
         {
             yield return WaitForEndOfFrame;
 
-            var shouldBeUnlocked = ShouldUnlock;
+            var shouldBeUnlocked = IsAnyUIShowing();
             if (shouldBeUnlocked)
             {
                 if (Cursor.lockState != CursorLockMode.None || !Cursor.visible) UpdateCursorControl();
@@ -81,7 +94,7 @@ public static class CursorUnlocker
         try
         {
             _currentlySettingCursor = true;
-            var shouldUnlockNow = ShouldUnlock;
+            var shouldUnlockNow = IsAnyUIShowing();
 
             if (shouldUnlockNow)
             {
@@ -102,55 +115,13 @@ public static class CursorUnlocker
         }
     }
 
-    private static void InitPatches()
-    {
-        if (_harmony == null)
-        {
-            YjPlugin.Log.LogError("Harmony instance is null in CursorUnlocker. Cannot apply patches.");
-            return;
-        }
-
-        try
-        {
-            YjPlugin.Log.LogInfo("Applying Cursor patches...");
-
-            var lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
-            if (lockStateSetter != null)
-            {
-                _harmony.Patch(lockStateSetter,
-                    new HarmonyMethod(typeof(CursorUnlocker), nameof(Prefix_set_lockState)));
-                YjPlugin.Log.LogDebug("Patched Cursor.lockState setter.");
-            }
-            else
-            {
-                YjPlugin.Log.LogWarning("Could not find Cursor.lockState setter.");
-            }
-
-            var visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
-            if (visibleSetter != null)
-            {
-                _harmony.Patch(visibleSetter,
-                    new HarmonyMethod(typeof(CursorUnlocker), nameof(Prefix_set_visible)));
-                YjPlugin.Log.LogDebug("Patched Cursor.visible setter.");
-            }
-            else
-            {
-                YjPlugin.Log.LogWarning("Could not find Cursor.visible setter.");
-            }
-        }
-        catch (Exception ex)
-        {
-            YjPlugin.Log.LogError($"Failed to apply Cursor patches: {ex}");
-        }
-    }
-
     public static bool Prefix_set_lockState(ref CursorLockMode value)
     {
         if (_currentlySettingCursor) return true;
 
         _lastLockMode = value;
 
-        if (ShouldUnlock) value = CursorLockMode.None;
+        if (IsAnyUIShowing()) value = CursorLockMode.None;
 
         return true;
     }
@@ -161,7 +132,7 @@ public static class CursorUnlocker
 
         _lastVisibleState = value;
 
-        if (ShouldUnlock)
+        if (IsAnyUIShowing())
             if (!value)
                 value = true;
 
