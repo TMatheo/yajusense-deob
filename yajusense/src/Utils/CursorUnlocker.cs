@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using HarmonyLib;
 using UnityEngine;
@@ -13,7 +12,7 @@ public static class CursorUnlocker
 {
     private const string PatchIdCursorLock = "CursorLockStatePatch";
     private const string PatchIdCursorVisible = "CursorVisiblePatch";
-        
+
     private static bool _currentlySettingCursor;
     private static CursorLockMode _lastLockMode = CursorLockMode.None;
     private static bool _lastVisibleState = true;
@@ -30,32 +29,27 @@ public static class CursorUnlocker
 
         if (_unlockCoroutine != null)
             CoroutineRunner.StopManagedCoroutine(_unlockCoroutine);
-                
+
         _unlockCoroutine = CoroutineRunner.StartManagedCoroutine(UnlockCoroutine());
     }
-    
+
     private static void ApplyPatches()
     {
-
         var lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
         if (lockStateSetter != null)
-        {
             HarmonyPatcher.ApplyPatch(
                 PatchIdCursorLock,
                 lockStateSetter,
                 new HarmonyMethod(typeof(CursorUnlocker).GetMethod(nameof(Prefix_set_lockState)))
             );
-        }
-            
+
         var visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
         if (visibleSetter != null)
-        {
             HarmonyPatcher.ApplyPatch(
                 PatchIdCursorVisible,
                 visibleSetter,
                 new HarmonyMethod(typeof(CursorUnlocker).GetMethod(nameof(Prefix_set_visible)))
             );
-        }
     }
 
     private static bool IsAnyUIShowing()

@@ -6,18 +6,18 @@ namespace yajusense.Modules.Movement;
 
 public class Speed : BaseModule
 {
-    [Config("Movement speed", "Movement speed", false, 1.0f, 50.0f)]
-    public float MovementSpeed { get; set; } = 10.0f;
-
     public Speed() : base("Speed", "god of speed!", ModuleCategory.Movement)
     {
     }
-    
+
+    [Config("Movement speed", "Movement speed", false, 1.0f, 50.0f)]
+    public float MovementSpeed { get; set; } = 10.0f;
+
     public override void OnUpdate()
     {
         if (!VRCUtils.IsInWorld())
             return;
-        
+
         var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
 
         if (Input.GetKey(KeyCode.W))

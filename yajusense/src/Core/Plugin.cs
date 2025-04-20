@@ -2,7 +2,6 @@
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
-using HarmonyLib;
 using UnityEngine;
 using yajusense.Core.Config;
 using yajusense.Modules;
@@ -21,9 +20,9 @@ public class YjPlugin : BasePlugin
     {
         Log = base.Log;
         Log.LogInfo("Initializing yajusense...");
-        
+
         HarmonyPatcher.Initialize();
-        
+
         OpRaiseEventPatch.ApplyPatch();
 
         ConfigManager.Initialize();

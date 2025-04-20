@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using yajusense.UI;
 using yajusense.Utils;
+
 // Add this using directive
 
 // Add this using directive for Func
