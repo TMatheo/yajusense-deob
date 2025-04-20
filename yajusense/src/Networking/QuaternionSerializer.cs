@@ -73,11 +73,6 @@ public class QuaternionSerializer
         // Ensure the value fits within 10 bits
         value &= 0x3FF;
 
-        // Calculate which bytes this value will touch
-        var startByteIndex = bitPosition / 8;
-        var endByteIndex = (bitPosition + 9) / 8;
-        var startBitOffset = bitPosition % 8;
-
         // Write the bits to the appropriate bytes
         for (var i = 0; i < 10; i++)
         {
