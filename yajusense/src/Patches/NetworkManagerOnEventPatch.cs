@@ -8,7 +8,6 @@ public static class NetworkManagerOnEventPatch
 
     public static void ApplyPatches()
     {
-        
     }
 
     public static void Prefix(NetworkManager_Internal __instance, EventData param_1)

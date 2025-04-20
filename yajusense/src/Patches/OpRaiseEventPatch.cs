@@ -4,6 +4,8 @@ using Il2CppSystem;
 using yajusense.Core;
 using yajusense.Networking;
 using yajusense.Utils;
+using Array = System.Array;
+using BitConverter = System.BitConverter;
 
 namespace yajusense.Patches;
 
@@ -26,7 +28,7 @@ public static class OpRaiseEventPatch
     {
         if (param_1 == 12)
         {
-            var serverTime = System.BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
+            var serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
             var data = Il2CppSerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
 
             var serverTimeString = HexUtils.ToHexString(serverTime);
@@ -36,16 +38,16 @@ public static class OpRaiseEventPatch
             YjPlugin.Log.LogInfo($"Server time: {serverTimeString}");
             YjPlugin.Log.LogInfo($"Data: {dataString}");
             YjPlugin.Log.LogInfo($"Position: {posString}");
-            
-            int positionStartIndex = 21;
-            int positionSize = 12;
-            
-            byte[] quaternionData = new byte[5];
-            System.Array.Copy(data, positionStartIndex + positionSize, quaternionData, 0, 5);
+
+            var positionStartIndex = 21;
+            var positionSize = 12;
+
+            var quaternionData = new byte[5];
+            Array.Copy(data, positionStartIndex + positionSize, quaternionData, 0, 5);
             var quat = QuaternionSerializer.Deserialize(quaternionData);
-            
+
             YjPlugin.Log.LogInfo($"Rotation: {quat}");
-            
+
             if (!ShouldSendE12)
                 return false;
         }
