@@ -2,6 +2,9 @@ using System;
 using ExitGames.Client.Photon;
 using HarmonyLib;
 using VRC.SDKBase;
+using yajusense.Core;
+using yajusense.Extensions;
+using yajusense.Utils;
 
 // ReSharper disable InconsistentNaming
 
@@ -18,12 +21,19 @@ public static class OpRaiseEventPatch
         HarmonyPatcher.ApplyPatch("OpRaiseEventPatch", originalMethod, new HarmonyMethod(typeof(OpRaiseEventPatch).GetMethod(nameof(Prefix))));
     }
 
-    public static void Prefix(byte param_1, Object param_2, ObjectPublicObByObInByObObUnique param_3,
+    public static void Prefix(byte param_1, Il2CppSystem.Object param_2, ObjectPublicObByObInByObObUnique param_3,
         SendOptions param_4)
     {
         if (param_1 == 12)
         {
             byte[] serverTime = BitConverter.GetBytes(Networking.GetServerTimeInMilliseconds());
+            byte[] data = SerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
+
+            string serverTimeString = serverTime.ToHexString();
+            string dataString = data.ToHexString();
+            
+            YjPlugin.Log.LogInfo($"Server time: {serverTimeString}");
+            YjPlugin.Log.LogInfo($"Data: {dataString}");
         }
     }
 }

@@ -23,6 +23,8 @@ public class YjPlugin : BasePlugin
         Log.LogInfo("Initializing yajusense...");
         
         HarmonyPatcher.Initialize();
+        
+        OpRaiseEventPatch.ApplyPatch();
 
         ConfigManager.Initialize();
 
