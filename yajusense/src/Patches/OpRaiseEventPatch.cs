@@ -27,7 +27,7 @@ public static class OpRaiseEventPatch
         if (param_1 == 12)
         {
             var serverTime = System.BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
-            var data = SerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
+            var data = Il2CppSerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
 
             var serverTimeString = HexUtils.ToHexString(serverTime);
             var dataString = HexUtils.ToHexString(data);
@@ -42,9 +42,8 @@ public static class OpRaiseEventPatch
             
             byte[] quaternionData = new byte[5];
             System.Array.Copy(data, positionStartIndex + positionSize, quaternionData, 0, 5);
-            var quat = QuaternionCompressor.DecompressQuaternion(quaternionData);
-
-            YjPlugin.Log.LogInfo($"RotBytes: {HexUtils.ToHexString(quaternionData)}");
+            var quat = QuaternionSerializer.Deserialize(quaternionData);
+            
             YjPlugin.Log.LogInfo($"Rotation: {quat}");
             
             if (!ShouldSendE12)

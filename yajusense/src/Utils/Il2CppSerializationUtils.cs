@@ -6,7 +6,7 @@ using Il2CppSystem.Runtime.Serialization.Formatters.Binary;
 
 namespace yajusense.Utils;
 
-public static class SerializationUtils
+public static class Il2CppSerializationUtils
 {
     public static T FromIL2CPPToManaged<T>(Object obj)
     {
