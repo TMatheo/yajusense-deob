@@ -1,15 +1,15 @@
 using ExitGames.Client.Photon;
 using HarmonyLib;
 using Il2CppSystem;
-using VRC.SDKBase;
 using yajusense.Core;
+using yajusense.Networking;
 using yajusense.Utils;
 
 namespace yajusense.Patches;
 
 public static class OpRaiseEventPatch
 {
-    public static bool ShouldSendE12 { get; set; }
+    public static bool ShouldSendE12 { get; set; } = true;
 
     public static void ApplyPatch()
     {
@@ -26,7 +26,7 @@ public static class OpRaiseEventPatch
     {
         if (param_1 == 12)
         {
-            var serverTime = System.BitConverter.GetBytes(Networking.GetServerTimeInMilliseconds());
+            var serverTime = System.BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
             var data = SerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
 
             var serverTimeString = HexUtils.ToHexString(serverTime);
@@ -36,7 +36,17 @@ public static class OpRaiseEventPatch
             YjPlugin.Log.LogInfo($"Server time: {serverTimeString}");
             YjPlugin.Log.LogInfo($"Data: {dataString}");
             YjPlugin.Log.LogInfo($"Position: {posString}");
+            
+            int positionStartIndex = 21;
+            int positionSize = 12;
+            
+            byte[] quaternionData = new byte[5];
+            System.Array.Copy(data, positionStartIndex + positionSize, quaternionData, 0, 5);
+            var quat = QuaternionCompressor.DecompressQuaternion(quaternionData);
 
+            YjPlugin.Log.LogInfo($"RotBytes: {HexUtils.ToHexString(quaternionData)}");
+            YjPlugin.Log.LogInfo($"Rotation: {quat}");
+            
             if (!ShouldSendE12)
                 return false;
         }

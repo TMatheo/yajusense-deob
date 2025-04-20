@@ -6,9 +6,9 @@ public static class VRCUtils
 {
     public static VRCPlayerApi GetLocalVRCPlayerApi()
     {
-        if (Networking.LocalPlayer == null) return null;
+        if (VRC.SDKBase.Networking.LocalPlayer == null) return null;
 
-        return Networking.LocalPlayer;
+        return VRC.SDKBase.Networking.LocalPlayer;
     }
 
     public static bool IsInWorld()
