@@ -1,20 +1,19 @@
 ﻿using UnityEngine;
-using yajusense.Core;
 using yajusense.Utils;
 
 namespace yajusense.UI;
 
 public class Window
 {
-    private Rect _position;
+    private const float ResizeHandleSize = 20f;
     private readonly string _title;
+
+    private Vector2 _dragOffset;
     private bool _isDragging;
     private bool _isResizing;
-    
-    private Vector2 _dragOffset;
+    private Rect _position;
     private Rect _resizeHandleRect;
-    private const float ResizeHandleSize = 20f;
-    
+
     private Vector2 _scrollPosition;
 
     public Window(Rect position, string title = "")
@@ -29,14 +28,12 @@ public class Window
         GUILayout.BeginArea(_position, GUI.skin.window);
         {
             if (!string.IsNullOrEmpty(_title))
-            {
                 GUILayout.Label(_title.Bold(), new GUIStyle(GUI.skin.label)
                 {
                     alignment = TextAnchor.MiddleCenter,
                     fontSize = 18
                 });
-            }
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
             GUILayout.BeginVertical();
@@ -49,7 +46,7 @@ public class Window
     public void End()
     {
         GUILayout.EndScrollView();
-        
+
         GUILayout.EndVertical();
         GUILayout.Space(5);
         GUILayout.EndHorizontal();
@@ -58,8 +55,8 @@ public class Window
 
     private void HandleInputEvents()
     {
-        Event currentEvent = Event.current;
-        Vector2 mousePos = currentEvent.mousePosition;
+        var currentEvent = Event.current;
+        var mousePos = currentEvent.mousePosition;
 
         _resizeHandleRect = new Rect(
             _position.x + _position.width - ResizeHandleSize,
@@ -67,18 +64,18 @@ public class Window
             ResizeHandleSize,
             ResizeHandleSize
         );
-        
-        Rect titleBarRect = new Rect(
-            _position.x, 
-            _position.y, 
-            _position.width, 
+
+        var titleBarRect = new Rect(
+            _position.x,
+            _position.y,
+            _position.width,
             20f
         );
 
         switch (currentEvent.type)
         {
             case EventType.MouseDown:
-                if (GUIUtility.hotControl != 0) 
+                if (GUIUtility.hotControl != 0)
                     break;
 
                 if (_resizeHandleRect.Contains(mousePos))
@@ -92,6 +89,7 @@ public class Window
                     _dragOffset = mousePos - _position.position;
                     currentEvent.Use();
                 }
+
                 break;
 
             case EventType.MouseUp:
@@ -113,6 +111,7 @@ public class Window
                     );
                     currentEvent.Use();
                 }
+
                 break;
         }
     }

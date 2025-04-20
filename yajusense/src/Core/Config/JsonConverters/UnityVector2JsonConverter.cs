@@ -9,9 +9,9 @@ public class UnityVector2JsonConverter : JsonConverter<Vector2>
 {
     public override Vector2 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        using JsonDocument doc = JsonDocument.ParseValue(ref reader);
+        using var doc = JsonDocument.ParseValue(ref reader);
         var root = doc.RootElement;
-        return new(
+        return new Vector2(
             root.GetProperty("x").GetSingle(),
             root.GetProperty("y").GetSingle()
         );

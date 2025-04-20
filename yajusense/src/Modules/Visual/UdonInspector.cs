@@ -13,16 +13,16 @@ namespace yajusense.Modules.Visual;
 
 public class UdonInspector : BaseModule
 {
+    private readonly string _saveDir = Path.Combine(Directory.GetCurrentDirectory(), "yajusense", "UdonInspector");
+    private readonly Dictionary<UdonBehaviour, string> _udonCache = new();
     private readonly Window _window;
     private Vector2 _scrollPos;
-    private readonly Dictionary<UdonBehaviour, string> _udonCache = new();
     private KeyValuePair<UdonBehaviour, string> _selectedUdon;
-    
-    private readonly string _saveDir = Path.Combine(Directory.GetCurrentDirectory(), "yajusense", "UdonInspector");
 
-    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleCategory.Visual, KeyCode.F10)
+    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleCategory.Visual,
+        KeyCode.F10)
     {
-        _window = new(new(0, 0, 600f, 500f), "Udon Inspector");
+        _window = new Window(new Rect(0, 0, 600f, 500f), "Udon Inspector");
     }
 
     public override void OnEnable()
@@ -49,13 +49,13 @@ public class UdonInspector : BaseModule
         _window.Begin();
         {
             DrawControls();
-            
+
             _scrollPos = GUILayout.BeginScrollView(_scrollPos);
             {
                 DrawUdonList();
             }
             GUILayout.EndScrollView();
-            
+
             DrawDisassemblyControls();
         }
         _window.End();
@@ -63,20 +63,11 @@ public class UdonInspector : BaseModule
 
     private void DrawControls()
     {
-        if (GUILayout.Button("Refresh Udon Cache"))
-        {
-            RefreshUdonCache();
-        }
-        
-        if (GUILayout.Button("Disassemble All"))
-        {
-            DisassembleAll();
-        }
+        if (GUILayout.Button("Refresh Udon Cache")) RefreshUdonCache();
 
-        if (GUILayout.Button("Dump All EventTable Func"))
-        {
-            DumpAllEventTableFunctions();
-        }
+        if (GUILayout.Button("Disassemble All")) DisassembleAll();
+
+        if (GUILayout.Button("Dump All EventTable Func")) DumpAllEventTableFunctions();
     }
 
     private void DrawUdonList()
@@ -84,23 +75,21 @@ public class UdonInspector : BaseModule
         try
         {
             GUILayout.Label($"Found UdonBehaviours ({_udonCache.Count})");
-        
+
             GUILayout.Space(10);
             GUILayout.BeginVertical();
             {
                 foreach (var kv in _udonCache)
                 {
                     var udonBehaviour = kv.Key;
-                    string ubName = kv.Value;
+                    var ubName = kv.Value;
                     var selectedUdonBehaviour = _selectedUdon.Key;
-                
-                    bool isSelected = selectedUdonBehaviour == udonBehaviour;
+
+                    var isSelected = selectedUdonBehaviour == udonBehaviour;
                     var btnStyle = isSelected ? GUI.skin.button : GUI.skin.box;
 
                     if (GUILayout.Button(ubName, btnStyle))
-                    {
-                        _selectedUdon = new(udonBehaviour, ubName);
-                    }
+                        _selectedUdon = new KeyValuePair<UdonBehaviour, string>(udonBehaviour, ubName);
                 }
             }
             GUILayout.EndVertical();
@@ -110,33 +99,25 @@ public class UdonInspector : BaseModule
             YjPlugin.Log.LogError($"[UdonInspector] Udon list rendering failed: {ex}");
         }
     }
-    
+
     private void DrawDisassemblyControls()
     {
         if (_selectedUdon.Key == null) return;
-        
+
         GUILayout.Space(15);
         if (GUILayout.Button($"Disassemble {_selectedUdon.Key}"))
-        {
             UdonDisassembler.Disassemble(_selectedUdon.Key, _selectedUdon.Value);
-        }
     }
 
     private void DisassembleAll()
     {
         RefreshUdonCache();
-        foreach (var kv in _udonCache)
-        {
-            UdonDisassembler.Disassemble(kv.Key, kv.Value);
-        }
+        foreach (var kv in _udonCache) UdonDisassembler.Disassemble(kv.Key, kv.Value);
     }
 
     private void DumpAllEventTableFunctions()
     {
-        foreach (var kv in _udonCache)
-        {
-            DumpEventTableFunctions(kv.Key, kv.Value);
-        }
+        foreach (var kv in _udonCache) DumpEventTableFunctions(kv.Key, kv.Value);
     }
 
     private void DumpEventTableFunctions(UdonBehaviour udonBehaviour, string udonName)
@@ -159,10 +140,10 @@ public class UdonInspector : BaseModule
                 output.AppendLine();
                 index++;
             }
-            
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             FileUtils.EnsureDirectoryExists(_saveDir);
-            string savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
+            var savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
             File.WriteAllText(savePath, output.ToString());
             YjPlugin.Log.LogInfo($"Saved event table dump to: {savePath}");
         }
@@ -171,20 +152,17 @@ public class UdonInspector : BaseModule
             YjPlugin.Log.LogError($"Event table dump failed: {ex}");
         }
     }
-    
+
     private void RefreshUdonCache()
     {
         if (!VRCUtils.IsInWorld()) return;
-        
+
         _udonCache.Clear();
         var allObjs = Object.FindObjectsOfType<GameObject>();
         foreach (var go in allObjs)
-        {
             if (go.TryGetComponent<UdonBehaviour>(out var ub))
-            {
                 _udonCache.Add(ub, go.name);
-            }
-        }
+
         YjPlugin.Log.LogDebug($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
     }
 }

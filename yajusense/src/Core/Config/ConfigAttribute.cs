@@ -5,13 +5,8 @@ namespace yajusense.Core.Config;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class ConfigAttribute : Attribute
 {
-    public string DisplayName { get; }
-    public string Description { get; }
-    public bool Hidden { get; }
-    public float Min { get; }
-    public float Max { get; }
-        
-    public ConfigAttribute(string displayName, string description = "", bool hidden = false, float min = float.MinValue, float max = float.MaxValue)
+    public ConfigAttribute(string displayName, string description = "", bool hidden = false, float min = float.MinValue,
+        float max = float.MaxValue)
     {
         DisplayName = displayName;
         Description = description;
@@ -19,4 +14,10 @@ public sealed class ConfigAttribute : Attribute
         Min = min;
         Max = max;
     }
+
+    public string DisplayName { get; }
+    public string Description { get; }
+    public bool Hidden { get; }
+    public float Min { get; }
+    public float Max { get; }
 }

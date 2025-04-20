@@ -15,11 +15,11 @@ public static class ColorExtensions
 
     public static Color Darken(this Color color, float factor)
     {
-        Color.RGBToHSV(color, out float h, out float s, out float v);
+        Color.RGBToHSV(color, out var h, out var s, out var v);
         v *= factor;
         return Color.HSVToRGB(h, s, v);
     }
-    
+
     public static Color ToColor(this string hex)
     {
         if (string.IsNullOrEmpty(hex) || hex.Length != 7 || hex[0] != '#')
@@ -30,9 +30,9 @@ public static class ColorExtensions
 
         try
         {
-            byte r = byte.Parse(hex.Substring(1, 2), NumberStyles.HexNumber);
-            byte g = byte.Parse(hex.Substring(3, 2), NumberStyles.HexNumber);
-            byte b = byte.Parse(hex.Substring(5, 2), NumberStyles.HexNumber);
+            var r = byte.Parse(hex.Substring(1, 2), NumberStyles.HexNumber);
+            var g = byte.Parse(hex.Substring(3, 2), NumberStyles.HexNumber);
+            var b = byte.Parse(hex.Substring(5, 2), NumberStyles.HexNumber);
             return new Color32(r, g, b, 255);
         }
         catch (FormatException e)

@@ -17,7 +17,7 @@ public class CoroutineRunner : MonoBehaviour
     {
         return _instance?.StartCoroutine(routine.WrapToIl2Cpp());
     }
-    
+
     public static void StopManagedCoroutine(Coroutine routine)
     {
         _instance?.StopCoroutine(routine);

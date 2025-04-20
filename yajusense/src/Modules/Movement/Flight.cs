@@ -6,10 +6,12 @@ namespace yajusense.Modules.Movement;
 
 public class Flight : BaseModule
 {
-    [Config("Flight speed", "Flight speed", false,1.0f, 50.0f)]
-    public float Speed { get; set; } = 5.0f;
+    public Flight() : base("Flight", "Allows you to fly", ModuleCategory.Movement, KeyCode.F)
+    {
+    }
 
-    public Flight() : base("Flight", "Allows you to fly", ModuleCategory.Movement, KeyCode.F) {}
+    [Config("Flight speed", "Flight speed", false, 1.0f, 50.0f)]
+    public float Speed { get; set; } = 5.0f;
 
     public override void OnUpdate()
     {
@@ -42,12 +44,12 @@ public class Flight : BaseModule
 
         localPlayer.SetVelocity(Vector3.zero);
     }
-    
+
     public override void OnEnable()
     {
         if (!VRCUtils.IsInWorld())
             return;
-        
+
         VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
     }
 

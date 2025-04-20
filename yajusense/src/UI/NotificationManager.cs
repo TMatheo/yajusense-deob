@@ -7,37 +7,6 @@ namespace yajusense.UI;
 
 public static class NotificationManager
 {
-    private class Notification
-    {
-        public string Message { get; }
-        public NotificationType Type { get; }
-        public Vector2 CurrentPosition { get; set; }
-        public float CurrentAlpha { get; set; }
-        public float Duration { get; }
-        public float StartTime { get; }
-        public bool IsScrollingOut { get; set; }
-
-        public bool IsExpired => Time.time > StartTime + Duration;
-         
-        public Notification(string message, NotificationType type, float duration)
-        {
-            Message = message;
-            Type = type;
-            CurrentPosition = new Vector2(Screen.width, Screen.height);
-            CurrentAlpha = 0f;
-            Duration = duration;
-            StartTime = Time.time;
-        }
-
-        public Color GetTextColor() => Type switch
-        {
-            NotificationType.Success => Color.green,
-            NotificationType.Warning => Colors.Orange,
-            NotificationType.Error => Color.red,
-            _ => Color.white
-        };
-    }
-
     public enum NotificationType
     {
         Info,
@@ -46,7 +15,6 @@ public static class NotificationManager
         Error
     }
 
-    private static readonly List<Notification> Notifications = new();
     private const float DefaultDuration = 3f;
     private const float RectWidth = 400f;
     private const float RectHeight = 50f;
@@ -56,7 +24,10 @@ public static class NotificationManager
     private const float AnimationSpeed = 4f;
     private const int FontSize = 18;
 
-    public static void ShowNotification(string message, NotificationType type = NotificationType.Info, float duration = -1)
+    private static readonly List<Notification> Notifications = new();
+
+    public static void ShowNotification(string message, NotificationType type = NotificationType.Info,
+        float duration = -1)
     {
         Notifications.Insert(0, new Notification(message, type, duration > 0 ? duration : DefaultDuration));
     }
@@ -64,35 +35,32 @@ public static class NotificationManager
     public static void OnGUI()
     {
         Notifications.RemoveAll(n => n.IsScrollingOut && n.CurrentPosition.x >= Screen.width);
-        
+
         foreach (var notification in Notifications)
         {
-            if (notification.IsExpired && !notification.IsScrollingOut)
-            {
-                notification.IsScrollingOut = true;
-            }
-            
-            float targetAlpha = notification.IsScrollingOut ? 0f : 1f;
+            if (notification.IsExpired && !notification.IsScrollingOut) notification.IsScrollingOut = true;
+
+            var targetAlpha = notification.IsScrollingOut ? 0f : 1f;
             notification.CurrentAlpha = Mathf.Lerp(
                 notification.CurrentAlpha,
                 targetAlpha,
                 AnimationSpeed * Time.deltaTime
             );
         }
-        
+
         float screenRight = Screen.width;
         float screenBottom = Screen.height;
-        
-        for (int i = 0; i < Notifications.Count; i++)
+
+        for (var i = 0; i < Notifications.Count; i++)
         {
             var notification = Notifications[i];
-            
-            float targetX = notification.IsScrollingOut ? screenRight : screenRight - (RectWidth + Spacing);
-            float targetY = screenBottom - (i + 1) * (RectHeight + Spacing);
-            
+
+            var targetX = notification.IsScrollingOut ? screenRight : screenRight - (RectWidth + Spacing);
+            var targetY = screenBottom - (i + 1) * (RectHeight + Spacing);
+
             notification.CurrentPosition = Vector2.Lerp(
-                notification.CurrentPosition, 
-                new Vector2(targetX, targetY), 
+                notification.CurrentPosition,
+                new Vector2(targetX, targetY),
                 AnimationSpeed * Time.deltaTime
             );
 
@@ -111,17 +79,17 @@ public static class NotificationManager
 
     private static void DrawProgressBar(Rect rect, Notification notification, int displayIndex)
     {
-        float elapsedTime = Time.time - notification.StartTime;
-        float progress = Mathf.Clamp01(elapsedTime / notification.Duration);
-        float width = RectWidth * (1f - progress);
-        
+        var elapsedTime = Time.time - notification.StartTime;
+        var progress = Mathf.Clamp01(elapsedTime / notification.Duration);
+        var width = RectWidth * (1f - progress);
+
         var progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.RainbowColorStep);
         progressBarColor.a = notification.CurrentAlpha;
 
         var progressBarRect = new Rect(
-            rect.x, 
-            rect.yMax - ProgressBarHeight, 
-            width, 
+            rect.x,
+            rect.yMax - ProgressBarHeight,
+            width,
             ProgressBarHeight
         );
 
@@ -131,8 +99,8 @@ public static class NotificationManager
     private static void DrawNotificationText(Rect rect, Notification notification)
     {
         var textSize = IMGUIUtils.CalcTextSize(notification.Message, FontSize);
-        float textY = rect.center.y - textSize.y * 0.5f;
-        
+        var textY = rect.center.y - textSize.y * 0.5f;
+
         var textColor = notification.GetTextColor();
         textColor.a = notification.CurrentAlpha;
 
@@ -142,5 +110,39 @@ public static class NotificationManager
             textColor,
             FontSize
         );
+    }
+
+    private class Notification
+    {
+        public Notification(string message, NotificationType type, float duration)
+        {
+            Message = message;
+            Type = type;
+            CurrentPosition = new Vector2(Screen.width, Screen.height);
+            CurrentAlpha = 0f;
+            Duration = duration;
+            StartTime = Time.time;
+        }
+
+        public string Message { get; }
+        public NotificationType Type { get; }
+        public Vector2 CurrentPosition { get; set; }
+        public float CurrentAlpha { get; set; }
+        public float Duration { get; }
+        public float StartTime { get; }
+        public bool IsScrollingOut { get; set; }
+
+        public bool IsExpired => Time.time > StartTime + Duration;
+
+        public Color GetTextColor()
+        {
+            return Type switch
+            {
+                NotificationType.Success => Color.green,
+                NotificationType.Warning => Colors.Orange,
+                NotificationType.Error => Color.red,
+                _ => Color.white
+            };
+        }
     }
 }

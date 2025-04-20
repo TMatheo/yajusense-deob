@@ -1,24 +1,24 @@
 Project Path: {{ absolute_code_path }}
 
-Source Tree: 
+Source Tree:
 ```
 {{ source_tree }}
 ```
 
 {{#each files}}
-{{#if code}}
-`{{path}}`:
+    {{#if code}}
+        `{{path}}`:
 
-{{code}}  
+        {{code}}
 
-{{/if}}
+    {{/if}}
 {{/each}}
 
 I'd like you to add documentation comments to all public functions, methods, classes and modules in this codebase.
 
 For each one, the comment should include:
 1. A brief description of what it does
-2. Explanations of all parameters including types/constraints 
+2. Explanations of all parameters including types/constraints
 3. Description of the return value (if applicable)
 4. Any notable error or edge cases handled
 5. Links to any related code entities

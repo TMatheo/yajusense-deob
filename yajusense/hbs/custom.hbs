@@ -5,11 +5,11 @@ Source Tree:
 {{ source_tree }}
 ```
 
-{{#each files}} 
-{{#if code}}
-`{{path}}`: 
+{{#each files}}
+    {{#if code}}
+        `{{path}}`:
 
-{{code}}
+        {{code}}
 
-{{/if}}
+    {{/if}}
 {{/each}}

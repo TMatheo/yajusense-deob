@@ -15,8 +15,6 @@ public static class ConfigManager
 {
     private const string ConfigDirectoryName = "yajusense";
     private const string ConfigFileName = "ModuleConfig.cock";
-    private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), ConfigDirectoryName);
-    private static string ConfigPath => Path.Combine(ConfigDirectory, ConfigFileName);
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -27,11 +25,13 @@ public static class ConfigManager
             new KeyCodeJsonConverter(),
             new UnityVector2JsonConverter(),
             new UnityVector3JsonConverter()
-        },
+        }
     };
 
     private static JsonObject _configData = new();
     private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
+    private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), ConfigDirectoryName);
+    private static string ConfigPath => Path.Combine(ConfigDirectory, ConfigFileName);
 
     public static void Initialize()
     {
@@ -113,6 +113,7 @@ public static class ConfigManager
             moduleNode = new JsonObject();
             _configData[moduleNodeName] = moduleNode;
         }
+
         var moduleSettings = (JsonObject)moduleNode;
 
         foreach (var prop in properties)
@@ -130,7 +131,8 @@ public static class ConfigManager
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogWarning($"Config value conversion failed for {moduleNodeName}.{propName}. Using default value. Error: {ex.Message}");
+                    YjPlugin.Log.LogWarning(
+                        $"Config value conversion failed for {moduleNodeName}.{propName}. Using default value. Error: {ex.Message}");
                     prop.SetValue(module, defaultValue);
                     try
                     {
@@ -138,7 +140,8 @@ public static class ConfigManager
                     }
                     catch (Exception innerEx)
                     {
-                        YjPlugin.Log.LogError($"Failed to serialize default value for {moduleNodeName}.{propName}: {innerEx.Message}");
+                        YjPlugin.Log.LogError(
+                            $"Failed to serialize default value for {moduleNodeName}.{propName}: {innerEx.Message}");
                     }
                 }
             }
@@ -151,7 +154,8 @@ public static class ConfigManager
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogError($"Failed to serialize default value for {moduleNodeName}.{propName}: {ex.Message}");
+                    YjPlugin.Log.LogError(
+                        $"Failed to serialize default value for {moduleNodeName}.{propName}: {ex.Message}");
                 }
             }
 
@@ -164,8 +168,8 @@ public static class ConfigManager
     public static void UpdatePropertyValue(BaseModule module, string propertyName, object newValue)
     {
         var moduleNodeName = module.Name;
-        if (_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) && moduleNode is JsonObject moduleSettings)
-        {
+        if (_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) &&
+            moduleNode is JsonObject moduleSettings)
             try
             {
                 moduleSettings[propertyName] = JsonSerializer.SerializeToNode(newValue, JsonOptions);
@@ -173,9 +177,9 @@ public static class ConfigManager
             }
             catch (Exception ex)
             {
-                YjPlugin.Log.LogError($"Failed to update property value for {moduleNodeName}.{propertyName}: {ex.Message}");
+                YjPlugin.Log.LogError(
+                    $"Failed to update property value for {moduleNodeName}.{propertyName}: {ex.Message}");
             }
-        }
     }
 
     public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
@@ -208,8 +212,8 @@ public static class ConfigManager
 
         try
         {
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string backupPath = $"{ConfigPath}.{suffix}_{timestamp}.bak";
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var backupPath = $"{ConfigPath}.{suffix}_{timestamp}.bak";
             File.Move(ConfigPath, backupPath);
             YjPlugin.Log.LogWarning($"Created backup of potentially corrupted config: {backupPath}");
         }
@@ -229,20 +233,21 @@ public static class ConfigManager
                 moduleNode = new JsonObject();
                 _configData[moduleNodeName] = moduleNode;
             }
+
             var moduleSettings = (JsonObject)moduleNode;
 
             foreach (var configProp in configProps)
-            {
                 try
                 {
                     var currentValue = configProp.Property.GetValue(module);
-                    moduleSettings[configProp.Property.Name] = JsonSerializer.SerializeToNode(currentValue, JsonOptions);
+                    moduleSettings[configProp.Property.Name] =
+                        JsonSerializer.SerializeToNode(currentValue, JsonOptions);
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogError($"Failed to serialize property value for {moduleNodeName}.{configProp.Property.Name} during save: {ex.Message}");
+                    YjPlugin.Log.LogError(
+                        $"Failed to serialize property value for {moduleNodeName}.{configProp.Property.Name} during save: {ex.Message}");
                 }
-            }
         }
     }
 }

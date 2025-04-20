@@ -5,17 +5,17 @@ Description: {{challenge_description}}
 
 Provided Files:
 {{#each files}}
-{{#if code}}
-`{{path}}`:
-{{code}}
+    {{#if code}}
+        `{{path}}`:
+        {{code}}
 
-{{/if}}
+    {{/if}}
 {{/each}}
 
 I need your help to solve this cryptography challenge. Here are some steps to follow:
 
 1. Identify the type of encryption or encoding used based on the challenge description and any provided files. Common types include:
-- Classical ciphers (Caesar, Vigenère, substitution, etc.) 
+- Classical ciphers (Caesar, Vigenère, substitution, etc.)
 - Modern symmetric ciphers (AES, DES, etc.)
 - Asymmetric cryptography (RSA, ECC, etc.)
 - Hashes and password cracking
@@ -26,7 +26,7 @@ I need your help to solve this cryptography challenge. Here are some steps to fo
 3. Analyze the encryption for weaknesses. Look for:
 - Weak keys or poor randomness
 - Use of insecure modes like ECB
-- Oracles that leak information 
+- Oracles that leak information
 - Flaws in custom encryption schemes
 - Reused one-time pads or nonces
 - Hash length extension attacks

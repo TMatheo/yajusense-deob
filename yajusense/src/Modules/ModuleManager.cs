@@ -14,8 +14,11 @@ public static class ModuleManager
 {
     private static readonly List<BaseModule> Modules = new();
     public static ClientSettings ClientSettings { get; private set; }
-    
-    public static IEnumerable<BaseModule> GetModules() => Modules.AsReadOnly();
+
+    public static IEnumerable<BaseModule> GetModules()
+    {
+        return Modules.AsReadOnly();
+    }
 
     public static T GetModule<T>() where T : BaseModule
     {
@@ -26,11 +29,11 @@ public static class ModuleManager
     {
         ClientSettings = new ClientSettings();
         ConfigManager.RegisterModuleConfig(ClientSettings);
-        
+
         // Movement
         RegisterModule(new Flight());
         RegisterModule(new ThirdPerson());
-        
+
         // Visual
         RegisterModule(new Watermark());
         RegisterModule(new Information());
@@ -38,7 +41,7 @@ public static class ModuleManager
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
     }
-    
+
     private static void RegisterModule(BaseModule module)
     {
         if (module == null)
@@ -46,37 +49,26 @@ public static class ModuleManager
             YjPlugin.Log.LogWarning("Attempted to register a null module");
             return;
         }
-        
+
         ConfigManager.RegisterModuleConfig(module);
-        
+
         Modules.Add(module);
         YjPlugin.Log.LogDebug($"Module registered: {module.Name}");
     }
-    
+
     public static void UpdateModules()
     {
         foreach (var module in Modules)
         {
-            if (module.Enabled)
-            {
-                module.OnUpdate();
-            }
-            if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey))
-            {
-                module.Toggle();
-            }
-
+            if (module.Enabled) module.OnUpdate();
+            if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey)) module.Toggle();
         }
     }
 
     public static void RenderModules()
     {
         foreach (var module in Modules)
-        {
             if (module.Enabled)
-            {
                 module.OnGUI();
-            }
-        }
     }
 }

@@ -20,53 +20,53 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="libs\" />
+        <Folder Include="libs\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Il2Cppmscorlib">
-        <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
-      </Reference>
-      <Reference Include="Il2CppSystem.Collections.Immutable">
-        <HintPath>libs\Il2CppSystem.Collections.Immutable.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.CoreModule">
-        <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.IMGUIModule">
-        <HintPath>libs\UnityEngine.IMGUIModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.InputLegacyModule">
-        <HintPath>libs\UnityEngine.InputLegacyModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.PhysicsModule">
-        <HintPath>libs\UnityEngine.PhysicsModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.TextRenderingModule">
-        <HintPath>libs\UnityEngine.TextRenderingModule.dll</HintPath>
-      </Reference>
-      <Reference Include="VRC.Udon">
-        <HintPath>libs\VRC.Udon.dll</HintPath>
-      </Reference>
-      <Reference Include="VRC.Udon.Common">
-        <HintPath>libs\VRC.Udon.Common.dll</HintPath>
-      </Reference>
-      <Reference Include="VRC.Udon.VM">
-        <HintPath>libs\VRC.Udon.VM.dll</HintPath>
-      </Reference>
-      <Reference Include="VRCSDK3">
-        <HintPath>libs\VRCSDK3.dll</HintPath>
-      </Reference>
-      <Reference Include="VRCSDKBase">
-        <HintPath>libs\VRCSDKBase.dll</HintPath>
-      </Reference>
+        <Reference Include="Il2Cppmscorlib">
+            <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Collections.Immutable">
+            <HintPath>libs\Il2CppSystem.Collections.Immutable.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>libs\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>libs\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>libs\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>libs\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon">
+            <HintPath>libs\VRC.Udon.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Common">
+            <HintPath>libs\VRC.Udon.Common.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.VM">
+            <HintPath>libs\VRC.Udon.VM.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDK3">
+            <HintPath>libs\VRCSDK3.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDKBase">
+            <HintPath>libs\VRCSDKBase.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="resources\shaderbundle.bundle" />
+        <None Remove="resources\shaderbundle.bundle"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="modern.bundle" />
+        <None Remove="modern.bundle"/>
     </ItemGroup>
 </Project>

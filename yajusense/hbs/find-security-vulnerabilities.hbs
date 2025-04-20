@@ -8,16 +8,16 @@ Source Tree:
 ```
 
 {{#each files}}
-{{#if code}} 
-`{{path}}`:
+    {{#if code}}
+        `{{path}}`:
 
-{{code}}
+        {{code}}
 
-{{/if}}
+    {{/if}}
 {{/each}}
 
 When analyzing the code, look for common security issues like:
-- Input validation vulnerabilities 
+- Input validation vulnerabilities
 - Weak authentication or authorization
 - Insecure handling of sensitive data
 - Injection flaws (SQL injection, XXE, command injection, etc)
