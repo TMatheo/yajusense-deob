@@ -3,9 +3,6 @@ using UnityEngine;
 
 namespace yajusense.Networking;
 
-using System;
-using UnityEngine;
-
 public class QuaternionSerializer
 {
     // Serializes a quaternion into a byte array
