@@ -29,11 +29,13 @@ public static class OpRaiseEventPatch
             byte[] serverTime = BitConverter.GetBytes(Networking.GetServerTimeInMilliseconds());
             byte[] data = SerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
 
-            string serverTimeString = serverTime.ToHexString();
-            string dataString = data.ToHexString();
+            string serverTimeString = HexUtils.ToHexString(serverTime);
+            string dataString = HexUtils.ToHexString(data);
+            string posString = HexUtils.ToHexString(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position);
             
             YjPlugin.Log.LogInfo($"Server time: {serverTimeString}");
             YjPlugin.Log.LogInfo($"Data: {dataString}");
+            YjPlugin.Log.LogInfo($"Position: {posString}");
         }
     }
 }
