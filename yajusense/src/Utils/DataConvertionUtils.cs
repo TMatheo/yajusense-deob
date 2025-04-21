@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace yajusense.Utils;
 
-public static class HexUtils
+public static class DataConvertionUtils
 {
     public static string ToHexString(byte[] bytes)
     {
@@ -34,5 +34,28 @@ public static class HexUtils
         var zHex = ToHexString(zBytes);
 
         return $"{xHex} {yHex} {zHex}";
+    }
+    
+    public static byte[] Vector3ToBytes(Vector3 vector)
+    {
+        byte[] result = new byte[12];
+        
+        Buffer.BlockCopy(BitConverter.GetBytes(vector.x), 0, result, 0, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(vector.y), 0, result, 4, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(vector.z), 0, result, 8, 4);
+    
+        return result;
+    }
+    
+    public static byte[] QuaternionToBytes(Quaternion quaternion)
+    {
+        byte[] bytes = new byte[16];
+
+        Buffer.BlockCopy(BitConverter.GetBytes(quaternion.x), 0, bytes, 0, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(quaternion.y), 0, bytes, 4, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(quaternion.z), 0, bytes, 8, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(quaternion.w), 0, bytes, 12, 4);
+
+        return bytes;
     }
 }

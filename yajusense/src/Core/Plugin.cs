@@ -24,6 +24,7 @@ public class YjPlugin : BasePlugin
         HarmonyPatcher.Initialize();
 
         OpRaiseEventPatch.ApplyPatch();
+        NetworkManagerOnEventPatch.ApplyPatches();
 
         ConfigManager.Initialize();
 

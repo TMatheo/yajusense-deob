@@ -1,2 +1,4 @@
 global using LoadBalancingClient_Internal = ObjectPublicIPhotonPeerListenerObStNuStOb1CoObBoDiUnique;
 global using NetworkManager_Internal = MonoBehaviourPrivateAc1AcOb2AcInStHa2Unique;
+global using Player_Internal = MonoBehaviourPublicAPOb_vOb_l_pBoOb1BoUnique;
+global using PlayerNet_Internal = MonoBehaviour1PublicOb_vInByInBoObBySiObUnique;
