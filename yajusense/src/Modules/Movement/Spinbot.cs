@@ -11,7 +11,7 @@ public class Spinbot : BaseModule
 {
     private Coroutine _coroutine;
 
-    public Spinbot() : base("Spinbot", "Spins the player (server-sided)", ModuleCategory.Movement)
+    public Spinbot() : base("Spinbot", "Player goes crazy (server-sided)", ModuleCategory.Movement)
     {
     }
 
@@ -39,7 +39,7 @@ public class Spinbot : BaseModule
             if (!VRCUtils.IsInWorld())
                 yield break;
 
-            var spinRotation = Quaternion.Euler(0f, Time.time * RotationSpeed % 360f, 0f);
+            var spinRotation = Quaternion.Euler(Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f);
 
             EventSender.SendMovementEvent(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position, spinRotation);
             yield return new WaitForSeconds(0.1f);
