@@ -10,19 +10,19 @@ namespace yajusense.Modules.Movement;
 public class Spinbot : BaseModule
 {
     private Coroutine _coroutine;
-    
-    [Config("Rotation speed", "Rotation speed", false, 1.0f, 50.0f)]
-    public float RotationSpeed { get; set; } = 25.0f;
-    
+
     public Spinbot() : base("Spinbot", "Spins the player (server-sided)", ModuleCategory.Movement)
     {
     }
+
+    [Config("Rotation speed", "Rotation speed", false, 1.0f, 50.0f)]
+    public float RotationSpeed { get; set; } = 25.0f;
 
     public override void OnEnable()
     {
         if (!VRCUtils.IsInWorld())
             return;
-        
+
         _coroutine = CoroutineRunner.StartManagedCoroutine(SendSpinEvent());
     }
 
@@ -38,9 +38,9 @@ public class Spinbot : BaseModule
         {
             if (!VRCUtils.IsInWorld())
                 yield break;
-            
+
             var spinRotation = Quaternion.Euler(0f, Time.time * RotationSpeed % 360f, 0f);
-            
+
             EventSender.SendMovementEvent(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position, spinRotation);
             yield return new WaitForSeconds(0.1f);
         }

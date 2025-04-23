@@ -12,10 +12,10 @@ public class NetworkManagerOnEventPatch : BasePatch
     {
         var originalMethod = AccessTools.Method(typeof(NetworkManager_Internal),
             nameof(NetworkManager_Internal.Method_Public_Virtual_Final_New_Void_EventData_0));
-        
-        ConfigurePatch(originalMethod, prefixName: nameof(Prefix));
+
+        ConfigurePatch(originalMethod, nameof(Prefix));
     }
-    
+
     public static void ApplyPatch()
     {
         ApplyPatch<NetworkManagerOnEventPatch>();
@@ -25,7 +25,7 @@ public class NetworkManagerOnEventPatch : BasePatch
     {
         if (Instance == null)
             Instance = __instance;
-        
+
         YjPlugin.Log.LogInfo($"Event received at NetworkManager: {param_1.Code}");
     }
 }

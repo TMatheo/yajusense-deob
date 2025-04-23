@@ -1,112 +1,57 @@
-using System;
 using UnityEngine;
 
 namespace yajusense.Networking;
 
-public class QuaternionSerializer
+public static class QuaternionSerializer
 {
-    // Serializes a quaternion into a byte array
-    // Each component is normalized to 0-1023 range and stored in 10 bits
+    private const float ConversionFactor = 0.00097751711f;
+
     public static byte[] Serialize(Quaternion quaternion)
     {
-        // Create a byte array to store the serialized quaternion
-        // We need 5 bytes to store 4 components (10 bits each = 40 bits total)
         var data = new byte[5];
 
-        // Position tracker in bits
-        var bitPosition = 0;
+        var x = (ushort)((quaternion.x + 1f) * 0.5f * 1023);
+        var y = (ushort)((quaternion.y + 1f) * 0.5f * 1023);
+        var z = (ushort)((quaternion.z + 1f) * 0.5f * 1023);
+        var w = (ushort)((quaternion.w + 1f) * 0.5f * 1023);
 
-        // Process each component (x, y, z, w)
-        WriteComponentToBits(data, NormalizeComponent(quaternion.x), ref bitPosition);
-        WriteComponentToBits(data, NormalizeComponent(quaternion.y), ref bitPosition);
-        WriteComponentToBits(data, NormalizeComponent(quaternion.z), ref bitPosition);
-        WriteComponentToBits(data, NormalizeComponent(quaternion.w), ref bitPosition);
+        Pack10BitValues(data, 0, x, y, z, w);
 
         return data;
     }
 
-    // Deserializes a byte array back to a quaternion
     public static Quaternion Deserialize(byte[] data)
     {
-        if (data == null || data.Length < 5)
-            throw new ArgumentException("Invalid data array for deserialization");
+        if (data == null || data.Length < 5) return Quaternion.identity;
 
-        var bitPosition = 0;
+        Unpack10BitValues(data, 0, out var x, out var y, out var z, out var w);
 
-        // Read each component (10 bits each)
-        var xBits = ReadBitsFromArray(data, ref bitPosition, 10);
-        var yBits = ReadBitsFromArray(data, ref bitPosition, 10);
-        var zBits = ReadBitsFromArray(data, ref bitPosition, 10);
-        var wBits = ReadBitsFromArray(data, ref bitPosition, 10);
-
-        // Convert from 10-bit representation back to -1.0 to 1.0 range
-        var x = DenormalizeComponent(xBits);
-        var y = DenormalizeComponent(yBits);
-        var z = DenormalizeComponent(zBits);
-        var w = DenormalizeComponent(wBits);
-
-        return new Quaternion(x, y, z, w);
-    }
-
-    // Converts a quaternion component from -1.0 to 1.0 range to a 10-bit integer (0-1023)
-    private static int NormalizeComponent(float component)
-    {
-        // Same calculation as in the original code:
-        // (component + 1.0) * 0.5 * 1023.0
-        var normalized = (component + 1.0f) * 0.5f * 1023.0f;
-
-        // Cap the value to the range 0-1023 (10 bits)
-        return Mathf.Clamp((int)normalized, 0, 1023);
-    }
-
-    // Converts a 10-bit integer (0-1023) back to a quaternion component in -1.0 to 1.0 range
-    private static float DenormalizeComponent(int bits)
-    {
-        // Reverse the normalization:
-        // bits / 1023.0 * 2.0 - 1.0
-        return bits / 1023.0f * 2.0f - 1.0f;
-    }
-
-    // Writes a 10-bit value to the byte array at the specified bit position
-    private static void WriteComponentToBits(byte[] array, int value, ref int bitPosition)
-    {
-        // Ensure the value fits within 10 bits
-        value &= 0x3FF;
-
-        // Write the bits to the appropriate bytes
-        for (var i = 0; i < 10; i++)
+        var quaternion = new Quaternion
         {
-            var byteIndex = (bitPosition + i) / 8;
-            var bitOffset = (bitPosition + i) % 8;
+            x = x * ConversionFactor * 2f - 1f,
+            y = y * ConversionFactor * 2f - 1f,
+            z = z * ConversionFactor * 2f - 1f,
+            w = w * ConversionFactor * 2f - 1f
+        };
 
-            // If this bit in the value is set
-            if ((value & (1 << (9 - i))) != 0)
-                // Set the corresponding bit in the array
-                array[byteIndex] |= (byte)(1 << bitOffset);
-        }
-
-        // Update the bit position
-        bitPosition += 10;
+        return quaternion;
     }
 
-    // Reads a specified number of bits from the byte array at the specified bit position
-    private static int ReadBitsFromArray(byte[] array, ref int bitPosition, int bitCount)
+    private static void Pack10BitValues(byte[] buffer, int offset, ushort x, ushort y, ushort z, ushort w)
     {
-        var result = 0;
+        buffer[offset] = (byte)((x >> 2) & 0xFF);
+        buffer[offset + 1] = (byte)(((x & 0x03) << 6) | ((y >> 4) & 0x3F));
+        buffer[offset + 2] = (byte)(((y & 0x0F) << 4) | ((z >> 6) & 0x0F));
+        buffer[offset + 3] = (byte)(((z & 0x3F) << 2) | ((w >> 8) & 0x03));
+        buffer[offset + 4] = (byte)(w & 0xFF);
+    }
 
-        for (var i = 0; i < bitCount; i++)
-        {
-            var byteIndex = (bitPosition + i) / 8;
-            var bitOffset = (bitPosition + i) % 8;
-
-            // If the bit is set in the array
-            if ((array[byteIndex] & (1 << bitOffset)) != 0)
-                // Set the corresponding bit in the result
-                result |= 1 << (bitCount - 1 - i);
-        }
-
-        // Update the bit position
-        bitPosition += bitCount;
-        return result;
+    private static void Unpack10BitValues(byte[] buffer, int offset, out ushort x, out ushort y, out ushort z,
+        out ushort w)
+    {
+        x = (ushort)((buffer[offset] << 2) | ((buffer[offset + 1] >> 6) & 0x03));
+        y = (ushort)(((buffer[offset + 1] & 0x3F) << 4) | ((buffer[offset + 2] >> 4) & 0x0F));
+        z = (ushort)(((buffer[offset + 2] & 0x0F) << 6) | ((buffer[offset + 3] >> 2) & 0x3F));
+        w = (ushort)(((buffer[offset + 3] & 0x03) << 8) | buffer[offset + 4]);
     }
 }

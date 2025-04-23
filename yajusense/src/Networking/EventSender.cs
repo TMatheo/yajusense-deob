@@ -1,10 +1,10 @@
 using System;
 using ExitGames.Client.Photon;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using yajusense.Extensions;
 using yajusense.Patches;
 using yajusense.Utils;
+using Object = Il2CppSystem.Object;
 
 namespace yajusense.Networking;
 
@@ -18,19 +18,19 @@ public static class EventSender
             return;
 
         var lastData = OpRaiseEventPatch.LastData;
-        byte[] sender =
+        var sender =
             BitConverter.GetBytes(VRCUtils.GetLocalVRCPlayerApi().GetPlayer().GetPlayerNet().GetPhotonNumber());
-        byte[] serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
-        
-        byte[] positionBytes = DataConvertionUtils.Vector3ToBytes(position);
-        byte[] rotationBytes = QuaternionSerializer.Serialize(rotation);
-        
+        var serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
+
+        var positionBytes = DataConvertionUtils.Vector3ToBytes(position);
+        var rotationBytes = QuaternionSerializer.Serialize(rotation);
+
         Buffer.BlockCopy(sender, 0, lastData, 0, sender.Length);
         Buffer.BlockCopy(serverTime, 0, lastData, sender.Length, serverTime.Length);
-        
+
         Buffer.BlockCopy(positionBytes, 0, lastData, PositionDataIndex, positionBytes.Length);
         Buffer.BlockCopy(rotationBytes, 0, lastData, PositionDataIndex + positionBytes.Length, rotationBytes.Length);
-        
+
         RaiseEvent(12, lastData);
     }
 
@@ -38,7 +38,7 @@ public static class EventSender
     {
         PhotonNetwork_Internal.Method_Public_Static_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0(
             code,
-            Il2CppSerializationUtils.FromManagedToIL2CPP<Il2CppSystem.Object>(content),
+            Il2CppSerializationUtils.FromManagedToIL2CPP<Object>(content),
             null,
             SendOptions.SendUnreliable);
     }
