@@ -8,21 +8,24 @@ namespace yajusense.Patches;
 
 public abstract class BasePatch
 {
-    protected static ManualLogSource Log => YjPlugin.Log;
-    
     private bool _isApplied;
-    private HarmonyMethod _prefix;
     private HarmonyMethod _postfix;
+    private HarmonyMethod _prefix;
     private HarmonyMethod _transpiler;
-    
+
     protected BasePatch()
     {
         Initialize();
     }
-    
+
+    protected static ManualLogSource Log => YjPlugin.Log;
+
+    public MethodBase OriginalMethod { get; private set; }
+    public string PatchId => GetType().Name;
+
     protected abstract void Initialize();
-    
-    protected void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null, 
+
+    protected void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null,
         HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
     {
         OriginalMethod = original;
@@ -30,11 +33,30 @@ public abstract class BasePatch
         _postfix = postfix;
         _transpiler = transpiler;
     }
-    
-    public MethodBase OriginalMethod { get; private set; }
-    public string PatchId => GetType().Name;
-    
-    public void Apply()
+
+    protected HarmonyMethod CreatePatch(string methodName)
+    {
+        return new HarmonyMethod(GetType().GetMethod(methodName,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance));
+    }
+
+    protected void ConfigurePatch(MethodBase original, string prefixName = null, string postfixName = null,
+        string transpilerName = null)
+    {
+        var prefix = prefixName != null ? CreatePatch(prefixName) : null;
+        var postfix = postfixName != null ? CreatePatch(postfixName) : null;
+        var transpiler = transpilerName != null ? CreatePatch(transpilerName) : null;
+
+        ConfigurePatch(original, prefix, postfix, transpiler);
+    }
+
+    public static void ApplyPatch<T>() where T : BasePatch, new()
+    {
+        var patch = new T();
+        patch.Apply();
+    }
+
+    public virtual void Apply()
     {
         if (_isApplied)
         {
@@ -52,21 +74,23 @@ public abstract class BasePatch
         {
             HarmonyPatcher.ApplyPatch(PatchId, OriginalMethod, _prefix, _postfix, _transpiler);
             _isApplied = true;
+            Log.LogInfo($"Successfully applied patch: {PatchId}");
         }
         catch (Exception ex)
         {
             Log.LogError($"Failed to apply patch {PatchId}: {ex}");
         }
     }
-    
-    public void Remove()
+
+    public virtual void Remove()
     {
         if (!_isApplied) return;
-        
+
         try
         {
             HarmonyPatcher.RemovePatch(PatchId);
             _isApplied = false;
+            Log.LogInfo($"Successfully removed patch: {PatchId}");
         }
         catch (Exception ex)
         {

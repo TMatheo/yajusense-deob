@@ -33,6 +33,7 @@ public static class ModuleManager
         // Movement
         RegisterModule(new Flight());
         RegisterModule(new Speed());
+        RegisterModule(new Spinbot());
 
         // Visual
         RegisterModule(new Watermark());

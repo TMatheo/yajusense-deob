@@ -35,21 +35,21 @@ public static class DataConvertionUtils
 
         return $"{xHex} {yHex} {zHex}";
     }
-    
+
     public static byte[] Vector3ToBytes(Vector3 vector)
     {
-        byte[] result = new byte[12];
-        
+        var result = new byte[12];
+
         Buffer.BlockCopy(BitConverter.GetBytes(vector.x), 0, result, 0, 4);
         Buffer.BlockCopy(BitConverter.GetBytes(vector.y), 0, result, 4, 4);
         Buffer.BlockCopy(BitConverter.GetBytes(vector.z), 0, result, 8, 4);
-    
+
         return result;
     }
-    
+
     public static byte[] QuaternionToBytes(Quaternion quaternion)
     {
-        byte[] bytes = new byte[16];
+        var bytes = new byte[16];
 
         Buffer.BlockCopy(BitConverter.GetBytes(quaternion.x), 0, bytes, 0, 4);
         Buffer.BlockCopy(BitConverter.GetBytes(quaternion.y), 0, bytes, 4, 4);

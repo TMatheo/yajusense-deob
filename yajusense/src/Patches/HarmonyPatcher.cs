@@ -37,7 +37,7 @@ public static class HarmonyPatcher
             YjPlugin.Log.LogError($"Failed to apply patch {patchId}: {ex}");
         }
     }
-    
+
     public static void RemovePatch(string patchId)
     {
         if (!Patches.TryGetValue(patchId, out var patchInfo))
@@ -51,7 +51,7 @@ public static class HarmonyPatcher
             _harmony.Unpatch(patchInfo.Original, patchInfo.Prefix?.method);
             _harmony.Unpatch(patchInfo.Original, patchInfo.Postfix?.method);
             _harmony.Unpatch(patchInfo.Original, patchInfo.Transpiler?.method);
-            
+
             Patches.Remove(patchId);
             YjPlugin.Log.LogInfo($"Removed patch: {patchId}");
         }

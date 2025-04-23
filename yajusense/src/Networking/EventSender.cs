@@ -1,6 +1,8 @@
+using System;
 using ExitGames.Client.Photon;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
-using yajusense.Core;
+using yajusense.Extensions;
 using yajusense.Patches;
 using yajusense.Utils;
 
@@ -9,30 +11,35 @@ namespace yajusense.Networking;
 public static class EventSender
 {
     private const int PositionDataIndex = 21;
-    
-    public static void SendEvent(byte code, object data, int sender)
-    {
-        if (NetworkManagerOnEventPatch.Instance == null)
-        {
-            YjPlugin.Log.LogError("NetworkManagerOnEventPatch.Instance is null at SendEvent");
-            return;
-        }
-
-        EventData eventData = new()
-        {
-            Code = code,
-            customData = Il2CppSerializationUtils.FromManagedToIL2CPP<Il2CppSystem.Object>(data),
-            Sender = sender
-        };
-        
-        NetworkManagerOnEventPatch.Instance.Method_Public_Virtual_Final_New_Void_EventData_0(eventData);
-    }
 
     public static void SendMovementEvent(Vector3 position, Quaternion rotation)
     {
-        if (OpRaiseEventPatch.LastData == null)
+        if (OpRaiseEventPatch.LastData == null || !VRCUtils.IsInWorld())
             return;
 
         var lastData = OpRaiseEventPatch.LastData;
+        byte[] sender =
+            BitConverter.GetBytes(VRCUtils.GetLocalVRCPlayerApi().GetPlayer().GetPlayerNet().GetPhotonNumber());
+        byte[] serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
+        
+        byte[] positionBytes = DataConvertionUtils.Vector3ToBytes(position);
+        byte[] rotationBytes = QuaternionSerializer.Serialize(rotation);
+        
+        Buffer.BlockCopy(sender, 0, lastData, 0, sender.Length);
+        Buffer.BlockCopy(serverTime, 0, lastData, sender.Length, serverTime.Length);
+        
+        Buffer.BlockCopy(positionBytes, 0, lastData, PositionDataIndex, positionBytes.Length);
+        Buffer.BlockCopy(rotationBytes, 0, lastData, PositionDataIndex + positionBytes.Length, rotationBytes.Length);
+        
+        RaiseEvent(12, lastData);
+    }
+
+    private static void RaiseEvent(byte code, object content)
+    {
+        PhotonNetwork_Internal.Method_Public_Static_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0(
+            code,
+            Il2CppSerializationUtils.FromManagedToIL2CPP<Il2CppSystem.Object>(content),
+            null,
+            SendOptions.SendUnreliable);
     }
 }

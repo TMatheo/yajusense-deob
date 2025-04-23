@@ -1,4 +1,4 @@
-﻿using ExitGames.Client.Photon;
+using ExitGames.Client.Photon;
 using HarmonyLib;
 using yajusense.Core;
 
@@ -13,13 +13,12 @@ public class NetworkManagerOnEventPatch : BasePatch
         var originalMethod = AccessTools.Method(typeof(NetworkManager_Internal),
             nameof(NetworkManager_Internal.Method_Public_Virtual_Final_New_Void_EventData_0));
         
-        ConfigurePatch(originalMethod,
-            new HarmonyMethod(typeof(NetworkManagerOnEventPatch).GetMethod(nameof(Prefix))));
+        ConfigurePatch(originalMethod, prefixName: nameof(Prefix));
     }
-
-    public static void ApplyPatches()
+    
+    public static void ApplyPatch()
     {
-        new NetworkManagerOnEventPatch().Apply();
+        ApplyPatch<NetworkManagerOnEventPatch>();
     }
 
     public static void Prefix(NetworkManager_Internal __instance, EventData param_1)
@@ -27,6 +26,6 @@ public class NetworkManagerOnEventPatch : BasePatch
         if (Instance == null)
             Instance = __instance;
         
-        YjPlugin.Log.LogInfo($"Event received: {param_1.Code}");
+        YjPlugin.Log.LogInfo($"Event received at NetworkManager: {param_1.Code}");
     }
 }
