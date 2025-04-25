@@ -22,7 +22,7 @@ public class Spinbot : BaseModule
 
     public override void OnUpdate()
     {
-        Rotation = Quaternion.Euler(Time.time * RotationSpeed % 360f, 0f, 0f);
+        Rotation = Quaternion.Euler(Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f);
     }
 
     public override void OnEnable()
