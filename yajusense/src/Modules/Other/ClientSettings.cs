@@ -2,7 +2,7 @@ using yajusense.Core.Config;
 
 namespace yajusense.Modules.Other;
 
-public class ClientSettings : BaseModule
+public class ClientSettings : ModuleBase
 {
     public ClientSettings() : base("ClientSetting", "Global client settings", ModuleCategory.ClientSettings)
     {

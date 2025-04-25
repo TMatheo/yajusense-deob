@@ -9,7 +9,7 @@ using yajusense.Utils;
 
 namespace yajusense.Patches;
 
-public class OpRaiseEventPatch : BasePatch
+public class OpRaiseEvent : PatchBase
 {
     public static bool ShouldSendE12 { get; set; } = true;
     public static byte[] LastE12Data { get; private set; }
@@ -25,7 +25,7 @@ public class OpRaiseEventPatch : BasePatch
 
     public static void ApplyPatch()
     {
-        ApplyPatch<OpRaiseEventPatch>();
+        ApplyPatch<OpRaiseEvent>();
     }
 
     public static bool Prefix(byte param_1, ref Object param_2, ObjectPublicObByObInByObObUnique param_3, SendOptions param_4)

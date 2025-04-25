@@ -5,7 +5,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Movement;
 
-public class Flight : BaseModule
+public class Flight : ModuleBase
 {
     public Flight() : base("Flight", "Allows you to fly", ModuleCategory.Movement, KeyCode.F)
     {

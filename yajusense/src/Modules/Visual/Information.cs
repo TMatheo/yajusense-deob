@@ -6,7 +6,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 
-public class Information : BaseModule
+public class Information : ModuleBase
 {
     private const int FontSize = 22;
 

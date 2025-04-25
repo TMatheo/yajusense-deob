@@ -5,7 +5,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Movement;
 
-public class Speed : BaseModule
+public class Speed : ModuleBase
 {
     public Speed() : base("Speed", "god of speed!", ModuleCategory.Movement)
     {

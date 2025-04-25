@@ -3,7 +3,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 
-public class ThirdPerson : BaseModule
+public class ThirdPerson : ModuleBase
 {
     private const float MaxZoomOffset = 5f;
     private const float MinZoomOffset = 0.5f;

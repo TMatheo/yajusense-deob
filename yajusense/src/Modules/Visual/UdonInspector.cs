@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace yajusense.Modules.Visual;
 
-public class UdonInspector : BaseModule
+public class UdonInspector : ModuleBase
 {
     private readonly string _saveDir = Path.Combine(Directory.GetCurrentDirectory(), "yajusense", "UdonInspector");
     private readonly Dictionary<UdonBehaviour, string> _udonCache = new();

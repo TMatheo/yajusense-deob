@@ -5,7 +5,7 @@ using yajusense.Core;
 
 namespace yajusense.Patches;
 
-public class NetworkManagerOnEventPatch : BasePatch
+public class NetworkManagerOnEvent : PatchBase
 {
     public static NetworkManager_Internal Instance { get; private set; }
 
@@ -20,7 +20,7 @@ public class NetworkManagerOnEventPatch : BasePatch
 
     public static void ApplyPatch()
     {
-        ApplyPatch<NetworkManagerOnEventPatch>();
+        ApplyPatch<NetworkManagerOnEvent>();
     }
 
     public static void Prefix(NetworkManager_Internal __instance, EventData param_1)

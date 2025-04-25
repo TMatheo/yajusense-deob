@@ -4,7 +4,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Visual.HUD;
 
-public class Watermark : BaseModule
+public class Watermark : ModuleBase
 {
     private const int FontSize = 60;
     private readonly Vector2 _pos = new(20f, 20f);

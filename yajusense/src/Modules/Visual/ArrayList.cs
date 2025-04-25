@@ -7,7 +7,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 
-public class ArrayList : BaseModule
+public class ArrayList : ModuleBase
 {
     private const float MarginX = 5f;
     private const float AnimationSpeed = 10f;
@@ -15,7 +15,7 @@ public class ArrayList : BaseModule
     private const float LineWidth = 2f;
     private const float OffScreenMargin = 2f;
 
-    private readonly Dictionary<BaseModule, Vector2> _modulePositions = new();
+    private readonly Dictionary<ModuleBase, Vector2> _modulePositions = new();
 
     public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleCategory.Visual, KeyCode.None, true)
     {
@@ -23,14 +23,14 @@ public class ArrayList : BaseModule
 
     public override void OnGUI()
     {
-        List<BaseModule> modules = ModuleManager.GetModules()
+        List<ModuleBase> modules = ModuleManager.GetModules()
             .OrderByDescending(m => IMGUIUtils.CalcTextSize(m.Name, FontSize).x)
             .ToList();
         var visibleModuleIndex = 0;
 
         for (var i = 0; i < modules.Count; i++)
         {
-            BaseModule module = modules[i];
+            ModuleBase module = modules[i];
 
             Vector2 textSize = IMGUIUtils.CalcTextSize(module.Name, FontSize);
             var rectSize = new Vector2(textSize.x + MarginX * 2, textSize.y);
@@ -64,7 +64,7 @@ public class ArrayList : BaseModule
 
             if (module.Enabled)
             {
-                BaseModule nextEnabledModule = FindNextEnabledModule(modules, i + 1);
+                ModuleBase nextEnabledModule = FindNextEnabledModule(modules, i + 1);
 
                 if (nextEnabledModule != null && _modulePositions.TryGetValue(nextEnabledModule, out Vector2 nextPosition))
                     horizontalLineLength = nextPosition.x - currentRect.x;
@@ -80,7 +80,7 @@ public class ArrayList : BaseModule
         }
     }
 
-    private BaseModule FindNextEnabledModule(List<BaseModule> modules, int startIndex)
+    private ModuleBase FindNextEnabledModule(List<ModuleBase> modules, int startIndex)
     {
         for (int j = startIndex; j < modules.Count; j++)
             if (modules[j].Enabled)

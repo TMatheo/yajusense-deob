@@ -16,10 +16,10 @@ public static class EventSender
 
     public static void SendMovementEvent(Vector3 position, Quaternion rotation)
     {
-        if (OpRaiseEventPatch.LastE12Data == null || !VRCUtils.IsInWorld())
+        if (OpRaiseEvent.LastE12Data == null || !VRCUtils.IsInWorld())
             return;
 
-        byte[] lastData = OpRaiseEventPatch.LastE12Data;
+        byte[] lastData = OpRaiseEvent.LastE12Data;
         byte[] sender =
             BitConverter.GetBytes(VRCUtils.GetLocalVRCPlayerApi().GetPlayer().GetPlayerNet().GetPhotonNumber());
         byte[] serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());

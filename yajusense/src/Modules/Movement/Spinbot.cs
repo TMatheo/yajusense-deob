@@ -7,7 +7,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Movement;
 
-public class Spinbot : BaseModule
+public class Spinbot : ModuleBase
 {
     private Coroutine _coroutine;
 

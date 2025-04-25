@@ -2,7 +2,7 @@
 
 namespace yajusense.Modules.Movement;
 
-public class LagSwitch : BaseModule
+public class LagSwitch : ModuleBase
 {
     public LagSwitch() : base("LagSwitch", "Suspends sending all movement events to server while enabled", ModuleCategory.Movement)
     {
@@ -10,11 +10,11 @@ public class LagSwitch : BaseModule
 
     public override void OnEnable()
     {
-        OpRaiseEventPatch.ShouldSendE12 = false;
+        OpRaiseEvent.ShouldSendE12 = false;
     }
 
     public override void OnDisable()
     {
-        OpRaiseEventPatch.ShouldSendE12 = true;
+        OpRaiseEvent.ShouldSendE12 = true;
     }
 }

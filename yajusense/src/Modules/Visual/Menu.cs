@@ -10,7 +10,7 @@ using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 
-public class Menu : BaseModule
+public class Menu : ModuleBase
 {
     private const int FontSizeHeader = 14;
     private const int FontSize = 12;
@@ -71,7 +71,7 @@ public class Menu : BaseModule
 
     private void DrawModules()
     {
-        foreach (BaseModule module in ModuleManager.GetModules())
+        foreach (ModuleBase module in ModuleManager.GetModules())
         {
             if (module.Category != _selectedCategory)
                 continue;
@@ -97,7 +97,7 @@ public class Menu : BaseModule
         }
     }
 
-    private void DrawModuleConfig(BaseModule module)
+    private void DrawModuleConfig(ModuleBase module)
     {
         if (ConfigManager.TryGetConfigProperties(module, out List<ConfigProperty> configProps))
             foreach (ConfigProperty prop in configProps)
@@ -109,7 +109,7 @@ public class Menu : BaseModule
             }
     }
 
-    private void DrawModuleProperty(BaseModule module, ConfigProperty prop)
+    private void DrawModuleProperty(ModuleBase module, ConfigProperty prop)
     {
         GUILayout.BeginHorizontal();
         {
@@ -123,7 +123,7 @@ public class Menu : BaseModule
             GUILayout.Label(prop.Attribute.Description.Color(_descColor).Size(FontSize));
     }
 
-    private void DrawPropertyField(BaseModule module, ConfigProperty prop)
+    private void DrawPropertyField(ModuleBase module, ConfigProperty prop)
     {
         object currentValue = prop.Property.GetValue(module);
         object newValue = currentValue;
@@ -165,14 +165,14 @@ public class Menu : BaseModule
         }
     }
 
-    private void StartDetectKeyPress(BaseModule module, ConfigProperty prop)
+    private void StartDetectKeyPress(ModuleBase module, ConfigProperty prop)
     {
         _keyDetectingProp = prop;
         _isDetectingKey = true;
         CoroutineRunner.StartManagedCoroutine(DetectKeyPressCoroutine(module, prop));
     }
 
-    private IEnumerator DetectKeyPressCoroutine(BaseModule module, ConfigProperty prop)
+    private IEnumerator DetectKeyPressCoroutine(ModuleBase module, ConfigProperty prop)
     {
         while (_isDetectingKey)
         {

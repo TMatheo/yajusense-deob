@@ -12,15 +12,15 @@ namespace yajusense.Modules;
 
 public static class ModuleManager
 {
-    private static readonly List<BaseModule> Modules = new();
+    private static readonly List<ModuleBase> Modules = new();
     public static ClientSettings ClientSettings { get; private set; }
 
-    public static IEnumerable<BaseModule> GetModules()
+    public static IEnumerable<ModuleBase> GetModules()
     {
         return Modules.AsReadOnly();
     }
 
-    public static T GetModule<T>() where T : BaseModule
+    public static T GetModule<T>() where T : ModuleBase
     {
         return Modules.OfType<T>().FirstOrDefault();
     }
@@ -45,7 +45,7 @@ public static class ModuleManager
         RegisterModule(new Menu());
     }
 
-    private static void RegisterModule(BaseModule module)
+    private static void RegisterModule(ModuleBase module)
     {
         if (module == null)
         {
@@ -61,7 +61,7 @@ public static class ModuleManager
 
     public static void UpdateModules()
     {
-        foreach (BaseModule module in Modules)
+        foreach (ModuleBase module in Modules)
         {
             if (module.Enabled) module.OnUpdate();
             if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey)) module.Toggle();
@@ -70,7 +70,7 @@ public static class ModuleManager
 
     public static void RenderModules()
     {
-        foreach (BaseModule module in Modules)
+        foreach (ModuleBase module in Modules)
             if (module.Enabled)
                 module.OnGUI();
     }

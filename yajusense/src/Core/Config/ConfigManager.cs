@@ -29,7 +29,7 @@ public static class ConfigManager
     };
 
     private static JsonObject _configData = new();
-    private static readonly Dictionary<BaseModule, List<ConfigProperty>> ModuleConfigProperties = new();
+    private static readonly Dictionary<ModuleBase, List<ConfigProperty>> ModuleConfigProperties = new();
     private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), ConfigDirectoryName);
     private static string ConfigPath => Path.Combine(ConfigDirectory, ConfigFileName);
 
@@ -98,7 +98,7 @@ public static class ConfigManager
         }
     }
 
-    public static void RegisterModuleConfig(BaseModule module)
+    public static void RegisterModuleConfig(ModuleBase module)
     {
         Type type = module.GetType();
         List<PropertyInfo> properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -165,7 +165,7 @@ public static class ConfigManager
         ModuleConfigProperties[module] = moduleConfigs;
     }
 
-    public static void UpdatePropertyValue(BaseModule module, string propertyName, object newValue)
+    public static void UpdatePropertyValue(ModuleBase module, string propertyName, object newValue)
     {
         string moduleNodeName = module.Name;
         if (_configData.TryGetPropertyValue(moduleNodeName, out JsonNode moduleNode) &&
@@ -182,7 +182,7 @@ public static class ConfigManager
             }
     }
 
-    public static bool TryGetConfigProperties(BaseModule module, out List<ConfigProperty> properties)
+    public static bool TryGetConfigProperties(ModuleBase module, out List<ConfigProperty> properties)
     {
         return ModuleConfigProperties.TryGetValue(module, out properties);
     }
@@ -225,7 +225,7 @@ public static class ConfigManager
 
     private static void UpdateConfigDataFromModules()
     {
-        foreach ((BaseModule module, List<ConfigProperty> configProps) in ModuleConfigProperties)
+        foreach ((ModuleBase module, List<ConfigProperty> configProps) in ModuleConfigProperties)
         {
             string moduleNodeName = module.Name;
             if (!_configData.TryGetPropertyValue(moduleNodeName, out JsonNode moduleNode) || !(moduleNode is JsonObject))

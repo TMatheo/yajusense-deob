@@ -6,14 +6,14 @@ using yajusense.Core;
 
 namespace yajusense.Patches;
 
-public abstract class BasePatch
+public abstract class PatchBase
 {
     private bool _isApplied;
     private HarmonyMethod _postfix;
     private HarmonyMethod _prefix;
     private HarmonyMethod _transpiler;
 
-    protected BasePatch()
+    protected PatchBase()
     {
         Initialize();
     }
@@ -44,7 +44,7 @@ public abstract class BasePatch
         ConfigurePatch(original, prefix, postfix, transpiler);
     }
     
-    protected static void ApplyPatch<T>() where T : BasePatch, new()
+    protected static void ApplyPatch<T>() where T : PatchBase, new()
     {
         var patch = new T();
         patch.Apply();
