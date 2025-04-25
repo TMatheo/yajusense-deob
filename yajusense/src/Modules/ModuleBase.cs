@@ -64,5 +64,6 @@ public enum ModuleCategory
 {
     Visual,
     Movement,
+    Player,
     ClientSettings
 }

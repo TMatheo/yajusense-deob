@@ -32,8 +32,6 @@ public abstract class PatchBase
         _postfix = postfix;
         _transpiler = transpiler;
     }
-    
-    
 
     protected void ConfigurePatch(MethodBase original, string prefixName = null, string postfixName = null, string transpilerName = null)
     {
