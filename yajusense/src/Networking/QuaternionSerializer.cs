@@ -24,7 +24,7 @@ public static class QuaternionSerializer
     {
         if (data == null || data.Length < 5) return Quaternion.identity;
 
-        Unpack10BitValues(data, 0, out var x, out var y, out var z, out var w);
+        Unpack10BitValues(data, 0, out ushort x, out ushort y, out ushort z, out ushort w);
 
         var quaternion = new Quaternion
         {

@@ -4,11 +4,7 @@ using UnityEngine;
 using yajusense.UI;
 using yajusense.Utils;
 
-// Add this using directive
-
-// Add this using directive for Func
-
-namespace yajusense.Modules.Visual.HUD;
+namespace yajusense.Modules.Visual;
 
 public class Information : BaseModule
 {
@@ -33,21 +29,21 @@ public class Information : BaseModule
         var positionText = "XYZ: N/A";
         if (VRCUtils.IsInWorld())
         {
-            var position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
+            Vector3 position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
             positionText = $"XYZ: {position.x:F0}, {position.y:F0}, {position.z:F0}";
         }
 
-        var currentY = Screen.height - 10f;
+        float currentY = Screen.height - 10f;
         for (var i = 0; i < _textInfos.Count; i++)
         {
-            var info = _textInfos[i];
+            TextInfo info = _textInfos[i];
 
-            var text = i == 1 ? positionText : info.GetText();
+            string text = i == 1 ? positionText : info.GetText();
 
-            var textSize = IMGUIUtils.CalcTextSize(text, FontSize);
+            Vector2 textSize = IMGUIUtils.CalcTextSize(text, FontSize);
             currentY -= textSize.y;
             var textPos = new Vector2(10f, currentY);
-            var color = ColorUtils.GetRainbowColor(i * ModuleManager.ClientSettings.RainbowColorStep);
+            Color color = ColorUtils.GetRainbowColor(i * ModuleManager.ClientSettings.RainbowColorStep);
 
             Drawer.DrawText(text, textPos, color, FontSize, true);
         }

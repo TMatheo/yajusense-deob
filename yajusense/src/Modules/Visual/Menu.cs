@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
+using yajusense.Modules.Other;
 using yajusense.UI;
 using yajusense.Utils;
 
@@ -56,7 +58,7 @@ public class Menu : BaseModule
         {
             foreach (ModuleCategory category in Enum.GetValues(typeof(ModuleCategory)))
             {
-                var text = category.ToString().Size(FontSizeHeader);
+                string text = category.ToString().Size(FontSizeHeader);
 
                 if (category == ModuleCategory.ClientSettings)
                     text = "Settings".Size(FontSizeHeader);
@@ -69,7 +71,7 @@ public class Menu : BaseModule
 
     private void DrawModules()
     {
-        foreach (var module in ModuleManager.GetModules())
+        foreach (BaseModule module in ModuleManager.GetModules())
         {
             if (module.Category != _selectedCategory)
                 continue;
@@ -80,7 +82,7 @@ public class Menu : BaseModule
                 {
                     GUILayout.Label(module.Name.Size(FontSizeHeader));
                     GUILayout.FlexibleSpace();
-                    var enabled = GUILayout.Toggle(module.Enabled, "Enabled");
+                    bool enabled = GUILayout.Toggle(module.Enabled, "Enabled");
                     if (enabled != module.Enabled)
                         module.Toggle();
                 }
@@ -97,8 +99,8 @@ public class Menu : BaseModule
 
     private void DrawModuleConfig(BaseModule module)
     {
-        if (ConfigManager.TryGetConfigProperties(module, out var configProps))
-            foreach (var prop in configProps)
+        if (ConfigManager.TryGetConfigProperties(module, out List<ConfigProperty> configProps))
+            foreach (ConfigProperty prop in configProps)
             {
                 if (prop.Attribute.Hidden)
                     continue;
@@ -123,8 +125,8 @@ public class Menu : BaseModule
 
     private void DrawPropertyField(BaseModule module, ConfigProperty prop)
     {
-        var currentValue = prop.Property.GetValue(module);
-        var newValue = currentValue;
+        object currentValue = prop.Property.GetValue(module);
+        object newValue = currentValue;
 
         switch (currentValue)
         {
@@ -208,10 +210,10 @@ public class Menu : BaseModule
 
     private void DrawClientSettings()
     {
-        var module = ModuleManager.ClientSettings;
+        ClientSettings module = ModuleManager.ClientSettings;
 
-        if (ConfigManager.TryGetConfigProperties(module, out var configProps))
-            foreach (var prop in configProps)
+        if (ConfigManager.TryGetConfigProperties(module, out List<ConfigProperty> configProps))
+            foreach (ConfigProperty prop in configProps)
             {
                 if (prop.Attribute.Hidden || prop.Attribute.DisplayName == "Toggle Key")
                     continue;

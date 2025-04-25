@@ -8,7 +8,7 @@ public static class ColorUtils
     {
         offset = Mathf.Clamp01(offset);
 
-        var hue = (Time.time * hueSpeed + offset) % 1.0f;
+        float hue = (Time.time * hueSpeed + offset) % 1.0f;
 
         return Color.HSVToRGB(hue, 1f, 1f);
     }

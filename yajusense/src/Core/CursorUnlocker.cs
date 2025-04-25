@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 using yajusense.Core;
@@ -35,7 +36,7 @@ public static class CursorUnlocker
 
     private static void ApplyPatches()
     {
-        var lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
+        MethodInfo lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
         if (lockStateSetter != null)
             HarmonyPatcher.ApplyPatch(
                 PatchIdCursorLock,
@@ -43,7 +44,7 @@ public static class CursorUnlocker
                 new HarmonyMethod(typeof(CursorUnlocker).GetMethod(nameof(Prefix_set_lockState)))
             );
 
-        var visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
+        MethodInfo visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
         if (visibleSetter != null)
             HarmonyPatcher.ApplyPatch(
                 PatchIdCursorVisible,
@@ -57,8 +58,8 @@ public static class CursorUnlocker
         var menuModule = ModuleManager.GetModule<Menu>();
         var udonInspectorModule = ModuleManager.GetModule<UdonInspector>();
 
-        var menuEnabled = menuModule?.Enabled ?? false;
-        var udonInspectorEnabled = udonInspectorModule?.Enabled ?? false;
+        bool menuEnabled = menuModule?.Enabled ?? false;
+        bool udonInspectorEnabled = udonInspectorModule?.Enabled ?? false;
 
         return menuEnabled || udonInspectorEnabled;
     }
@@ -69,7 +70,7 @@ public static class CursorUnlocker
         {
             yield return WaitForEndOfFrame;
 
-            var shouldBeUnlocked = IsAnyUIShowing();
+            bool shouldBeUnlocked = IsAnyUIShowing();
             if (shouldBeUnlocked)
             {
                 if (Cursor.lockState != CursorLockMode.None || !Cursor.visible) UpdateCursorControl();
@@ -88,7 +89,7 @@ public static class CursorUnlocker
         try
         {
             _currentlySettingCursor = true;
-            var shouldUnlockNow = IsAnyUIShowing();
+            bool shouldUnlockNow = IsAnyUIShowing();
 
             if (shouldUnlockNow)
             {

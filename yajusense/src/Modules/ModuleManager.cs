@@ -34,6 +34,7 @@ public static class ModuleManager
         RegisterModule(new Flight());
         RegisterModule(new Speed());
         RegisterModule(new Spinbot());
+        RegisterModule(new LagSwitch());
 
         // Visual
         RegisterModule(new Watermark());
@@ -60,7 +61,7 @@ public static class ModuleManager
 
     public static void UpdateModules()
     {
-        foreach (var module in Modules)
+        foreach (BaseModule module in Modules)
         {
             if (module.Enabled) module.OnUpdate();
             if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey)) module.Toggle();
@@ -69,7 +70,7 @@ public static class ModuleManager
 
     public static void RenderModules()
     {
-        foreach (var module in Modules)
+        foreach (BaseModule module in Modules)
             if (module.Enabled)
                 module.OnGUI();
     }

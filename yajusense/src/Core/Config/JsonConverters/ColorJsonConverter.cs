@@ -12,8 +12,8 @@ public class ColorJsonConverter : JsonConverter<Color>
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException("Expected string value for Color");
 
-        var hex = reader.GetString();
-        if (ColorUtility.TryParseHtmlString(hex, out var color))
+        string hex = reader.GetString();
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
             return color;
 
         throw new JsonException($"Invalid color format: {hex}");

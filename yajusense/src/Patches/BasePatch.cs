@@ -25,38 +25,38 @@ public abstract class BasePatch
 
     protected abstract void Initialize();
 
-    protected void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null,
-        HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+    protected void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
     {
         OriginalMethod = original;
         _prefix = prefix;
         _postfix = postfix;
         _transpiler = transpiler;
     }
+    
+    
 
-    protected HarmonyMethod CreatePatch(string methodName)
+    protected void ConfigurePatch(MethodBase original, string prefixName = null, string postfixName = null, string transpilerName = null)
     {
-        return new HarmonyMethod(GetType().GetMethod(methodName,
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance));
-    }
-
-    protected void ConfigurePatch(MethodBase original, string prefixName = null, string postfixName = null,
-        string transpilerName = null)
-    {
-        var prefix = prefixName != null ? CreatePatch(prefixName) : null;
-        var postfix = postfixName != null ? CreatePatch(postfixName) : null;
-        var transpiler = transpilerName != null ? CreatePatch(transpilerName) : null;
+        HarmonyMethod prefix = prefixName != null ? CreatePatch(prefixName) : null;
+        HarmonyMethod postfix = postfixName != null ? CreatePatch(postfixName) : null;
+        HarmonyMethod transpiler = transpilerName != null ? CreatePatch(transpilerName) : null;
 
         ConfigurePatch(original, prefix, postfix, transpiler);
     }
-
-    public static void ApplyPatch<T>() where T : BasePatch, new()
+    
+    protected static void ApplyPatch<T>() where T : BasePatch, new()
     {
         var patch = new T();
         patch.Apply();
     }
+    
+    private HarmonyMethod CreatePatch(string methodName)
+    {
+        return new HarmonyMethod(GetType().GetMethod(
+            methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance));
+    }
 
-    public virtual void Apply()
+    private void Apply()
     {
         if (_isApplied)
         {
@@ -82,7 +82,7 @@ public abstract class BasePatch
         }
     }
 
-    public virtual void Remove()
+    public void Remove()
     {
         if (!_isApplied) return;
 

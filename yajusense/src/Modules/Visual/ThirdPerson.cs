@@ -103,7 +103,7 @@ public class ThirdPerson : BaseModule
         if (!VRCUtils.IsInWorld())
             return;
 
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (Mathf.Abs(scroll) > 0.01f)
             _targetZoomOffset = Mathf.Clamp(_targetZoomOffset + scroll, MinZoomOffset, MaxZoomOffset);
 

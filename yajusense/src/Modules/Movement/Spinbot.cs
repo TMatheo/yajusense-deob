@@ -15,8 +15,15 @@ public class Spinbot : BaseModule
     {
     }
 
-    [Config("Rotation speed", "Rotation speed", false, 1.0f, 50.0f)]
-    public float RotationSpeed { get; set; } = 25.0f;
+    [Config("Rotation speed", "Rotation speed", false, 1.0f, 100.0f)]
+    public float RotationSpeed { get; set; } = 50.0f;
+
+    public Quaternion Rotation { get; private set; } = Quaternion.identity;
+
+    public override void OnUpdate()
+    {
+        Rotation = Quaternion.Euler(Time.time * RotationSpeed % 360f, 0f, 0f);
+    }
 
     public override void OnEnable()
     {
@@ -39,9 +46,7 @@ public class Spinbot : BaseModule
             if (!VRCUtils.IsInWorld())
                 yield break;
 
-            var spinRotation = Quaternion.Euler(Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f, Time.time * RotationSpeed % 360f);
-
-            EventSender.SendMovementEvent(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position, spinRotation);
+            EventSender.SendMovementEvent(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position, Rotation);
             yield return new WaitForSeconds(0.1f);
         }
     }

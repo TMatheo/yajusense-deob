@@ -26,8 +26,7 @@ public static class NotificationManager
 
     private static readonly List<Notification> Notifications = new();
 
-    public static void ShowNotification(string message, NotificationType type = NotificationType.Info,
-        float duration = -1)
+    public static void ShowNotification(string message, NotificationType type = NotificationType.Info, float duration = -1)
     {
         Notifications.Insert(0, new Notification(message, type, duration > 0 ? duration : DefaultDuration));
     }
@@ -36,11 +35,11 @@ public static class NotificationManager
     {
         Notifications.RemoveAll(n => n.IsScrollingOut && n.CurrentPosition.x >= Screen.width);
 
-        foreach (var notification in Notifications)
+        foreach (Notification notification in Notifications)
         {
             if (notification.IsExpired && !notification.IsScrollingOut) notification.IsScrollingOut = true;
 
-            var targetAlpha = notification.IsScrollingOut ? 0f : 1f;
+            float targetAlpha = notification.IsScrollingOut ? 0f : 1f;
             notification.CurrentAlpha = Mathf.Lerp(
                 notification.CurrentAlpha,
                 targetAlpha,
@@ -53,10 +52,10 @@ public static class NotificationManager
 
         for (var i = 0; i < Notifications.Count; i++)
         {
-            var notification = Notifications[i];
+            Notification notification = Notifications[i];
 
-            var targetX = notification.IsScrollingOut ? screenRight : screenRight - (RectWidth + Spacing);
-            var targetY = screenBottom - (i + 1) * (RectHeight + Spacing);
+            float targetX = notification.IsScrollingOut ? screenRight : screenRight - (RectWidth + Spacing);
+            float targetY = screenBottom - (i + 1) * (RectHeight + Spacing);
 
             notification.CurrentPosition = Vector2.Lerp(
                 notification.CurrentPosition,
@@ -79,11 +78,11 @@ public static class NotificationManager
 
     private static void DrawProgressBar(Rect rect, Notification notification, int displayIndex)
     {
-        var elapsedTime = Time.time - notification.StartTime;
-        var progress = Mathf.Clamp01(elapsedTime / notification.Duration);
-        var width = RectWidth * (1f - progress);
+        float elapsedTime = Time.time - notification.StartTime;
+        float progress = Mathf.Clamp01(elapsedTime / notification.Duration);
+        float width = RectWidth * (1f - progress);
 
-        var progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.RainbowColorStep);
+        Color progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.RainbowColorStep);
         progressBarColor.a = notification.CurrentAlpha;
 
         var progressBarRect = new Rect(
@@ -98,10 +97,10 @@ public static class NotificationManager
 
     private static void DrawNotificationText(Rect rect, Notification notification)
     {
-        var textSize = IMGUIUtils.CalcTextSize(notification.Message, FontSize);
-        var textY = rect.center.y - textSize.y * 0.5f;
+        Vector2 textSize = IMGUIUtils.CalcTextSize(notification.Message, FontSize);
+        float textY = rect.center.y - textSize.y * 0.5f;
 
-        var textColor = notification.GetTextColor();
+        Color textColor = notification.GetTextColor();
         textColor.a = notification.CurrentAlpha;
 
         Drawer.DrawText(

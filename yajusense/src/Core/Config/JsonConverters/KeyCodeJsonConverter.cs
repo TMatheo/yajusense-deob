@@ -11,7 +11,7 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
     {
         try
         {
-            if (reader.TokenType == JsonTokenType.Number && reader.TryGetInt32(out var intValue))
+            if (reader.TokenType == JsonTokenType.Number && reader.TryGetInt32(out int intValue))
             {
                 if (Enum.IsDefined(typeof(KeyCode), intValue)) return (KeyCode)intValue;
 
@@ -21,10 +21,10 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
 
             if (reader.TokenType == JsonTokenType.String)
             {
-                var strValue = reader.GetString();
+                string strValue = reader.GetString();
                 if (string.IsNullOrEmpty(strValue)) return KeyCode.None;
 
-                if (Enum.TryParse<KeyCode>(strValue, true, out var result)) return result;
+                if (Enum.TryParse(strValue, true, out KeyCode result)) return result;
 
                 YjPlugin.Log.LogWarning($"Could not parse KeyCode from string: {strValue}");
             }

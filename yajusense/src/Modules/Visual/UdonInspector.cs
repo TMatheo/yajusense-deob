@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using VRC.Udon;
 using yajusense.Core;
@@ -19,8 +20,7 @@ public class UdonInspector : BaseModule
     private Vector2 _scrollPos;
     private KeyValuePair<UdonBehaviour, string> _selectedUdon;
 
-    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleCategory.Visual,
-        KeyCode.F10)
+    public UdonInspector() : base("UdonInspector", "Disassemble and analyze Udon Behaviours", ModuleCategory.Visual, KeyCode.F10)
     {
         _window = new Window(new Rect(0, 0, 600f, 500f), "Udon Inspector");
     }
@@ -79,14 +79,14 @@ public class UdonInspector : BaseModule
             GUILayout.Space(10);
             GUILayout.BeginVertical();
             {
-                foreach (var kv in _udonCache)
+                foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache)
                 {
-                    var udonBehaviour = kv.Key;
-                    var ubName = kv.Value;
-                    var selectedUdonBehaviour = _selectedUdon.Key;
+                    UdonBehaviour udonBehaviour = kv.Key;
+                    string ubName = kv.Value;
+                    UdonBehaviour selectedUdonBehaviour = _selectedUdon.Key;
 
-                    var isSelected = selectedUdonBehaviour == udonBehaviour;
-                    var btnStyle = isSelected ? GUI.skin.button : GUI.skin.box;
+                    bool isSelected = selectedUdonBehaviour == udonBehaviour;
+                    GUIStyle btnStyle = isSelected ? GUI.skin.button : GUI.skin.box;
 
                     if (GUILayout.Button(ubName, btnStyle))
                         _selectedUdon = new KeyValuePair<UdonBehaviour, string>(udonBehaviour, ubName);
@@ -112,12 +112,12 @@ public class UdonInspector : BaseModule
     private void DisassembleAll()
     {
         RefreshUdonCache();
-        foreach (var kv in _udonCache) UdonDisassembler.Disassemble(kv.Key, kv.Value);
+        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache) UdonDisassembler.Disassemble(kv.Key, kv.Value);
     }
 
     private void DumpAllEventTableFunctions()
     {
-        foreach (var kv in _udonCache) DumpEventTableFunctions(kv.Key, kv.Value);
+        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache) DumpEventTableFunctions(kv.Key, kv.Value);
     }
 
     private void DumpEventTableFunctions(UdonBehaviour udonBehaviour, string udonName)
@@ -134,7 +134,7 @@ public class UdonInspector : BaseModule
             output.AppendLine($"Event Table Dump for: {_selectedUdon.Value}\n");
 
             uint index = 0;
-            foreach (var entry in udonBehaviour._eventTable)
+            foreach (Il2CppSystem.Collections.Generic.KeyValuePair<string, Il2CppSystem.Collections.Generic.List<uint>> entry in udonBehaviour._eventTable)
             {
                 output.AppendLine($"Event: {entry.key}");
                 output.AppendLine();
@@ -143,7 +143,7 @@ public class UdonInspector : BaseModule
 
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             FileUtils.EnsureDirectoryExists(_saveDir);
-            var savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
+            string savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
             File.WriteAllText(savePath, output.ToString());
             YjPlugin.Log.LogInfo($"Saved event table dump to: {savePath}");
         }
@@ -158,9 +158,9 @@ public class UdonInspector : BaseModule
         if (!VRCUtils.IsInWorld()) return;
 
         _udonCache.Clear();
-        var allObjs = Object.FindObjectsOfType<GameObject>();
-        foreach (var go in allObjs)
-            if (go.TryGetComponent<UdonBehaviour>(out var ub))
+        Il2CppArrayBase<GameObject> allObjs = Object.FindObjectsOfType<GameObject>();
+        foreach (GameObject go in allObjs)
+            if (go.TryGetComponent(out UdonBehaviour ub))
                 _udonCache.Add(ub, go.name);
 
         YjPlugin.Log.LogInfo($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");

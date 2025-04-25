@@ -44,7 +44,7 @@ public static class ConfigManager
         {
             EnsureConfigFileExists();
 
-            var json = File.ReadAllText(ConfigPath);
+            string json = File.ReadAllText(ConfigPath);
 
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -53,7 +53,7 @@ public static class ConfigManager
             }
             else
             {
-                var parsedNode = JsonNode.Parse(json);
+                JsonNode parsedNode = JsonNode.Parse(json);
                 if (parsedNode is JsonObject jsonObject)
                 {
                     _configData = jsonObject;
@@ -88,7 +88,7 @@ public static class ConfigManager
             UpdateConfigDataFromModules();
 
             FileUtils.EnsureDirectoryExists(ConfigDirectory);
-            var json = JsonSerializer.Serialize(_configData, JsonOptions);
+            string json = JsonSerializer.Serialize(_configData, JsonOptions);
             File.WriteAllText(ConfigPath, json);
             YjPlugin.Log.LogInfo("Config saved successfully.");
         }
@@ -100,15 +100,15 @@ public static class ConfigManager
 
     public static void RegisterModuleConfig(BaseModule module)
     {
-        var type = module.GetType();
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        Type type = module.GetType();
+        List<PropertyInfo> properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(p => p.GetCustomAttribute<ConfigAttribute>() != null)
             .ToList();
 
         var moduleConfigs = new List<ConfigProperty>();
-        var moduleNodeName = module.Name;
+        string moduleNodeName = module.Name;
 
-        if (!_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) || !(moduleNode is JsonObject))
+        if (!_configData.TryGetPropertyValue(moduleNodeName, out JsonNode moduleNode) || !(moduleNode is JsonObject))
         {
             moduleNode = new JsonObject();
             _configData[moduleNodeName] = moduleNode;
@@ -116,17 +116,17 @@ public static class ConfigManager
 
         var moduleSettings = (JsonObject)moduleNode;
 
-        foreach (var prop in properties)
+        foreach (PropertyInfo prop in properties)
         {
             var configAttr = prop.GetCustomAttribute<ConfigAttribute>();
-            var propName = prop.Name;
-            var defaultValue = prop.GetValue(module);
+            string propName = prop.Name;
+            object defaultValue = prop.GetValue(module);
 
-            if (moduleSettings.TryGetPropertyValue(propName, out var savedValueNode) && savedValueNode != null)
+            if (moduleSettings.TryGetPropertyValue(propName, out JsonNode savedValueNode) && savedValueNode != null)
             {
                 try
                 {
-                    var typedValue = savedValueNode.Deserialize(prop.PropertyType, JsonOptions);
+                    object typedValue = savedValueNode.Deserialize(prop.PropertyType, JsonOptions);
                     prop.SetValue(module, typedValue);
                 }
                 catch (Exception ex)
@@ -167,8 +167,8 @@ public static class ConfigManager
 
     public static void UpdatePropertyValue(BaseModule module, string propertyName, object newValue)
     {
-        var moduleNodeName = module.Name;
-        if (_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) &&
+        string moduleNodeName = module.Name;
+        if (_configData.TryGetPropertyValue(moduleNodeName, out JsonNode moduleNode) &&
             moduleNode is JsonObject moduleSettings)
             try
             {
@@ -225,10 +225,10 @@ public static class ConfigManager
 
     private static void UpdateConfigDataFromModules()
     {
-        foreach (var (module, configProps) in ModuleConfigProperties)
+        foreach ((BaseModule module, List<ConfigProperty> configProps) in ModuleConfigProperties)
         {
-            var moduleNodeName = module.Name;
-            if (!_configData.TryGetPropertyValue(moduleNodeName, out var moduleNode) || !(moduleNode is JsonObject))
+            string moduleNodeName = module.Name;
+            if (!_configData.TryGetPropertyValue(moduleNodeName, out JsonNode moduleNode) || !(moduleNode is JsonObject))
             {
                 moduleNode = new JsonObject();
                 _configData[moduleNodeName] = moduleNode;
@@ -236,10 +236,10 @@ public static class ConfigManager
 
             var moduleSettings = (JsonObject)moduleNode;
 
-            foreach (var configProp in configProps)
+            foreach (ConfigProperty configProp in configProps)
                 try
                 {
-                    var currentValue = configProp.Property.GetValue(module);
+                    object currentValue = configProp.Property.GetValue(module);
                     moduleSettings[configProp.Property.Name] =
                         JsonSerializer.SerializeToNode(currentValue, JsonOptions);
                 }

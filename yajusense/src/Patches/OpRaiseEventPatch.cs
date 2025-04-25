@@ -1,6 +1,10 @@
+using System.Reflection;
 using ExitGames.Client.Photon;
 using HarmonyLib;
 using Il2CppSystem;
+using yajusense.Modules;
+using yajusense.Modules.Movement;
+using yajusense.Networking;
 using yajusense.Utils;
 
 namespace yajusense.Patches;
@@ -8,13 +12,13 @@ namespace yajusense.Patches;
 public class OpRaiseEventPatch : BasePatch
 {
     public static bool ShouldSendE12 { get; set; } = true;
-    public static byte[] LastData { get; private set; }
+    public static byte[] LastE12Data { get; private set; }
 
     protected override void Initialize()
     {
-        var originalMethod = AccessTools.Method(typeof(LoadBalancingClient_Internal),
-            nameof(LoadBalancingClient_Internal
-                .Method_Public_Virtual_New_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0));
+        MethodInfo originalMethod = AccessTools.Method(
+            typeof(LoadBalancingClient_Internal), 
+            nameof(LoadBalancingClient_Internal.Method_Public_Virtual_New_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0));
 
         ConfigurePatch(originalMethod, nameof(Prefix));
     }
@@ -24,16 +28,23 @@ public class OpRaiseEventPatch : BasePatch
         ApplyPatch<OpRaiseEventPatch>();
     }
 
-    public static bool Prefix(byte param_1, Object param_2, ObjectPublicObByObInByObObUnique param_3,
-        SendOptions param_4)
+    public static bool Prefix(byte param_1, ref Object param_2, ObjectPublicObByObInByObObUnique param_3, SendOptions param_4)
     {
         if (param_1 == 12)
         {
-            var data = Il2CppSerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
-            LastData = data;
+            byte[] data = Il2CppSerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
+            LastE12Data = data;
 
             if (!ShouldSendE12)
                 return false;
+
+            var spinbotModule = ModuleManager.GetModule<Spinbot>();
+            if (spinbotModule?.Enabled == true)
+            {
+                byte[] bytes = QuaternionSerializer.Serialize(spinbotModule.Rotation);
+                System.Buffer.BlockCopy(bytes, 0, data, EventSender.RotationDataIndex, bytes.Length);
+                param_2 = Il2CppSerializationUtils.FromManagedToIL2CPP<Object>(data);
+            }
         }
 
         return true;

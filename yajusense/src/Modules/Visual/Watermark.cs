@@ -17,7 +17,7 @@ public class Watermark : BaseModule
     {
         Drawer.DrawText("yaju", _pos, Color.white, FontSize, true);
 
-        var yajuTextSizeX = IMGUIUtils.CalcTextSize("yaju", FontSize).x;
+        float yajuTextSizeX = IMGUIUtils.CalcTextSize("yaju", FontSize).x;
         Drawer.DrawRainbowText("sense", _pos + new Vector2(yajuTextSizeX, 0), FontSize, true);
     }
 }

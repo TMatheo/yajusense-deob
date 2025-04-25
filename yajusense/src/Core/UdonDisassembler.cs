@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using VRC.Udon.VM;
@@ -31,7 +32,7 @@ public static class UdonDisassembler
 
         try
         {
-            var context = CreateDisassemblyContext(udonBehaviour, ubName, targetEventNames);
+            DisassemblyContext context = CreateDisassemblyContext(udonBehaviour, ubName, targetEventNames);
             if (!context.Initialize()) return;
 
             ProcessBytecode(context);
@@ -43,8 +44,7 @@ public static class UdonDisassembler
         }
     }
 
-    private static DisassemblyContext CreateDisassemblyContext(UdonBehaviour udonBehaviour, string ubName,
-        IEnumerable<string> targetEventNames)
+    private static DisassemblyContext CreateDisassemblyContext(UdonBehaviour udonBehaviour, string ubName, IEnumerable<string> targetEventNames)
     {
         return new DisassemblyContext
         {
@@ -58,15 +58,15 @@ public static class UdonDisassembler
 
     private static void ProcessBytecode(DisassemblyContext context)
     {
-        var udonProgram = context.UdonBehaviour._program;
-        var byteCode = udonProgram.ByteCode;
-        var symbolTable = udonProgram.SymbolTable;
-        var heap = udonProgram.Heap;
+        IUdonProgram udonProgram = context.UdonBehaviour._program;
+        Il2CppStructArray<byte> byteCode = udonProgram.ByteCode;
+        IUdonSymbolTable symbolTable = udonProgram.SymbolTable;
+        IUdonHeap heap = udonProgram.Heap;
 
-        var eventInfo = PrepareEventInformation(context);
+        EventInfo eventInfo = PrepareEventInformation(context);
 
         var address = 0;
-        var isProcessingTargetEvent = !eventInfo.FilterEvents;
+        bool isProcessingTargetEvent = !eventInfo.FilterEvents;
         var currentEventEndAddress = (uint)byteCode.Length;
 
         while (address < byteCode.Length)
@@ -74,7 +74,7 @@ public static class UdonDisassembler
             {
                 if (eventInfo.EventAddresses.Contains((uint)address))
                 {
-                    var eventName = eventInfo.AddressToEventName[(uint)address];
+                    string eventName = eventInfo.AddressToEventName[(uint)address];
 
                     if (eventInfo.FilterEvents)
                     {
@@ -104,7 +104,7 @@ public static class UdonDisassembler
                     break;
                 }
 
-                var opcode = SwapEndianness(BitConverter.ToUInt32(byteCode, address));
+                uint opcode = SwapEndianness(BitConverter.ToUInt32(byteCode, address));
                 address = ProcessOpcode(opcode, address, byteCode, heap, symbolTable, context);
             }
             catch (Exception ex)
@@ -127,18 +127,18 @@ public static class UdonDisassembler
             EventBounds = new Dictionary<uint, uint>()
         };
 
-        var eventNameFilter = result.FilterEvents
+        HashSet<string> eventNameFilter = result.FilterEvents
             ? new HashSet<string>(context.TargetEventNames, StringComparer.OrdinalIgnoreCase)
             : null;
 
-        var eventTable = context.UdonBehaviour._eventTable;
+        Il2CppSystem.Collections.Generic.Dictionary<string, Il2CppSystem.Collections.Generic.List<uint>> eventTable = context.UdonBehaviour._eventTable;
         if (eventTable != null)
-            foreach (var entry in eventTable)
+            foreach (Il2CppSystem.Collections.Generic.KeyValuePair<string, Il2CppSystem.Collections.Generic.List<uint>> entry in eventTable)
             {
                 if (result.FilterEvents && !eventNameFilter.Contains(entry.key))
                     continue;
 
-                foreach (var addr in entry.Value)
+                foreach (uint addr in entry.Value)
                 {
                     result.EventAddresses.Add(addr);
                     result.AddressToEventName[addr] = entry.key;
@@ -153,11 +153,11 @@ public static class UdonDisassembler
 
         if (result.FilterEvents)
         {
-            var sortedAddresses = result.EventAddresses.OrderBy(a => a).ToList();
+            List<uint> sortedAddresses = result.EventAddresses.OrderBy(a => a).ToList();
             for (var i = 0; i < sortedAddresses.Count; i++)
             {
-                var startAddr = sortedAddresses[i];
-                var endAddr = i < sortedAddresses.Count - 1
+                uint startAddr = sortedAddresses[i];
+                uint endAddr = i < sortedAddresses.Count - 1
                     ? sortedAddresses[i + 1]
                     : (uint)context.UdonBehaviour._program.ByteCode.Length;
 
@@ -169,8 +169,7 @@ public static class UdonDisassembler
     }
 
 
-    private static int ProcessOpcode(uint opcode, int address, byte[] byteCode, IUdonHeap heap,
-        IUdonSymbolTable symbolTable, DisassemblyContext context)
+    private static int ProcessOpcode(uint opcode, int address, byte[] byteCode, IUdonHeap heap, IUdonSymbolTable symbolTable, DisassemblyContext context)
     {
         switch (opcode)
         {
@@ -185,15 +184,15 @@ public static class UdonDisassembler
 
                 YjPlugin.Log.LogInfo("Resolving PUSH");
 
-                var pushOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                uint pushOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
 
-                var symbolName = symbolTable.GetSymbolFromAddress(pushOffset) ?? $"0x{pushOffset:X}";
+                string symbolName = symbolTable.GetSymbolFromAddress(pushOffset) ?? $"0x{pushOffset:X}";
                 object heapValue = heap.GetHeapVariable(pushOffset);
-                var symbolType = heapValue?.GetType().FullName ?? "Unknown";
+                string symbolType = heapValue?.GetType().FullName ?? "Unknown";
 
                 if (heapValue != null && symbolName.Contains("_const_"))
                 {
-                    var runtimeType = heapValue.GetType();
+                    Type runtimeType = heapValue.GetType();
 
                     if (runtimeType == typeof(bool) ||
                         runtimeType == typeof(int) ||
@@ -217,7 +216,7 @@ public static class UdonDisassembler
                 if (address + 8 > byteCode.Length) break;
 
                 YjPlugin.Log.LogInfo("Resolving JUMP_IF_FALSE");
-                var jneOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                uint jneOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JUMP_IF_FALSE 0x{jneOffset:X}");
                 address += 8;
                 break;
@@ -227,7 +226,7 @@ public static class UdonDisassembler
 
                 YjPlugin.Log.LogInfo("Resolving JMP");
 
-                var jumpOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                uint jumpOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JMP 0x{jumpOffset:X}");
                 address += 8;
                 break;
@@ -237,7 +236,7 @@ public static class UdonDisassembler
 
                 YjPlugin.Log.LogInfo("Resolving EXTERN");
 
-                var externAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                uint externAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object externObj = heap.GetHeapVariable(externAddr);
                 var externName = $"unknown_extern@{externAddr:X}";
 
@@ -258,9 +257,9 @@ public static class UdonDisassembler
 
                 YjPlugin.Log.LogInfo("Resolving ANNOTATION");
 
-                var annotationAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                uint annotationAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object annotationObj = heap.GetHeapVariable(annotationAddr);
-                var annotationText = annotationObj?.ToString() ?? $"unknown_annotation@{annotationAddr:X}";
+                string annotationText = annotationObj?.ToString() ?? $"unknown_annotation@{annotationAddr:X}";
 
                 context.Output.AppendLine($"0x{address:X}  ANNOTATION \"{annotationText}\"");
                 address += 8;
@@ -271,8 +270,8 @@ public static class UdonDisassembler
 
                 YjPlugin.Log.LogInfo("Resolving JMP_INDIRECT");
 
-                var indirectAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
-                var targetSymbol = symbolTable.HasSymbolForAddress(indirectAddr)
+                uint indirectAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
+                string targetSymbol = symbolTable.HasSymbolForAddress(indirectAddr)
                     ? symbolTable.GetSymbolFromAddress(indirectAddr)
                     : $"0x{indirectAddr:X}";
 
@@ -301,29 +300,28 @@ public static class UdonDisassembler
         FileUtils.EnsureDirectoryExists(SaveDir);
 
         var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-        var filtered = context.TargetEventNames != null && context.TargetEventNames.Any();
-        var filenameSuffix = filtered ? "_filtered" : "";
-        var outputPath = Path.Combine(SaveDir, $"Disassembled_{context.UbName}{filenameSuffix}_{timestamp}.txt");
+        bool filtered = context.TargetEventNames != null && context.TargetEventNames.Any();
+        string filenameSuffix = filtered ? "_filtered" : "";
+        string outputPath = Path.Combine(SaveDir, $"Disassembled_{context.UbName}{filenameSuffix}_{timestamp}.txt");
 
         YjPlugin.Log.LogInfo("Saving to file...");
         File.WriteAllText(outputPath, context.Output.ToString());
 
         if (context.Constants.Count > 0) SaveConstants(context, SaveDir, timestamp, filenameSuffix);
 
-        var eventInfo = filtered
+        string eventInfo = filtered
             ? $" (filtered to {context.EventAddresses.Count} events)"
             : "";
         YjPlugin.Log.LogInfo($"Disassembly completed for {context.UbName}{eventInfo}");
     }
 
 
-    private static void SaveConstants(DisassemblyContext context, string saveDir, string timestamp,
-        string filenameSuffix)
+    private static void SaveConstants(DisassemblyContext context, string saveDir, string timestamp, string filenameSuffix)
     {
         var constantsOutput = new StringBuilder(context.Constants.Count * 20);
-        foreach (var kv in context.Constants) constantsOutput.AppendLine($"0x{kv.Key:X}: {kv.Value}");
+        foreach (KeyValuePair<uint, string> kv in context.Constants) constantsOutput.AppendLine($"0x{kv.Key:X}: {kv.Value}");
 
-        var constantsPath = Path.Combine(saveDir, $"Constants_{context.UbName}{filenameSuffix}_{timestamp}.txt");
+        string constantsPath = Path.Combine(saveDir, $"Constants_{context.UbName}{filenameSuffix}_{timestamp}.txt");
         File.WriteAllText(constantsPath, constantsOutput.ToString());
     }
 

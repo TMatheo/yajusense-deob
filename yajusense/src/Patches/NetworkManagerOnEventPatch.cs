@@ -1,3 +1,4 @@
+using System.Reflection;
 using ExitGames.Client.Photon;
 using HarmonyLib;
 using yajusense.Core;
@@ -10,7 +11,8 @@ public class NetworkManagerOnEventPatch : BasePatch
 
     protected override void Initialize()
     {
-        var originalMethod = AccessTools.Method(typeof(NetworkManager_Internal),
+        MethodInfo originalMethod = AccessTools.Method(
+            typeof(NetworkManager_Internal),
             nameof(NetworkManager_Internal.Method_Public_Virtual_Final_New_Void_EventData_0));
 
         ConfigurePatch(originalMethod, nameof(Prefix));

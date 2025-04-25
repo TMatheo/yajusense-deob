@@ -17,8 +17,7 @@ public static class HarmonyPatcher
         YjPlugin.Log.LogInfo("HarmonyPatcher initialized");
     }
 
-    public static void ApplyPatch(string patchId, MethodBase original, HarmonyMethod prefix = null,
-        HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+    public static void ApplyPatch(string patchId, MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
     {
         if (Patches.ContainsKey(patchId))
         {
@@ -40,7 +39,7 @@ public static class HarmonyPatcher
 
     public static void RemovePatch(string patchId)
     {
-        if (!Patches.TryGetValue(patchId, out var patchInfo))
+        if (!Patches.TryGetValue(patchId, out PatchInfo patchInfo))
         {
             YjPlugin.Log.LogWarning($"Patch {patchId} not found");
             return;

@@ -6,8 +6,7 @@ namespace yajusense.Modules;
 
 public abstract class BaseModule
 {
-    protected BaseModule(string name, string description, ModuleCategory category, KeyCode toggleKey = KeyCode.None,
-        bool enabled = false)
+    protected BaseModule(string name, string description, ModuleCategory category, KeyCode toggleKey = KeyCode.None, bool enabled = false)
     {
         Name = name;
         Description = description;

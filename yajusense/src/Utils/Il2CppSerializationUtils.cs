@@ -41,7 +41,7 @@ public static class Il2CppSerializationUtils
         if (data == null) return default;
         var bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         var ms = new System.IO.MemoryStream(data);
-        var obj = bf.Deserialize(ms);
+        object obj = bf.Deserialize(ms);
         return (T)obj;
     }
 

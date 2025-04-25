@@ -10,20 +10,22 @@ namespace yajusense.Networking;
 
 public static class EventSender
 {
-    private const int PositionDataIndex = 21;
+    public const int PositionDataIndex = 21;
+    public const int PositionDataSize = 12;
+    public const int RotationDataIndex = PositionDataIndex + PositionDataSize;
 
     public static void SendMovementEvent(Vector3 position, Quaternion rotation)
     {
-        if (OpRaiseEventPatch.LastData == null || !VRCUtils.IsInWorld())
+        if (OpRaiseEventPatch.LastE12Data == null || !VRCUtils.IsInWorld())
             return;
 
-        var lastData = OpRaiseEventPatch.LastData;
-        var sender =
+        byte[] lastData = OpRaiseEventPatch.LastE12Data;
+        byte[] sender =
             BitConverter.GetBytes(VRCUtils.GetLocalVRCPlayerApi().GetPlayer().GetPlayerNet().GetPhotonNumber());
-        var serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
+        byte[] serverTime = BitConverter.GetBytes(VRC.SDKBase.Networking.GetServerTimeInMilliseconds());
 
-        var positionBytes = DataConvertionUtils.Vector3ToBytes(position);
-        var rotationBytes = QuaternionSerializer.Serialize(rotation);
+        byte[] positionBytes = DataConvertionUtils.Vector3ToBytes(position);
+        byte[] rotationBytes = QuaternionSerializer.Serialize(rotation);
 
         Buffer.BlockCopy(sender, 0, lastData, 0, sender.Length);
         Buffer.BlockCopy(serverTime, 0, lastData, sender.Length, serverTime.Length);

@@ -55,8 +55,8 @@ public class Window
 
     private void HandleInputEvents()
     {
-        var currentEvent = Event.current;
-        var mousePos = currentEvent.mousePosition;
+        Event currentEvent = Event.current;
+        Vector2 mousePos = currentEvent.mousePosition;
 
         _resizeHandleRect = new Rect(
             _position.x + _position.width - ResizeHandleSize,

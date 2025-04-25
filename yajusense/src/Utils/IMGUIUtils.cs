@@ -10,8 +10,8 @@ public static class IMGUIUtils
 
         var style = new GUIStyle(GUI.skin.label);
 
-        var width = style.CalcSize(content).x;
-        var height = style.CalcHeight(content, width);
+        float width = style.CalcSize(content).x;
+        float height = style.CalcHeight(content, width);
 
         return new Vector2(width, height);
     }

@@ -25,13 +25,13 @@ public static class DataConvertionUtils
 
     public static string ToHexString(Vector3 vector)
     {
-        var xBytes = BitConverter.GetBytes(vector.x);
-        var yBytes = BitConverter.GetBytes(vector.y);
-        var zBytes = BitConverter.GetBytes(vector.z);
+        byte[] xBytes = BitConverter.GetBytes(vector.x);
+        byte[] yBytes = BitConverter.GetBytes(vector.y);
+        byte[] zBytes = BitConverter.GetBytes(vector.z);
 
-        var xHex = ToHexString(xBytes);
-        var yHex = ToHexString(yBytes);
-        var zHex = ToHexString(zBytes);
+        string xHex = ToHexString(xBytes);
+        string yHex = ToHexString(yBytes);
+        string zHex = ToHexString(zBytes);
 
         return $"{xHex} {yHex} {zHex}";
     }

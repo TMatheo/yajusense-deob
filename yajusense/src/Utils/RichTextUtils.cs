@@ -22,25 +22,25 @@ public static class RichTextUtils
 
     public static string Bold(this string text)
     {
-        var stripped = StripTags(text, BoldRegex.Value);
+        string stripped = StripTags(text, BoldRegex.Value);
         return string.Format(BoldFormat, stripped);
     }
 
     public static string Italic(this string text)
     {
-        var stripped = StripTags(text, ItalicRegex.Value);
+        string stripped = StripTags(text, ItalicRegex.Value);
         return string.Format(ItalicFormat, stripped);
     }
 
     public static string Color(this string text, Color color)
     {
-        var stripped = StripTags(text, ColorRegex.Value);
+        string stripped = StripTags(text, ColorRegex.Value);
         return string.Format(ColorFormat, stripped, color.ToHexRGBA());
     }
 
     public static string Size(this string text, int size)
     {
-        var stripped = StripTags(text, SizeRegex.Value);
+        string stripped = StripTags(text, SizeRegex.Value);
         return string.Format(SizeFormat, stripped, size);
     }
 
