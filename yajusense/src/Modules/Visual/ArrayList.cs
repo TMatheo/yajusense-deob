@@ -17,9 +17,7 @@ public class ArrayList : ModuleBase
 
     private readonly Dictionary<ModuleBase, Vector2> _modulePositions = new();
 
-    public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleCategory.Visual, KeyCode.None, true)
-    {
-    }
+    public ArrayList() : base("ArrayList", "Displays enabled modules", ModuleCategory.Visual, KeyCode.None, true) { }
 
     public override void OnGUI()
     {

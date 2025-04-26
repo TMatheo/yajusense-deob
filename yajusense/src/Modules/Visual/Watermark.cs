@@ -9,9 +9,7 @@ public class Watermark : ModuleBase
     private const int FontSize = 60;
     private readonly Vector2 _pos = new(20f, 20f);
 
-    public Watermark() : base("Watermark", "Shows watermark for this client", ModuleCategory.Visual, enabled: true)
-    {
-    }
+    public Watermark() : base("Watermark", "Shows watermark for this client", ModuleCategory.Visual, enabled: true) { }
 
     public override void OnGUI()
     {

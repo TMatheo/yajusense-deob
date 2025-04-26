@@ -4,9 +4,7 @@ namespace yajusense.Modules.Player;
 
 public class HideSelf : ModuleBase
 {
-    public HideSelf() : base("HideSelf", "Hides your avatar (only prevents from crashing when using one like mesh)", ModuleCategory.Player)
-    {
-    }
+    public HideSelf() : base("HideSelf", "Hides your avatar (only prevents from crashing when using one like mesh)", ModuleCategory.Player) { }
 
     public override void OnEnable()
     {

@@ -49,9 +49,7 @@ public class Plugin : BasePlugin
 
 public class YjMonoBehaviour : MonoBehaviour
 {
-    public YjMonoBehaviour(IntPtr handle) : base(handle)
-    {
-    }
+    public YjMonoBehaviour(IntPtr handle) : base(handle) { }
 
     private void Update()
     {

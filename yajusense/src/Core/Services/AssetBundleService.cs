@@ -28,6 +28,7 @@ public static class AssetBundleService
         }
 
         LoadedBundles[bundleName] = bundle;
+        Plugin.Log.LogInfo($"AssetBundle loaded: {bundleName}");
         return bundle;
     }
 

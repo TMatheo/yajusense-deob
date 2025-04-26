@@ -9,9 +9,7 @@ public class MLGMode : ModuleBase
 {
     private const float LineHeight = 5f;
 
-    public MLGMode() : base("MLGMode", "Enables MLG mode", ModuleCategory.Visual, enabled: true)
-    {
-    }
+    public MLGMode() : base("MLGMode", "Enables MLG mode", ModuleCategory.Visual, enabled: true) { }
 
     [Config("Line Count", "Line Count", false, 1, 20)]
     public int LineCount { get; set; } = 10;

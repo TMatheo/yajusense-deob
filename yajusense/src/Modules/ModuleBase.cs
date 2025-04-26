@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using yajusense.Core.Config;
+using yajusense.Core.Services;
 using yajusense.UI;
 
 namespace yajusense.Modules;
@@ -25,21 +26,13 @@ public abstract class ModuleBase
     [Config("Toggle Key", "Key to enable/disable this module")]
     public KeyCode ToggleKey { get; set; }
 
-    public virtual void OnUpdate()
-    {
-    }
+    public virtual void OnUpdate() { }
 
-    public virtual void OnGUI()
-    {
-    }
+    public virtual void OnGUI() { }
 
-    public virtual void OnEnable()
-    {
-    }
+    public virtual void OnEnable() { }
 
-    public virtual void OnDisable()
-    {
-    }
+    public virtual void OnDisable() { }
 
     public void Toggle()
     {
@@ -51,11 +44,13 @@ public abstract class ModuleBase
         {
             OnEnable();
             NotificationManager.ShowNotification($"Enabled {Name}");
+            AudioService.PlayAudio(AudioService.AudioClipType.ModuleEnable);
         }
         else
         {
             OnDisable();
             NotificationManager.ShowNotification($"Disabled {Name}");
+            AudioService.PlayAudio(AudioService.AudioClipType.ModuleDisable);
         }
     }
 }
