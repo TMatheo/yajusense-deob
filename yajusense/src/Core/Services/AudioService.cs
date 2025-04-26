@@ -8,17 +8,21 @@ public static class AudioService
     public enum AudioClipType
     {
         ModuleEnable,
-        ModuleDisable
+        ModuleDisable,
+        ClickUI,
+        PlayerCrashed
     }
 
-    private const string BundleName = "AudioBundle";
+    private const string BundleName = "audiobundle";
 
     private static AudioSource _audioSource;
 
     private static readonly Dictionary<AudioClipType, string> AudioClipMap = new()
     {
         { AudioClipType.ModuleEnable, "module_enable" },
-        { AudioClipType.ModuleDisable, "module_disable" }
+        { AudioClipType.ModuleDisable, "module_disable" },
+        { AudioClipType.ClickUI, "click_ui" },
+        { AudioClipType.PlayerCrashed, "player_crashed" }
     };
 
     public static void Initialize()

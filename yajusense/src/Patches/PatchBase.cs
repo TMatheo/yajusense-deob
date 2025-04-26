@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using BepInEx.Logging;
 using HarmonyLib;
 
 namespace yajusense.Patches;
@@ -17,20 +16,10 @@ public abstract class PatchBase
         Initialize();
     }
 
-    protected static ManualLogSource Log => Plugin.Log;
-
-    public MethodBase OriginalMethod { get; private set; }
-    public string PatchId => GetType().Name;
+    private MethodBase OriginalMethod { get; set; }
+    private string PatchId => GetType().Name;
 
     protected abstract void Initialize();
-
-    protected void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
-    {
-        OriginalMethod = original;
-        _prefix = prefix;
-        _postfix = postfix;
-        _transpiler = transpiler;
-    }
 
     protected void ConfigurePatch(MethodBase original, string prefixName = null, string postfixName = null, string transpilerName = null)
     {
@@ -39,6 +28,14 @@ public abstract class PatchBase
         HarmonyMethod transpiler = transpilerName != null ? CreatePatch(transpilerName) : null;
 
         ConfigurePatch(original, prefix, postfix, transpiler);
+    }
+
+    private void ConfigurePatch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+    {
+        OriginalMethod = original;
+        _prefix = prefix;
+        _postfix = postfix;
+        _transpiler = transpiler;
     }
 
     protected static void ApplyPatch<T>() where T : PatchBase, new()
@@ -57,13 +54,13 @@ public abstract class PatchBase
     {
         if (_isApplied)
         {
-            Log.LogWarning($"Patch {PatchId} is already applied");
+            Plugin.Log.LogWarning($"Patch {PatchId} is already applied");
             return;
         }
 
         if (OriginalMethod == null)
         {
-            Log.LogError($"Failed to apply patch {PatchId}: Original method not found");
+            Plugin.Log.LogError($"Failed to apply patch {PatchId}: Original method not found");
             return;
         }
 
@@ -71,11 +68,11 @@ public abstract class PatchBase
         {
             HarmonyPatcher.ApplyPatch(PatchId, OriginalMethod, _prefix, _postfix, _transpiler);
             _isApplied = true;
-            Log.LogInfo($"Successfully applied patch: {PatchId}");
+            Plugin.Log.LogInfo($"Successfully applied patch: {PatchId}");
         }
         catch (Exception ex)
         {
-            Log.LogError($"Failed to apply patch {PatchId}: {ex}");
+            Plugin.Log.LogError($"Failed to apply patch {PatchId}: {ex}");
         }
     }
 
@@ -87,11 +84,11 @@ public abstract class PatchBase
         {
             HarmonyPatcher.RemovePatch(PatchId);
             _isApplied = false;
-            Log.LogInfo($"Successfully removed patch: {PatchId}");
+            Plugin.Log.LogInfo($"Successfully removed patch: {PatchId}");
         }
         catch (Exception ex)
         {
-            Log.LogError($"Failed to remove patch {PatchId}: {ex}");
+            Plugin.Log.LogError($"Failed to remove patch {PatchId}: {ex}");
         }
     }
 }
