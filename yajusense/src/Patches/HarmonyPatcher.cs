@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
-using yajusense.Core;
 
 namespace yajusense.Patches;
 
@@ -14,14 +13,14 @@ public static class HarmonyPatcher
     public static void Initialize()
     {
         _harmony = new Harmony("yajusense");
-        YjPlugin.Log.LogInfo("HarmonyPatcher initialized");
+        Plugin.Log.LogInfo("HarmonyPatcher initialized");
     }
 
     public static void ApplyPatch(string patchId, MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
     {
         if (Patches.ContainsKey(patchId))
         {
-            YjPlugin.Log.LogWarning($"Patch {patchId} is already applied");
+            Plugin.Log.LogWarning($"Patch {patchId} is already applied");
             return;
         }
 
@@ -29,11 +28,11 @@ public static class HarmonyPatcher
         {
             _harmony.Patch(original, prefix, postfix, transpiler);
             Patches.Add(patchId, new PatchInfo(original, prefix, postfix, transpiler));
-            YjPlugin.Log.LogInfo($"Applied patch: {patchId}");
+            Plugin.Log.LogInfo($"Applied patch: {patchId}");
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Failed to apply patch {patchId}: {ex}");
+            Plugin.Log.LogError($"Failed to apply patch {patchId}: {ex}");
         }
     }
 
@@ -41,7 +40,7 @@ public static class HarmonyPatcher
     {
         if (!Patches.TryGetValue(patchId, out PatchInfo patchInfo))
         {
-            YjPlugin.Log.LogWarning($"Patch {patchId} not found");
+            Plugin.Log.LogWarning($"Patch {patchId} not found");
             return;
         }
 
@@ -52,11 +51,11 @@ public static class HarmonyPatcher
             _harmony.Unpatch(patchInfo.Original, patchInfo.Transpiler?.method);
 
             Patches.Remove(patchId);
-            YjPlugin.Log.LogInfo($"Removed patch: {patchId}");
+            Plugin.Log.LogInfo($"Removed patch: {patchId}");
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Failed to remove patch {patchId}: {ex}");
+            Plugin.Log.LogError($"Failed to remove patch {patchId}: {ex}");
         }
     }
 

@@ -31,6 +31,34 @@ public static class Drawer
         GUI.color = Color.white;
     }
 
+    public static void DrawGradientHLine(Vector2 start, float length, float thickness, Color startColor, Color endColor)
+    {
+        var gradientTex = new Texture2D(2, 1);
+        gradientTex.wrapMode = TextureWrapMode.Clamp;
+        gradientTex.SetPixel(0, 0, startColor);
+        gradientTex.SetPixel(1, 0, endColor);
+        gradientTex.Apply();
+
+        var rect = new Rect(start.x, start.y - thickness * 0.5f, length, thickness);
+        GUI.DrawTexture(rect, gradientTex);
+
+        Object.DestroyImmediate(gradientTex);
+    }
+
+    public static void DrawGradientVLine(Vector2 start, float length, float thickness, Color startColor, Color endColor)
+    {
+        var gradientTex = new Texture2D(1, 2);
+        gradientTex.wrapMode = TextureWrapMode.Clamp;
+        gradientTex.SetPixel(0, 0, startColor);
+        gradientTex.SetPixel(0, 1, endColor);
+        gradientTex.Apply();
+
+        var rect = new Rect(start.x - thickness * 0.5f, start.y, thickness, length);
+        GUI.DrawTexture(rect, gradientTex);
+
+        Object.DestroyImmediate(gradientTex);
+    }
+
     public static void DrawVLine(Vector2 start, float length, float thickness, Color color)
     {
         var rect = new Rect(start.x - thickness * 0.5f, start.y, thickness, length);
@@ -62,6 +90,31 @@ public static class Drawer
         GUI.matrix = matrixBackup;
 
         GUI.color = oldColor;
+    }
+
+    public static void DrawGradientLine(Vector2 start, Vector2 end, float thickness, Color startColor, Color endColor)
+    {
+        Vector2 dir = end - start;
+        float length = dir.magnitude;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        Matrix4x4 oldMatrix = GUI.matrix;
+        GUIUtility.RotateAroundPivot(angle, start);
+
+        var gradientTex = new Texture2D(2, 1)
+        {
+            wrapMode = TextureWrapMode.Clamp
+        };
+
+        gradientTex.SetPixel(0, 0, startColor);
+        gradientTex.SetPixel(1, 0, endColor);
+        gradientTex.Apply();
+
+        var rect = new Rect(start.x, start.y - thickness * 0.5f, length, thickness);
+        GUI.DrawTexture(rect, gradientTex);
+
+        Object.DestroyImmediate(gradientTex);
+        GUI.matrix = oldMatrix;
     }
 
     public static void DrawRect(Rect rect, float thickness, Color color)

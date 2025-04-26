@@ -8,7 +8,6 @@ using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using VRC.Udon.VM;
 using VRC.Udon.VM.Common;
-using yajusense.Core;
 
 namespace yajusense.Utils;
 
@@ -26,7 +25,7 @@ public static class UdonDisassembler
     {
         if (udonBehaviour == null)
         {
-            YjPlugin.Log.LogError("UdonBehaviour is null");
+            Plugin.Log.LogError("UdonBehaviour is null");
             return;
         }
 
@@ -40,7 +39,7 @@ public static class UdonDisassembler
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Error in UdonDisassembler: {ex}");
+            Plugin.Log.LogError($"Error in UdonDisassembler: {ex}");
         }
     }
 
@@ -100,7 +99,7 @@ public static class UdonDisassembler
 
                 if (address + 4 > byteCode.Length)
                 {
-                    YjPlugin.Log.LogWarning($"Reached end of bytecode prematurely at 0x{address:X}.");
+                    Plugin.Log.LogWarning($"Reached end of bytecode prematurely at 0x{address:X}.");
                     break;
                 }
 
@@ -109,7 +108,7 @@ public static class UdonDisassembler
             }
             catch (Exception ex)
             {
-                YjPlugin.Log.LogError($"Failed to process bytecode at 0x{address:X}: {ex.Message}");
+                Plugin.Log.LogError($"Failed to process bytecode at 0x{address:X}: {ex.Message}");
                 break;
             }
 
@@ -147,7 +146,7 @@ public static class UdonDisassembler
 
         if (result.FilterEvents && result.EventAddresses.Count == 0)
         {
-            YjPlugin.Log.LogWarning($"No matching events found for the specified filter in {context.UbName}");
+            Plugin.Log.LogWarning($"No matching events found for the specified filter in {context.UbName}");
             return result;
         }
 
@@ -174,7 +173,7 @@ public static class UdonDisassembler
         switch (opcode)
         {
             case (uint)OpCode.NOP:
-                YjPlugin.Log.LogInfo("Resolving NOP");
+                Plugin.Log.LogInfo("Resolving NOP");
                 context.Output.AppendLine($"0x{address:X}  NOP");
                 address += 4;
                 break;
@@ -182,7 +181,7 @@ public static class UdonDisassembler
             case (uint)OpCode.PUSH:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving PUSH");
+                Plugin.Log.LogInfo("Resolving PUSH");
 
                 uint pushOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
 
@@ -207,7 +206,7 @@ public static class UdonDisassembler
                 break;
 
             case (uint)OpCode.POP:
-                YjPlugin.Log.LogInfo("Resolving POP");
+                Plugin.Log.LogInfo("Resolving POP");
                 context.Output.AppendLine($"0x{address:X}  POP");
                 address += 4;
                 break;
@@ -215,7 +214,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP_IF_FALSE:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving JUMP_IF_FALSE");
+                Plugin.Log.LogInfo("Resolving JUMP_IF_FALSE");
                 uint jneOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JUMP_IF_FALSE 0x{jneOffset:X}");
                 address += 8;
@@ -224,7 +223,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving JMP");
+                Plugin.Log.LogInfo("Resolving JMP");
 
                 uint jumpOffset = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 context.Output.AppendLine($"0x{address:X}  JMP 0x{jumpOffset:X}");
@@ -234,7 +233,7 @@ public static class UdonDisassembler
             case (uint)OpCode.EXTERN:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving EXTERN");
+                Plugin.Log.LogInfo("Resolving EXTERN");
 
                 uint externAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object externObj = heap.GetHeapVariable(externAddr);
@@ -255,7 +254,7 @@ public static class UdonDisassembler
             case (uint)OpCode.ANNOTATION:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving ANNOTATION");
+                Plugin.Log.LogInfo("Resolving ANNOTATION");
 
                 uint annotationAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 object annotationObj = heap.GetHeapVariable(annotationAddr);
@@ -268,7 +267,7 @@ public static class UdonDisassembler
             case (uint)OpCode.JUMP_INDIRECT:
                 if (address + 8 > byteCode.Length) break;
 
-                YjPlugin.Log.LogInfo("Resolving JMP_INDIRECT");
+                Plugin.Log.LogInfo("Resolving JMP_INDIRECT");
 
                 uint indirectAddr = SwapEndianness(BitConverter.ToUInt32(byteCode, address + 4));
                 string targetSymbol = symbolTable.HasSymbolForAddress(indirectAddr)
@@ -280,13 +279,13 @@ public static class UdonDisassembler
                 break;
 
             case (uint)OpCode.COPY:
-                YjPlugin.Log.LogInfo("Resolving COPY");
+                Plugin.Log.LogInfo("Resolving COPY");
                 context.Output.AppendLine($"0x{address:X}  COPY");
                 address += 4;
                 break;
 
             default:
-                YjPlugin.Log.LogWarning($"Unknown opcode: {opcode} at address 0x{address:X}");
+                Plugin.Log.LogWarning($"Unknown opcode: {opcode} at address 0x{address:X}");
                 address += 4;
                 break;
         }
@@ -304,7 +303,7 @@ public static class UdonDisassembler
         string filenameSuffix = filtered ? "_filtered" : "";
         string outputPath = Path.Combine(SaveDir, $"Disassembled_{context.UbName}{filenameSuffix}_{timestamp}.txt");
 
-        YjPlugin.Log.LogInfo("Saving to file...");
+        Plugin.Log.LogInfo("Saving to file...");
         File.WriteAllText(outputPath, context.Output.ToString());
 
         if (context.Constants.Count > 0) SaveConstants(context, SaveDir, timestamp, filenameSuffix);
@@ -312,7 +311,7 @@ public static class UdonDisassembler
         string eventInfo = filtered
             ? $" (filtered to {context.EventAddresses.Count} events)"
             : "";
-        YjPlugin.Log.LogInfo($"Disassembly completed for {context.UbName}{eventInfo}");
+        Plugin.Log.LogInfo($"Disassembly completed for {context.UbName}{eventInfo}");
     }
 
 
@@ -346,7 +345,7 @@ public static class UdonDisassembler
         {
             if (UdonBehaviour == null || UdonBehaviour._program == null)
             {
-                YjPlugin.Log.LogError($"Invalid UdonBehaviour or program for {UbName}");
+                Plugin.Log.LogError($"Invalid UdonBehaviour or program for {UbName}");
                 return false;
             }
 

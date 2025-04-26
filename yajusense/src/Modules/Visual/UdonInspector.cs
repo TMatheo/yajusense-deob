@@ -5,7 +5,6 @@ using System.Text;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using VRC.Udon;
-using yajusense.Core;
 using yajusense.UI;
 using yajusense.Utils;
 using Object = UnityEngine.Object;
@@ -33,7 +32,7 @@ public class UdonInspector : ModuleBase
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"[UdonInspector] Initialization failed: {ex}");
+            Plugin.Log.LogError($"[UdonInspector] Initialization failed: {ex}");
         }
     }
 
@@ -96,7 +95,7 @@ public class UdonInspector : ModuleBase
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"[UdonInspector] Udon list rendering failed: {ex}");
+            Plugin.Log.LogError($"[UdonInspector] Udon list rendering failed: {ex}");
         }
     }
 
@@ -126,7 +125,7 @@ public class UdonInspector : ModuleBase
         {
             if (udonBehaviour._eventTable == null)
             {
-                YjPlugin.Log.LogWarning("Selected UdonBehaviour has no event table");
+                Plugin.Log.LogWarning("Selected UdonBehaviour has no event table");
                 return;
             }
 
@@ -145,11 +144,11 @@ public class UdonInspector : ModuleBase
             FileUtils.EnsureDirectoryExists(_saveDir);
             string savePath = Path.Combine(_saveDir, $"EventTable_{udonName}_{timestamp}.txt");
             File.WriteAllText(savePath, output.ToString());
-            YjPlugin.Log.LogInfo($"Saved event table dump to: {savePath}");
+            Plugin.Log.LogInfo($"Saved event table dump to: {savePath}");
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Event table dump failed: {ex}");
+            Plugin.Log.LogError($"Event table dump failed: {ex}");
         }
     }
 
@@ -163,6 +162,6 @@ public class UdonInspector : ModuleBase
             if (go.TryGetComponent(out UdonBehaviour ub))
                 _udonCache.Add(ub, go.name);
 
-        YjPlugin.Log.LogInfo($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
+        Plugin.Log.LogInfo($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
     }
 }

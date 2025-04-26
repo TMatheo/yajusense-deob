@@ -1,30 +1,38 @@
 ﻿using System;
+using System.IO;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using UnityEngine;
+using yajusense.Core;
 using yajusense.Core.Config;
+using yajusense.Core.Services;
 using yajusense.Modules;
 using yajusense.Patches;
 using yajusense.UI;
 using yajusense.Utils;
 
-namespace yajusense.Core;
+namespace yajusense;
 
 [BepInPlugin("yajusense", "yajusense", "1.0.0")]
-public class YjPlugin : BasePlugin
+public class Plugin : BasePlugin
 {
     public new static ManualLogSource Log;
+    public static readonly string ClientDirectory = Path.Combine(Directory.GetCurrentDirectory(), "yajusense");
 
     public override void Load()
     {
         Log = base.Log;
         Log.LogInfo("Initializing yajusense...");
 
+        FileUtils.EnsureDirectoryExists(ClientDirectory);
+
         HarmonyPatcher.Initialize();
 
         OpRaiseEvent.ApplyPatch();
         NetworkManagerOnEvent.ApplyPatch();
+
+        AudioService.Initialize();
 
         ConfigManager.Initialize();
 

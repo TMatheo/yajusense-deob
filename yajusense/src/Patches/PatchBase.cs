@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using BepInEx.Logging;
 using HarmonyLib;
-using yajusense.Core;
 
 namespace yajusense.Patches;
 
@@ -18,7 +17,7 @@ public abstract class PatchBase
         Initialize();
     }
 
-    protected static ManualLogSource Log => YjPlugin.Log;
+    protected static ManualLogSource Log => Plugin.Log;
 
     public MethodBase OriginalMethod { get; private set; }
     public string PatchId => GetType().Name;
@@ -41,13 +40,13 @@ public abstract class PatchBase
 
         ConfigurePatch(original, prefix, postfix, transpiler);
     }
-    
+
     protected static void ApplyPatch<T>() where T : PatchBase, new()
     {
         var patch = new T();
         patch.Apply();
     }
-    
+
     private HarmonyMethod CreatePatch(string methodName)
     {
         return new HarmonyMethod(GetType().GetMethod(

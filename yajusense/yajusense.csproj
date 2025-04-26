@@ -35,6 +35,12 @@
         <Reference Include="Photon-DotNet">
             <HintPath>libs\Photon-DotNet.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+            <HintPath>libs\UnityEngine.AssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>libs\UnityEngine.AudioModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
         </Reference>

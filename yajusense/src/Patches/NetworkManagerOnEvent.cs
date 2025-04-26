@@ -1,7 +1,6 @@
 using System.Reflection;
 using ExitGames.Client.Photon;
 using HarmonyLib;
-using yajusense.Core;
 
 namespace yajusense.Patches;
 
@@ -28,6 +27,6 @@ public class NetworkManagerOnEvent : PatchBase
         if (Instance == null)
             Instance = __instance;
 
-        YjPlugin.Log.LogInfo($"Event received at NetworkManager: {param_1.Code}");
+        Plugin.Log.LogInfo($"Event received at NetworkManager: {param_1.Code}");
     }
 }

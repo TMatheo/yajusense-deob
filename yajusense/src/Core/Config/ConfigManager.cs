@@ -7,13 +7,11 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using yajusense.Core.Config.JsonConverters;
 using yajusense.Modules;
-using yajusense.Utils;
 
 namespace yajusense.Core.Config;
 
 public static class ConfigManager
 {
-    private const string ConfigDirectoryName = "yajusense";
     private const string ConfigFileName = "ModuleConfig.cock";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -30,8 +28,7 @@ public static class ConfigManager
 
     private static JsonObject _configData = new();
     private static readonly Dictionary<ModuleBase, List<ConfigProperty>> ModuleConfigProperties = new();
-    private static string ConfigDirectory => Path.Combine(Directory.GetCurrentDirectory(), ConfigDirectoryName);
-    private static string ConfigPath => Path.Combine(ConfigDirectory, ConfigFileName);
+    private static readonly string ConfigPath = Path.Combine(Plugin.ClientDirectory, ConfigFileName);
 
     public static void Initialize()
     {
@@ -49,7 +46,7 @@ public static class ConfigManager
             if (string.IsNullOrWhiteSpace(json))
             {
                 _configData = new JsonObject();
-                YjPlugin.Log.LogInfo("Config file was empty, starting with empty config.");
+                Plugin.Log.LogInfo("Config file was empty, starting with empty config.");
             }
             else
             {
@@ -57,11 +54,11 @@ public static class ConfigManager
                 if (parsedNode is JsonObject jsonObject)
                 {
                     _configData = jsonObject;
-                    YjPlugin.Log.LogInfo("Config loaded successfully.");
+                    Plugin.Log.LogInfo("Config loaded successfully.");
                 }
                 else
                 {
-                    YjPlugin.Log.LogError("Config file root is not a JSON object. Resetting config.");
+                    Plugin.Log.LogError("Config file root is not a JSON object. Resetting config.");
                     _configData = new JsonObject();
                     TryCreateBackup("InvalidFormat");
                 }
@@ -69,13 +66,13 @@ public static class ConfigManager
         }
         catch (JsonException jsonEx)
         {
-            YjPlugin.Log.LogError($"Config load error (JSON Parsing): {jsonEx.Message}. Resetting config.");
+            Plugin.Log.LogError($"Config load error (JSON Parsing): {jsonEx.Message}. Resetting config.");
             _configData = new JsonObject();
             TryCreateBackup("CorruptedJson");
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Config load error (General): {ex}. Resetting config.");
+            Plugin.Log.LogError($"Config load error (General): {ex}. Resetting config.");
             _configData = new JsonObject();
             TryCreateBackup("LoadError");
         }
@@ -87,14 +84,13 @@ public static class ConfigManager
         {
             UpdateConfigDataFromModules();
 
-            FileUtils.EnsureDirectoryExists(ConfigDirectory);
             string json = JsonSerializer.Serialize(_configData, JsonOptions);
             File.WriteAllText(ConfigPath, json);
-            YjPlugin.Log.LogInfo("Config saved successfully.");
+            Plugin.Log.LogInfo("Config saved successfully.");
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Config save error: {ex}");
+            Plugin.Log.LogError($"Config save error: {ex}");
         }
     }
 
@@ -131,7 +127,7 @@ public static class ConfigManager
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogWarning(
+                    Plugin.Log.LogWarning(
                         $"Config value conversion failed for {moduleNodeName}.{propName}. Using default value. Error: {ex.Message}");
                     prop.SetValue(module, defaultValue);
                     try
@@ -140,7 +136,7 @@ public static class ConfigManager
                     }
                     catch (Exception innerEx)
                     {
-                        YjPlugin.Log.LogError(
+                        Plugin.Log.LogError(
                             $"Failed to serialize default value for {moduleNodeName}.{propName}: {innerEx.Message}");
                     }
                 }
@@ -154,7 +150,7 @@ public static class ConfigManager
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogError(
+                    Plugin.Log.LogError(
                         $"Failed to serialize default value for {moduleNodeName}.{propName}: {ex.Message}");
                 }
             }
@@ -177,7 +173,7 @@ public static class ConfigManager
             }
             catch (Exception ex)
             {
-                YjPlugin.Log.LogError(
+                Plugin.Log.LogError(
                     $"Failed to update property value for {moduleNodeName}.{propertyName}: {ex.Message}");
             }
     }
@@ -191,17 +187,15 @@ public static class ConfigManager
     {
         try
         {
-            FileUtils.EnsureDirectoryExists(ConfigDirectory);
-
             if (!File.Exists(ConfigPath))
             {
                 File.WriteAllText(ConfigPath, "{}");
-                YjPlugin.Log.LogInfo($"Created new config file: {ConfigPath}");
+                Plugin.Log.LogInfo($"Created new config file: {ConfigPath}");
             }
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Config file/directory creation failed: {ex}");
+            Plugin.Log.LogError($"Config file/directory creation failed: {ex}");
             throw;
         }
     }
@@ -215,11 +209,11 @@ public static class ConfigManager
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var backupPath = $"{ConfigPath}.{suffix}_{timestamp}.bak";
             File.Move(ConfigPath, backupPath);
-            YjPlugin.Log.LogWarning($"Created backup of potentially corrupted config: {backupPath}");
+            Plugin.Log.LogWarning($"Created backup of potentially corrupted config: {backupPath}");
         }
         catch (Exception backupEx)
         {
-            YjPlugin.Log.LogError($"Backup creation failed: {backupEx}");
+            Plugin.Log.LogError($"Backup creation failed: {backupEx}");
         }
     }
 
@@ -245,7 +239,7 @@ public static class ConfigManager
                 }
                 catch (Exception ex)
                 {
-                    YjPlugin.Log.LogError(
+                    Plugin.Log.LogError(
                         $"Failed to serialize property value for {moduleNodeName}.{configProp.Property.Name} during save: {ex.Message}");
                 }
         }

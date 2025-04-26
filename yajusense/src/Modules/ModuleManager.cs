@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Modules.Movement;
 using yajusense.Modules.Other;
+using yajusense.Modules.Player;
 using yajusense.Modules.Visual;
 using yajusense.Modules.Visual.HUD;
 
@@ -41,22 +41,20 @@ public static class ModuleManager
         RegisterModule(new Information());
         RegisterModule(new ThirdPerson());
         RegisterModule(new UdonInspector());
+        RegisterModule(new MLGMode());
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
+
+        // Player
+        RegisterModule(new HideSelf());
     }
 
     private static void RegisterModule(ModuleBase module)
     {
-        if (module == null)
-        {
-            YjPlugin.Log.LogWarning("Attempted to register a null module");
-            return;
-        }
-
         ConfigManager.RegisterModuleConfig(module);
 
         Modules.Add(module);
-        YjPlugin.Log.LogInfo($"Module registered: {module.Name}");
+        Plugin.Log.LogInfo($"Module registered: {module.Name}");
     }
 
     public static void UpdateModules()

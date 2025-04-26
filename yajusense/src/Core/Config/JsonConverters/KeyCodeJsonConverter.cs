@@ -15,7 +15,7 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
             {
                 if (Enum.IsDefined(typeof(KeyCode), intValue)) return (KeyCode)intValue;
 
-                YjPlugin.Log.LogWarning($"Invalid KeyCode value: {intValue}");
+                Plugin.Log.LogWarning($"Invalid KeyCode value: {intValue}");
                 return KeyCode.None;
             }
 
@@ -26,12 +26,12 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
 
                 if (Enum.TryParse(strValue, true, out KeyCode result)) return result;
 
-                YjPlugin.Log.LogWarning($"Could not parse KeyCode from string: {strValue}");
+                Plugin.Log.LogWarning($"Could not parse KeyCode from string: {strValue}");
             }
         }
         catch (Exception ex)
         {
-            YjPlugin.Log.LogError($"Error parsing KeyCode: {ex.Message}");
+            Plugin.Log.LogError($"Error parsing KeyCode: {ex.Message}");
         }
 
         return KeyCode.None;

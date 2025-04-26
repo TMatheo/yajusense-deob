@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using UnityEngine;
-using yajusense.Core;
 
 namespace yajusense.Extensions;
 
@@ -24,7 +23,7 @@ public static class ColorExtensions
     {
         if (string.IsNullOrEmpty(hex) || hex.Length != 7 || hex[0] != '#')
         {
-            YjPlugin.Log.LogError($"Invalid hex string: {hex}. Expected format is #RRGGBB.");
+            Plugin.Log.LogError($"Invalid hex string: {hex}. Expected format is #RRGGBB.");
             return Color.white;
         }
 
@@ -37,7 +36,7 @@ public static class ColorExtensions
         }
         catch (FormatException e)
         {
-            YjPlugin.Log.LogError($"Error parsing hex string: {hex}. {e.Message}");
+            Plugin.Log.LogError($"Error parsing hex string: {hex}. {e.Message}");
             return Color.white;
         }
     }

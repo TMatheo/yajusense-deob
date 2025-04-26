@@ -17,7 +17,7 @@ public class OpRaiseEvent : PatchBase
     protected override void Initialize()
     {
         MethodInfo originalMethod = AccessTools.Method(
-            typeof(LoadBalancingClient_Internal), 
+            typeof(LoadBalancingClient_Internal),
             nameof(LoadBalancingClient_Internal.Method_Public_Virtual_New_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0));
 
         ConfigurePatch(originalMethod, nameof(Prefix));
