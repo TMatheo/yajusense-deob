@@ -33,15 +33,15 @@ public static class EventSender
         Buffer.BlockCopy(positionBytes, 0, lastData, PositionDataIndex, positionBytes.Length);
         Buffer.BlockCopy(rotationBytes, 0, lastData, PositionDataIndex + positionBytes.Length, rotationBytes.Length);
 
-        RaiseEvent(12, lastData);
+        RaiseEvent(12, lastData, false);
     }
 
-    private static void RaiseEvent(byte code, object content)
+    private static void RaiseEvent(byte code, object content, bool isReliable)
     {
         PhotonNetwork_Internal.Method_Public_Static_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0(
             code,
             Il2CppSerializationUtils.FromManagedToIL2CPP<Object>(content),
             null,
-            SendOptions.SendUnreliable);
+            isReliable ? SendOptions.SendReliable : SendOptions.SendUnreliable);
     }
 }

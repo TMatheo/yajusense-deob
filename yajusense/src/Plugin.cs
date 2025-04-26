@@ -54,6 +54,7 @@ public class YjMonoBehaviour : MonoBehaviour
     private void Update()
     {
         ModuleManager.UpdateModules();
+        NetworkManagerOnEvent.OnUpdate();
     }
 
     private void OnGUI()

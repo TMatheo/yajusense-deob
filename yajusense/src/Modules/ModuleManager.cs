@@ -42,6 +42,7 @@ public static class ModuleManager
         RegisterModule(new ThirdPerson());
         RegisterModule(new UdonInspector());
         RegisterModule(new MLGMode());
+        RegisterModule(new CrashDetector());
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
 

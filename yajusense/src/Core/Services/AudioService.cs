@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Modules;
-using yajusense.Modules.Other;
 
 namespace yajusense.Core.Services;
 

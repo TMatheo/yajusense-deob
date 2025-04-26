@@ -14,8 +14,6 @@ public class Window
     private Rect _position;
     private Rect _resizeHandleRect;
 
-    private Vector2 _scrollPosition;
-
     public Window(Rect position, string title = "")
     {
         _position = position;
@@ -38,15 +36,11 @@ public class Window
             GUILayout.Space(5);
             GUILayout.BeginVertical();
             GUILayout.Space(5);
-
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         }
     }
 
     public void End()
     {
-        GUILayout.EndScrollView();
-
         GUILayout.EndVertical();
         GUILayout.Space(5);
         GUILayout.EndHorizontal();

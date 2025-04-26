@@ -20,6 +20,8 @@ public class Menu : ModuleBase
 
     private bool _isDetectingKey;
     private ConfigProperty _keyDetectingProp;
+
+    private Vector2 _scrollPos;
     private ModuleCategory _selectedCategory = ModuleCategory.Visual;
 
     public Menu() : base("Menu", "Menu", ModuleCategory.Visual, KeyCode.Insert)
@@ -42,12 +44,16 @@ public class Menu : ModuleBase
         _window.Begin();
         {
             DrawTab();
+
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos);
+
             DrawModules();
 
             if (_selectedCategory == ModuleCategory.ClientSettings)
                 DrawClientSettings();
 
-            GUILayout.FlexibleSpace();
+            GUILayout.EndScrollView();
+
             DrawConfigControls();
         }
         _window.End();
@@ -160,16 +166,14 @@ public class Menu : ModuleBase
                         StartDetectKeyPress(module, prop);
                         AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
                     }
-                
+
                 if ((KeyCode)prop.Property.GetValue(module)! != KeyCode.None)
-                {
                     if (GUILayout.Button("Clear", GUILayout.Width(60)))
                     {
                         prop.Property.SetValue(module, KeyCode.None);
                         ConfigManager.UpdatePropertyValue(module, prop.Property.Name, KeyCode.None);
                         AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
                     }
-                }
 
                 break;
         }
@@ -178,7 +182,6 @@ public class Menu : ModuleBase
         {
             prop.Property.SetValue(module, newValue);
             ConfigManager.UpdatePropertyValue(module, prop.Property.Name, newValue);
-            AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
         }
     }
 

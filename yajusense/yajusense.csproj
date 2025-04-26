@@ -65,6 +65,9 @@
         <Reference Include="VRC.Udon.VM">
             <HintPath>libs\VRC.Udon.VM.dll</HintPath>
         </Reference>
+        <Reference Include="VRCCore-Standalone">
+            <HintPath>libs\VRCCore-Standalone.dll</HintPath>
+        </Reference>
         <Reference Include="VRCSDK3">
             <HintPath>libs\VRCSDK3.dll</HintPath>
         </Reference>
