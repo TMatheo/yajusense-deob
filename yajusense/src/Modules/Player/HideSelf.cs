@@ -1,4 +1,5 @@
 ﻿using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Player;
 
@@ -10,17 +11,17 @@ public class HideSelf : ModuleBase
 
     public override void OnEnable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(false);
+        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(false);
     }
 
     public override void OnDisable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(true);
+        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(true);
     }
 }

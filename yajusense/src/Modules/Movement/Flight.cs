@@ -2,6 +2,7 @@
 using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Movement;
 
@@ -16,10 +17,10 @@ public class Flight : ModuleBase
 
     public override void OnUpdate()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
-        VRCPlayerApi localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+        VRCPlayerApi localPlayer = Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi();
 
         if (Input.GetKey(KeyCode.W))
             localPlayer.gameObject.transform.position +=
@@ -48,16 +49,16 @@ public class Flight : ModuleBase
 
     public override void OnEnable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
+        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
     }
 
     public override void OnDisable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
-        VRCUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
+        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
     }
 }

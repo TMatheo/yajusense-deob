@@ -4,6 +4,7 @@ using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Networking;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Movement;
 
@@ -27,7 +28,7 @@ public class Spinbot : ModuleBase
 
     public override void OnEnable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!PlayerUtils.IsInWorld())
             return;
 
         _coroutine = CoroutineRunner.StartManagedCoroutine(SendSpinEvent());
@@ -43,10 +44,10 @@ public class Spinbot : ModuleBase
     {
         while (Enabled)
         {
-            if (!VRCUtils.IsInWorld())
+            if (!Utils.VRC.PlayerUtils.IsInWorld())
                 yield break;
 
-            EventSender.SendMovementEvent(VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position, Rotation);
+            EventSender.SendMovementEvent(Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.position, Rotation);
             yield return new WaitForSeconds(0.1f);
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using yajusense.UI;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Visual;
 
@@ -27,9 +28,9 @@ public class Information : ModuleBase
         _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f;
 
         var positionText = "XYZ: N/A";
-        if (VRCUtils.IsInWorld())
+        if (Utils.VRC.PlayerUtils.IsInWorld())
         {
-            Vector3 position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
+            Vector3 position = Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
             positionText = $"XYZ: {position.x:F0}, {position.y:F0}, {position.z:F0}";
         }
 

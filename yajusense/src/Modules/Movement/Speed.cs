@@ -2,6 +2,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Movement;
 
@@ -16,10 +17,10 @@ public class Speed : ModuleBase
 
     public override void OnUpdate()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
-        VRCPlayerApi localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+        VRCPlayerApi localPlayer = Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi();
 
         if (Input.GetKey(KeyCode.W))
             localPlayer.gameObject.transform.position +=

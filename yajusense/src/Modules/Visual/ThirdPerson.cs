@@ -1,5 +1,6 @@
 using UnityEngine;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Visual;
 
@@ -20,7 +21,7 @@ public class ThirdPerson : ModuleBase
 
     public override void OnEnable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
         InitializeCameras();
@@ -29,7 +30,7 @@ public class ThirdPerson : ModuleBase
 
     public override void OnDisable()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
         DisableBackCamera();
@@ -100,7 +101,7 @@ public class ThirdPerson : ModuleBase
 
     public override void OnUpdate()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!Utils.VRC.PlayerUtils.IsInWorld())
             return;
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
