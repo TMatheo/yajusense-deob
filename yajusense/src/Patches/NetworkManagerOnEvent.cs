@@ -10,6 +10,7 @@ using yajusense.Modules;
 using yajusense.Modules.Visual;
 using yajusense.UI;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Patches;
 
@@ -44,14 +45,14 @@ public class NetworkManagerOnEvent : PatchBase
     {
         if (param_1.Code == 12)
         {
-            VRCPlayerApi sender = VRCUtils.GetVRCPlayerApiByID(param_1.Sender);
+            VRCPlayerApi sender = PlayerUtils.GetVRCPlayerApiByID(param_1.Sender);
             if (sender != null) LastEvent12Time[sender] = Time.time;
         }
     }
 
     public static void OnUpdate()
     {
-        if (!VRCUtils.IsInWorld())
+        if (!PlayerUtils.IsInWorld())
             return;
 
         var crashedPlayers = LastEvent12Time

@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEngine;
 using yajusense.Extensions;
 using yajusense.Utils;
+using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Player;
 
@@ -14,9 +15,9 @@ public class HideSelf : ModuleBase
     
     private bool TryInitialize()
     {
-        if (!VRCUtils.IsInWorld()) return false;
+        if (!PlayerUtils.IsInWorld()) return false;
 
-        var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+        var localPlayer = PlayerUtils.GetLocalVRCPlayerApi();
         if (localPlayer == null) return false;
         _forwardDirection = localPlayer.gameObject.transform
             .Find("ForwardDirection")?.gameObject;
@@ -47,7 +48,7 @@ public class HideSelf : ModuleBase
     
     public override void OnDisable()
     {
-        if (VRCUtils.IsInWorld())
+        if (PlayerUtils.IsInWorld())
             SetAvatarElementsActive(true);
     }
 }

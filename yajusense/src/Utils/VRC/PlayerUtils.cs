@@ -1,3 +1,4 @@
+using System.Linq;
 using VRC.Core;
 using VRC.SDKBase;
 
@@ -11,11 +12,18 @@ public static class PlayerUtils
 
         return global::VRC.SDKBase.Networking.LocalPlayer;
     }
+    
+    public static VRCPlayerApi GetVRCPlayerApiByID(int id)
+    {
+        return VRCPlayerApi.AllPlayers?.ToArray()
+            .FirstOrDefault(player => player != null && player.playerId == id);
+    }
 
     public static bool IsInWorld()
     {
         return GetLocalVRCPlayerApi() != null;
     }
+    
 
     public static void ChangeAvatar(string avatarID)
     {
