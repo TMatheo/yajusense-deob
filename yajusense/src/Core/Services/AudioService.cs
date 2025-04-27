@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using yajusense.Modules;
 
 namespace yajusense.Core.Services;
 
@@ -27,13 +28,15 @@ public static class AudioService
 
     public static void Initialize()
     {
-        var go = new GameObject("AudioService");
-        Object.DontDestroyOnLoad(go);
+        var go = new GameObject("AudioService")
+        {
+            hideFlags = HideFlags.HideAndDontSave
+        };
         _audioSource = go.AddComponent<AudioSource>();
         Plugin.Log.LogInfo("AudioService initialized");
     }
 
-    public static void PlayAudio(AudioClipType clipType, float volume = 0.5f)
+    public static void PlayAudio(AudioClipType clipType)
     {
         if (!AudioClipMap.TryGetValue(clipType, out string assetName))
         {
@@ -45,7 +48,7 @@ public static class AudioService
         if (bundle == null) return;
 
         var clip = AssetBundleService.LoadAsset<AudioClip>(BundleName, assetName);
-        if (clip != null) PlayAudioInternal(clip, volume);
+        if (clip != null) PlayAudioInternal(clip, ModuleManager.ClientSettings.SoundEffectsVolume);
     }
 
     private static void PlayAudioInternal(AudioClip clip, float volume)

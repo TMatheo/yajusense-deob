@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
+using yajusense.Core.Services;
 using yajusense.Modules.Other;
 using yajusense.UI;
 using yajusense.Utils;
@@ -19,6 +20,8 @@ public class Menu : ModuleBase
 
     private bool _isDetectingKey;
     private ConfigProperty _keyDetectingProp;
+
+    private Vector2 _scrollPos;
     private ModuleCategory _selectedCategory = ModuleCategory.Visual;
 
     public Menu() : base("Menu", "Menu", ModuleCategory.Visual, KeyCode.Insert)
@@ -41,12 +44,16 @@ public class Menu : ModuleBase
         _window.Begin();
         {
             DrawTab();
+
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos);
+
             DrawModules();
 
             if (_selectedCategory == ModuleCategory.ClientSettings)
                 DrawClientSettings();
 
-            GUILayout.FlexibleSpace();
+            GUILayout.EndScrollView();
+
             DrawConfigControls();
         }
         _window.End();
@@ -63,7 +70,11 @@ public class Menu : ModuleBase
                 if (category == ModuleCategory.ClientSettings)
                     text = "Settings".Size(FontSizeHeader);
 
-                if (GUILayout.Button(category == _selectedCategory ? text.Bold() : text)) _selectedCategory = category;
+                if (GUILayout.Button(category == _selectedCategory ? text.Bold() : text))
+                {
+                    _selectedCategory = category;
+                    AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
+                }
             }
         }
         GUILayout.EndHorizontal();
@@ -149,16 +160,25 @@ public class Menu : ModuleBase
                 break;
 
             case KeyCode key:
-                if (GUILayout.Button(_isDetectingKey && _keyDetectingProp == prop
-                        ? "Press any key..."
-                        : key.ToString()))
+                if (GUILayout.Button(_isDetectingKey && _keyDetectingProp == prop ? "Press any key... (Press ESC to cancel)" : key.ToString()))
                     if (!_isDetectingKey)
+                    {
                         StartDetectKeyPress(module, prop);
+                        AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
+                    }
+
+                if ((KeyCode)prop.Property.GetValue(module)! != KeyCode.None)
+                    if (GUILayout.Button("Clear", GUILayout.Width(60)))
+                    {
+                        prop.Property.SetValue(module, KeyCode.None);
+                        ConfigManager.UpdatePropertyValue(module, prop.Property.Name, KeyCode.None);
+                        AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
+                    }
 
                 break;
         }
 
-        if (!Equals(newValue, currentValue) && !(currentValue is KeyCode))
+        if (!Equals(newValue, currentValue) && currentValue is not KeyCode)
         {
             prop.Property.SetValue(module, newValue);
             ConfigManager.UpdatePropertyValue(module, prop.Property.Name, newValue);

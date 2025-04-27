@@ -15,9 +15,7 @@ public class ThirdPerson : ModuleBase
 
     private float _zoomOffset = 2f;
 
-    public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5)
-    {
-    }
+    public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5) { }
 
     public override void OnEnable()
     {

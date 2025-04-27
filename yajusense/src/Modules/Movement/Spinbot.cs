@@ -12,9 +12,7 @@ public class Spinbot : ModuleBase
 {
     private Coroutine _coroutine;
 
-    public Spinbot() : base("Spinbot", "Player goes crazy (server-sided)", ModuleCategory.Movement)
-    {
-    }
+    public Spinbot() : base("Spinbot", "Player goes crazy (server-sided)", ModuleCategory.Movement) { }
 
     [Config("Rotation speed", "Rotation speed", false, 1.0f, 100.0f)]
     public float RotationSpeed { get; set; } = 50.0f;

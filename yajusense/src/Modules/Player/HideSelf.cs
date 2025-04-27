@@ -1,27 +1,53 @@
-﻿using yajusense.Utils;
-using yajusense.Utils.VRC;
+using System.Linq;
+using UnityEngine;
+using yajusense.Extensions;
+using yajusense.Utils;
 
 namespace yajusense.Modules.Player;
 
 public class HideSelf : ModuleBase
 {
-    public HideSelf() : base("HideSelf", "Hides your avatar (only prevents from crashing when using one like mesh)", ModuleCategory.Player)
+    private GameObject _cachedAvatarPanel;
+    private GameObject _forwardDirection;
+
+    public HideSelf() : base("HideSelf", "Hides your avatar (only prevents from crashing when using one like mesh)", ModuleCategory.Player) { }
+    
+    private bool TryInitialize()
     {
+        if (!VRCUtils.IsInWorld()) return false;
+
+        var localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+        if (localPlayer == null) return false;
+        _forwardDirection = localPlayer.gameObject.transform
+            .Find("ForwardDirection")?.gameObject;
+
+        var cachedAvatarPanels = Resources.FindObjectsOfTypeAll<GameObject>()
+            .Where(obj => obj.name == "Panel_SelectedAvatar" && 
+                          obj.transform.GetFullPath().Contains("Menu_Avatars"))
+            .ToArray();
+        _cachedAvatarPanel = cachedAvatarPanels[0];
+        
+        return _forwardDirection != null && _cachedAvatarPanel != null;
+    }
+
+    private void SetAvatarElementsActive(bool active)
+    {
+        if (_forwardDirection != null)
+            _forwardDirection.SetActive(active);
+        
+        if (_cachedAvatarPanel != null)
+            _cachedAvatarPanel.SetActive(active);
     }
 
     public override void OnEnable()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
-            return;
-
-        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(false);
+        if (TryInitialize())
+            SetAvatarElementsActive(false);
     }
-
+    
     public override void OnDisable()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
-            return;
-
-        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.Find("ForwardDirection").gameObject.SetActive(true);
+        if (VRCUtils.IsInWorld())
+            SetAvatarElementsActive(true);
     }
 }
