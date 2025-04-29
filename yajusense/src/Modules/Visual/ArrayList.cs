@@ -50,7 +50,7 @@ public class ArrayList : ModuleBase
 
             var currentRect = new Rect(_modulePositions[module], rectSize);
 
-            Color color = ColorUtils.GetRainbowColor(visibleModuleIndex * ModuleManager.ClientSettings.RainbowColorStep);
+            Color color = ColorUtils.GetClientColor(visibleModuleIndex * ModuleManager.ClientSettings.ColorStep);
 
             Color rectColor = color.Darken(0.2f);
             rectColor.a = 0.5f;

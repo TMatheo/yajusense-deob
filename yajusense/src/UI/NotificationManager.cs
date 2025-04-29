@@ -82,7 +82,7 @@ public static class NotificationManager
         float progress = Mathf.Clamp01(elapsedTime / notification.Duration);
         float width = RectWidth * (1f - progress);
 
-        Color progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.RainbowColorStep);
+        Color progressBarColor = ColorUtils.GetClientColor(displayIndex * ModuleManager.ClientSettings.ColorStep);
         progressBarColor.a = notification.CurrentAlpha;
 
         var progressBarRect = new Rect(

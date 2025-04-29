@@ -192,7 +192,7 @@ public static class Drawer
         GUI.Label(new Rect(position, dummy), text);
     }
 
-    public static void DrawRainbowText(string text, Vector2 position, int fontSize = 12, bool shadow = false, float colorOffset = 0f)
+    public static void DrawGradientText(string text, Vector2 position, int fontSize = 12, bool shadow = false, float colorOffset = 0f)
     {
         if (string.IsNullOrEmpty(text)) return;
 
@@ -203,7 +203,7 @@ public static class Drawer
         foreach (char c in text)
         {
             var str = c.ToString();
-            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset + colorOffset);
+            Color color = ColorUtils.GetClientColor((index + 1) * rainbowOffset + colorOffset);
 
             DrawText(str, position + new Vector2(xOffset, 0), color, fontSize, shadow);
 

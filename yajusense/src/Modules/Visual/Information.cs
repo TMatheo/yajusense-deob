@@ -44,7 +44,7 @@ public class Information : ModuleBase
             Vector2 textSize = IMGUIUtils.CalcTextSize(text, FontSize);
             currentY -= textSize.y;
             var textPos = new Vector2(10f, currentY);
-            Color color = ColorUtils.GetRainbowColor(i * ModuleManager.ClientSettings.RainbowColorStep);
+            Color color = ColorUtils.GetClientColor(i * ModuleManager.ClientSettings.ColorStep);
 
             Drawer.DrawText(text, textPos, color, FontSize, true);
         }

@@ -18,26 +18,4 @@ public static class ColorExtensions
         v *= factor;
         return Color.HSVToRGB(h, s, v);
     }
-
-    public static Color ToColor(this string hex)
-    {
-        if (string.IsNullOrEmpty(hex) || hex.Length != 7 || hex[0] != '#')
-        {
-            Plugin.Log.LogError($"Invalid hex string: {hex}. Expected format is #RRGGBB.");
-            return Color.white;
-        }
-
-        try
-        {
-            byte r = byte.Parse(hex.Substring(1, 2), NumberStyles.HexNumber);
-            byte g = byte.Parse(hex.Substring(3, 2), NumberStyles.HexNumber);
-            byte b = byte.Parse(hex.Substring(5, 2), NumberStyles.HexNumber);
-            return new Color32(r, g, b, 255);
-        }
-        catch (FormatException e)
-        {
-            Plugin.Log.LogError($"Error parsing hex string: {hex}. {e.Message}");
-            return Color.white;
-        }
-    }
 }
