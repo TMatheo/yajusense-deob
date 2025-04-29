@@ -34,23 +34,38 @@ public abstract class ModuleBase
 
     public virtual void OnDisable() { }
 
+    public void Enable()
+    {
+        Enabled = true;
+        
+        OnEnable();
+        
+        ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
+        NotificationManager.ShowNotification($"Enabled {Name}");
+        AudioService.PlayAudio(AudioService.AudioClipType.ModuleEnable);
+    }
+
+    public void Disable()
+    {
+        Enabled = false;
+        
+        OnDisable();
+        
+        ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
+        NotificationManager.ShowNotification($"Disabled {Name}");
+        AudioService.PlayAudio(AudioService.AudioClipType.ModuleDisable);
+    }
+
     public void Toggle()
     {
-        Enabled = !Enabled;
-
-        ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
-
         if (Enabled)
         {
-            OnEnable();
-            NotificationManager.ShowNotification($"Enabled {Name}");
-            AudioService.PlayAudio(AudioService.AudioClipType.ModuleEnable);
+            Disable();
         }
         else
         {
-            OnDisable();
-            NotificationManager.ShowNotification($"Disabled {Name}");
-            AudioService.PlayAudio(AudioService.AudioClipType.ModuleDisable);
+            Enable();
+            
         }
     }
 }
