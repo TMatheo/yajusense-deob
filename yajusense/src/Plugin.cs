@@ -18,49 +18,49 @@ namespace yajusense;
 [BepInPlugin("yajusense", "yajusense", "1.0.0")]
 public class Plugin : BasePlugin
 {
-    public new static ManualLogSource Log;
-    public static readonly string ClientDirectory = Path.Combine(Directory.GetCurrentDirectory(), "yajusense");
+	public new static ManualLogSource Log;
+	public static readonly string ClientDirectory = Path.Combine(Directory.GetCurrentDirectory(), "yajusense");
 
-    public override void Load()
-    {
-        Log = base.Log;
-        Log.LogInfo("Initializing yajusense...");
+	public override void Load()
+	{
+		Log = base.Log;
+		Log.LogInfo("Initializing yajusense...");
 
-        FileUtils.EnsureDirectoryExists(ClientDirectory);
+		FileUtils.EnsureDirectoryExists(ClientDirectory);
 
-        HarmonyPatcher.Initialize();
+		HarmonyPatcher.Initialize();
 
-        OpRaiseEvent.ApplyPatch();
-        NetworkManagerOnEvent.ApplyPatch();
+		OpRaiseEvent.ApplyPatch();
+		NetworkManagerOnEvent.ApplyPatch();
 
-        AudioService.Initialize();
+		AudioService.Initialize();
 
-        ConfigManager.Initialize();
+		ConfigManager.Initialize();
 
-        ModuleManager.Initialize();
+		ModuleManager.Initialize();
 
-        CoroutineRunner.Initialize(AddComponent<CoroutineRunner>());
-        AddComponent<YjMonoBehaviour>();
+		CoroutineRunner.Initialize(AddComponent<CoroutineRunner>());
+		AddComponent<YjMonoBehaviour>();
 
-        CursorUnlocker.Init();
+		CursorUnlocker.Init();
 
-        Log.LogInfo("yajusense initialized successfully");
-    }
+		Log.LogInfo("yajusense initialized successfully");
+	}
 }
 
 public class YjMonoBehaviour : MonoBehaviour
 {
-    public YjMonoBehaviour(IntPtr handle) : base(handle) { }
+	public YjMonoBehaviour(IntPtr handle) : base(handle) { }
 
-    private void Update()
-    {
-        ModuleManager.UpdateModules();
-        PlayerTracker.Update();
-    }
+	private void Update()
+	{
+		ModuleManager.UpdateModules();
+		PlayerTracker.Update();
+	}
 
-    private void OnGUI()
-    {
-        ModuleManager.RenderModules();
-        NotificationManager.OnGUI();
-    }
+	private void OnGUI()
+	{
+		ModuleManager.RenderModules();
+		NotificationManager.OnGUI();
+	}
 }

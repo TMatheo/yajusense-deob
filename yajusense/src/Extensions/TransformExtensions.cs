@@ -5,17 +5,17 @@ namespace yajusense.Extensions;
 
 public static class TransformExtensions
 {
-    public static string GetFullPath(this Transform transform)
-    {
-        var path = new StringBuilder(transform.name);
-        Transform current = transform.parent;
+	public static string GetFullPath(this Transform transform)
+	{
+		var path = new StringBuilder(transform.name);
+		Transform current = transform.parent;
 
-        while (current != null)
-        {
-            path.Insert(0, current.name + "/");
-            current = current.parent;
-        }
+		while (current != null)
+		{
+			path.Insert(0, current.name + "/");
+			current = current.parent;
+		}
 
-        return path.ToString();
-    }
+		return path.ToString();
+	}
 }
