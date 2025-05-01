@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Modules.Movement;
 using yajusense.Modules.Other;
@@ -33,7 +34,6 @@ public static class ModuleManager
         // Movement
         RegisterModule(new Flight());
         RegisterModule(new Speed());
-        RegisterModule(new Spinbot());
         RegisterModule(new LagSwitch());
 
         // Visual
@@ -41,9 +41,9 @@ public static class ModuleManager
         RegisterModule(new Information());
         RegisterModule(new ThirdPerson());
         RegisterModule(new UdonInspector());
-        RegisterModule(new CrashDetector());
         RegisterModule(new ArrayList());
         RegisterModule(new Menu());
+        RegisterModule(new PlayerNotification());
 
         // Player
         RegisterModule(new HideSelf());
@@ -61,15 +61,39 @@ public static class ModuleManager
     {
         foreach (ModuleBase module in Modules)
         {
-            if (module.Enabled) module.OnUpdate();
-            if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey)) module.Toggle();
+            if (module.Enabled)
+                module.OnUpdate();
+
+            if (module.ToggleKey != KeyCode.None && Input.GetKeyDown(module.ToggleKey))
+                module.Toggle();
         }
     }
 
     public static void RenderModules()
     {
         foreach (ModuleBase module in Modules)
+        {
             if (module.Enabled)
                 module.OnGUI();
+        }
+    }
+
+    public static void NotifyPlayerChanges(List<VRCPlayerApi> joinedPlayers, List<VRCPlayerApi> leftPlayers)
+    {
+        foreach (ModuleBase module in Modules)
+        {
+            if (!module.Enabled)
+                continue;
+
+            foreach (VRCPlayerApi player in joinedPlayers)
+            {
+                module.OnPlayerJoined(player);
+            }
+
+            foreach (VRCPlayerApi player in leftPlayers)
+            {
+                module.OnPlayerLeft(player);
+            }
+        }
     }
 }

@@ -2,9 +2,6 @@ using System.Reflection;
 using ExitGames.Client.Photon;
 using HarmonyLib;
 using Il2CppSystem;
-using yajusense.Modules;
-using yajusense.Modules.Movement;
-using yajusense.Networking;
 using yajusense.Utils;
 
 namespace yajusense.Patches;
@@ -16,9 +13,7 @@ public class OpRaiseEvent : PatchBase
 
     protected override void Initialize()
     {
-        MethodInfo originalMethod = AccessTools.Method(
-            typeof(LoadBalancingClient_Internal),
-            nameof(LoadBalancingClient_Internal.Method_Public_Virtual_New_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0));
+        MethodInfo originalMethod = AccessTools.Method(typeof(LoadBalancingClient_Internal), nameof(LoadBalancingClient_Internal.Method_Public_Virtual_New_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0));
 
         ConfigurePatch(originalMethod, nameof(Prefix));
     }
@@ -37,14 +32,6 @@ public class OpRaiseEvent : PatchBase
 
             if (!ShouldSendE12)
                 return false;
-
-            var spinbotModule = ModuleManager.GetModule<Spinbot>();
-            if (spinbotModule?.Enabled == true)
-            {
-                byte[] bytes = QuaternionSerializer.Serialize(spinbotModule.Rotation);
-                System.Buffer.BlockCopy(bytes, 0, data, EventSender.RotationDataIndex, bytes.Length);
-                param_2 = Il2CppSerializationUtils.FromManagedToIL2CPP<Object>(data);
-            }
         }
 
         return true;

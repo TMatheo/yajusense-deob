@@ -79,12 +79,7 @@ public static class Drawer
         Matrix4x4 matrixBackup = GUI.matrix;
         GUIUtility.RotateAroundPivot(angle, start);
 
-        var lineRect = new Rect(
-            start.x,
-            start.y - thickness * 0.5f,
-            length,
-            thickness
-        );
+        var lineRect = new Rect(start.x, start.y - thickness * 0.5f, length, thickness);
 
         GUI.DrawTexture(lineRect, WhiteTexture);
         GUI.matrix = matrixBackup;
@@ -103,7 +98,7 @@ public static class Drawer
 
         var gradientTex = new Texture2D(2, 1)
         {
-            wrapMode = TextureWrapMode.Clamp
+            wrapMode = TextureWrapMode.Clamp,
         };
 
         gradientTex.SetPixel(0, 0, startColor);
@@ -144,13 +139,10 @@ public static class Drawer
     {
         Texture2D gradientTex = new(2, 2)
         {
-            wrapMode = TextureWrapMode.Clamp
+            wrapMode = TextureWrapMode.Clamp,
         };
 
-        gradientTex.SetPixels(horizontal
-            ? new[] { color1, color2, color1, color2 }
-            : new[] { color1, color1, color2, color2 }
-        );
+        gradientTex.SetPixels(horizontal ? new[] { color1, color2, color1, color2, } : new[] { color1, color1, color2, color2, });
 
         gradientTex.Apply();
 
@@ -161,7 +153,8 @@ public static class Drawer
 
     public static void DrawText(string text, Vector2 position, Color color, int fontSize = 12, bool shadow = false, bool outline = false, bool bold = false)
     {
-        if (string.IsNullOrEmpty(text)) return;
+        if (string.IsNullOrEmpty(text))
+            return;
 
         text = text.Color(color);
         text = text.Size(fontSize);
@@ -194,7 +187,8 @@ public static class Drawer
 
     public static void DrawGradientText(string text, Vector2 position, int fontSize = 12, bool shadow = false, float colorOffset = 0f)
     {
-        if (string.IsNullOrEmpty(text)) return;
+        if (string.IsNullOrEmpty(text))
+            return;
 
         float rainbowOffset = 1f / text.Length * 0.2f;
 
@@ -203,7 +197,7 @@ public static class Drawer
         foreach (char c in text)
         {
             var str = c.ToString();
-            Color color = ColorUtils.GetClientColor((index + 1) * rainbowOffset + colorOffset);
+            Color color = ColorUtils.GetRainbowColor((index + 1) * rainbowOffset + colorOffset);
 
             DrawText(str, position + new Vector2(xOffset, 0), color, fontSize, shadow);
 

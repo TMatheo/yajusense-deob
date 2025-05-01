@@ -46,8 +46,7 @@ public abstract class PatchBase
 
     private HarmonyMethod CreatePatch(string methodName)
     {
-        return new HarmonyMethod(GetType().GetMethod(
-            methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance));
+        return new HarmonyMethod(GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance));
     }
 
     private void Apply()
@@ -78,7 +77,8 @@ public abstract class PatchBase
 
     public void Remove()
     {
-        if (!_isApplied) return;
+        if (!_isApplied)
+            return;
 
         try
         {

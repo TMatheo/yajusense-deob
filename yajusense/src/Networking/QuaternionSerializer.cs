@@ -22,7 +22,8 @@ public static class QuaternionSerializer
 
     public static Quaternion Deserialize(byte[] data)
     {
-        if (data == null || data.Length < 5) return Quaternion.identity;
+        if (data == null || data.Length < 5)
+            return Quaternion.identity;
 
         Unpack10BitValues(data, 0, out ushort x, out ushort y, out ushort z, out ushort w);
 
@@ -31,7 +32,7 @@ public static class QuaternionSerializer
             x = x * ConversionFactor * 2f - 1f,
             y = y * ConversionFactor * 2f - 1f,
             z = z * ConversionFactor * 2f - 1f,
-            w = w * ConversionFactor * 2f - 1f
+            w = w * ConversionFactor * 2f - 1f,
         };
 
         return quaternion;
@@ -46,8 +47,7 @@ public static class QuaternionSerializer
         buffer[offset + 4] = (byte)(w & 0xFF);
     }
 
-    private static void Unpack10BitValues(byte[] buffer, int offset, out ushort x, out ushort y, out ushort z,
-        out ushort w)
+    private static void Unpack10BitValues(byte[] buffer, int offset, out ushort x, out ushort y, out ushort z, out ushort w)
     {
         x = (ushort)((buffer[offset] << 2) | ((buffer[offset + 1] >> 6) & 0x03));
         y = (ushort)(((buffer[offset + 1] & 0x3F) << 4) | ((buffer[offset + 2] >> 4) & 0x0F));

@@ -11,11 +11,7 @@ public class UnityVector3JsonConverter : JsonConverter<Vector3>
     {
         using JsonDocument doc = JsonDocument.ParseValue(ref reader);
         JsonElement root = doc.RootElement;
-        return new Vector3(
-            root.GetProperty("x").GetSingle(),
-            root.GetProperty("y").GetSingle(),
-            root.GetProperty("z").GetSingle()
-        );
+        return new Vector3(root.GetProperty("x").GetSingle(), root.GetProperty("y").GetSingle(), root.GetProperty("z").GetSingle());
     }
 
     public override void Write(Utf8JsonWriter writer, Vector3 value, JsonSerializerOptions options)

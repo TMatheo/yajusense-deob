@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
 using yajusense.UI;
@@ -27,19 +28,18 @@ public abstract class ModuleBase
     public KeyCode ToggleKey { get; set; }
 
     public virtual void OnUpdate() { }
-
     public virtual void OnGUI() { }
-
     public virtual void OnEnable() { }
-
     public virtual void OnDisable() { }
+    public virtual void OnPlayerJoined(VRCPlayerApi player) { }
+    public virtual void OnPlayerLeft(VRCPlayerApi player) { }
 
     public void Enable()
     {
         Enabled = true;
-        
+
         OnEnable();
-        
+
         ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
         NotificationManager.ShowNotification($"Enabled {Name}");
         AudioService.PlayAudio(AudioService.AudioClipType.ModuleEnable);
@@ -48,9 +48,9 @@ public abstract class ModuleBase
     public void Disable()
     {
         Enabled = false;
-        
+
         OnDisable();
-        
+
         ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
         NotificationManager.ShowNotification($"Disabled {Name}");
         AudioService.PlayAudio(AudioService.AudioClipType.ModuleDisable);
@@ -59,14 +59,9 @@ public abstract class ModuleBase
     public void Toggle()
     {
         if (Enabled)
-        {
             Disable();
-        }
         else
-        {
             Enable();
-            
-        }
     }
 }
 
@@ -75,5 +70,5 @@ public enum ModuleCategory
     Visual,
     Movement,
     Player,
-    ClientSettings
+    ClientSettings,
 }

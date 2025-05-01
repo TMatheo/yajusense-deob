@@ -18,7 +18,8 @@ public static class AssetBundleService
             return null;
         }
 
-        if (LoadedBundles.TryGetValue(bundleName, out AssetBundle cachedBundle)) return cachedBundle;
+        if (LoadedBundles.TryGetValue(bundleName, out AssetBundle cachedBundle))
+            return cachedBundle;
 
         AssetBundle bundle = AssetBundle.LoadFromFile(bundlePath);
         if (bundle == null)
@@ -61,7 +62,11 @@ public static class AssetBundleService
 
     public static void UnloadAllBundles(bool unloadAllObjects = false)
     {
-        foreach (AssetBundle bundle in LoadedBundles.Values) bundle.Unload(unloadAllObjects);
+        foreach (AssetBundle bundle in LoadedBundles.Values)
+        {
+            bundle.Unload(unloadAllObjects);
+        }
+
         LoadedBundles.Clear();
     }
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
-using yajusense.Utils;
 using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Movement;
@@ -15,25 +14,21 @@ public class Speed : ModuleBase
 
     public override void OnUpdate()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
+        if (!PlayerUtils.IsInWorld())
             return;
 
-        VRCPlayerApi localPlayer = Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi();
+        VRCPlayerApi localPlayer = PlayerUtils.GetLocalVRCPlayerApi();
 
         if (Input.GetKey(KeyCode.W))
-            localPlayer.gameObject.transform.position +=
-                localPlayer.gameObject.transform.forward * (MovementSpeed * Time.deltaTime);
+            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.forward * (MovementSpeed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.S))
-            localPlayer.gameObject.transform.position -=
-                localPlayer.gameObject.transform.forward * (MovementSpeed * Time.deltaTime);
+            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.forward * (MovementSpeed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.A))
-            localPlayer.gameObject.transform.position -=
-                localPlayer.gameObject.transform.right * (MovementSpeed * Time.deltaTime);
+            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.right * (MovementSpeed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.D))
-            localPlayer.gameObject.transform.position +=
-                localPlayer.gameObject.transform.right * (MovementSpeed * Time.deltaTime);
+            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.right * (MovementSpeed * Time.deltaTime);
     }
 }

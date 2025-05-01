@@ -12,7 +12,7 @@ public static class NotificationManager
         Info,
         Success,
         Warning,
-        Error
+        Error,
     }
 
     private const float DefaultDuration = 3f;
@@ -37,14 +37,11 @@ public static class NotificationManager
 
         foreach (Notification notification in Notifications)
         {
-            if (notification.IsExpired && !notification.IsScrollingOut) notification.IsScrollingOut = true;
+            if (notification.IsExpired && !notification.IsScrollingOut)
+                notification.IsScrollingOut = true;
 
             float targetAlpha = notification.IsScrollingOut ? 0f : 1f;
-            notification.CurrentAlpha = Mathf.Lerp(
-                notification.CurrentAlpha,
-                targetAlpha,
-                AnimationSpeed * Time.deltaTime
-            );
+            notification.CurrentAlpha = Mathf.Lerp(notification.CurrentAlpha, targetAlpha, AnimationSpeed * Time.deltaTime);
         }
 
         float screenRight = Screen.width;
@@ -57,11 +54,7 @@ public static class NotificationManager
             float targetX = notification.IsScrollingOut ? screenRight : screenRight - (RectWidth + Spacing);
             float targetY = screenBottom - (i + 1) * (RectHeight + Spacing);
 
-            notification.CurrentPosition = Vector2.Lerp(
-                notification.CurrentPosition,
-                new Vector2(targetX, targetY),
-                AnimationSpeed * Time.deltaTime
-            );
+            notification.CurrentPosition = Vector2.Lerp(notification.CurrentPosition, new Vector2(targetX, targetY), AnimationSpeed * Time.deltaTime);
 
             DrawNotification(notification, i);
         }
@@ -82,15 +75,10 @@ public static class NotificationManager
         float progress = Mathf.Clamp01(elapsedTime / notification.Duration);
         float width = RectWidth * (1f - progress);
 
-        Color progressBarColor = ColorUtils.GetClientColor(displayIndex * ModuleManager.ClientSettings.ColorStep);
+        Color progressBarColor = ColorUtils.GetRainbowColor(displayIndex * ModuleManager.ClientSettings.ColorStep);
         progressBarColor.a = notification.CurrentAlpha;
 
-        var progressBarRect = new Rect(
-            rect.x,
-            rect.yMax - ProgressBarHeight,
-            width,
-            ProgressBarHeight
-        );
+        var progressBarRect = new Rect(rect.x, rect.yMax - ProgressBarHeight, width, ProgressBarHeight);
 
         Drawer.DrawFilledRect(progressBarRect, progressBarColor);
     }
@@ -103,12 +91,7 @@ public static class NotificationManager
         Color textColor = notification.GetTextColor();
         textColor.a = notification.CurrentAlpha;
 
-        Drawer.DrawText(
-            notification.Message,
-            new Vector2(rect.x + PaddingX, textY),
-            textColor,
-            FontSize
-        );
+        Drawer.DrawText(notification.Message, new Vector2(rect.x + PaddingX, textY), textColor, FontSize);
     }
 
     private class Notification
@@ -140,7 +123,7 @@ public static class NotificationManager
                 NotificationType.Success => Color.green,
                 NotificationType.Warning => Colors.Orange,
                 NotificationType.Error => Color.red,
-                _ => Color.white
+                _ => Color.white,
             };
         }
     }

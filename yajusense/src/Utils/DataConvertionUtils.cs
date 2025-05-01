@@ -17,7 +17,8 @@ public static class DataConvertionUtils
         {
             hex.Append(bytes[i].ToString("X2"));
 
-            if (i < bytes.Length - 1) hex.Append(' ');
+            if (i < bytes.Length - 1)
+                hex.Append(' ');
         }
 
         return hex.ToString();

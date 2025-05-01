@@ -33,7 +33,7 @@
             <HintPath>libs\Il2CppSystem.Collections.Immutable.dll</HintPath>
         </Reference>
         <Reference Include="Localization.LocalizableString">
-          <HintPath>libs\Localization.LocalizableString.dll</HintPath>
+            <HintPath>libs\Localization.LocalizableString.dll</HintPath>
         </Reference>
         <Reference Include="Photon-DotNet">
             <HintPath>libs\Photon-DotNet.dll</HintPath>
@@ -69,7 +69,7 @@
             <HintPath>libs\VRC.Udon.VM.dll</HintPath>
         </Reference>
         <Reference Include="VRCCore-Standalone">
-          <HintPath>libs\VRCCore-Standalone.dll</HintPath>
+            <HintPath>libs\VRCCore-Standalone.dll</HintPath>
         </Reference>
         <Reference Include="VRCSDK3">
             <HintPath>libs\VRCSDK3.dll</HintPath>

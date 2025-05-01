@@ -45,7 +45,9 @@ public class UdonInspector : ModuleBase
 
     public override void OnGUI()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld()) return;
+        if (!PlayerUtils.IsInWorld())
+            return;
+
         _window.Begin();
         {
             DrawControls();
@@ -63,11 +65,14 @@ public class UdonInspector : ModuleBase
 
     private void DrawControls()
     {
-        if (GUILayout.Button("Refresh Udon Cache")) RefreshUdonCache();
+        if (GUILayout.Button("Refresh Udon Cache"))
+            RefreshUdonCache();
 
-        if (GUILayout.Button("Disassemble All")) DisassembleAll();
+        if (GUILayout.Button("Disassemble All"))
+            DisassembleAll();
 
-        if (GUILayout.Button("Dump All EventTable Func")) DumpAllEventTableFunctions();
+        if (GUILayout.Button("Dump All EventTable Func"))
+            DumpAllEventTableFunctions();
     }
 
     private void DrawUdonList()
@@ -102,7 +107,8 @@ public class UdonInspector : ModuleBase
 
     private void DrawDisassemblyControls()
     {
-        if (_selectedUdon.Key == null) return;
+        if (_selectedUdon.Key == null)
+            return;
 
         GUILayout.Space(15);
         if (GUILayout.Button($"Disassemble {_selectedUdon.Key}"))
@@ -112,12 +118,18 @@ public class UdonInspector : ModuleBase
     private void DisassembleAll()
     {
         RefreshUdonCache();
-        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache) UdonDisassembler.Disassemble(kv.Key, kv.Value);
+        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache)
+        {
+            UdonDisassembler.Disassemble(kv.Key, kv.Value);
+        }
     }
 
     private void DumpAllEventTableFunctions()
     {
-        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache) DumpEventTableFunctions(kv.Key, kv.Value);
+        foreach (KeyValuePair<UdonBehaviour, string> kv in _udonCache)
+        {
+            DumpEventTableFunctions(kv.Key, kv.Value);
+        }
     }
 
     private void DumpEventTableFunctions(UdonBehaviour udonBehaviour, string udonName)
@@ -155,13 +167,16 @@ public class UdonInspector : ModuleBase
 
     private void RefreshUdonCache()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld()) return;
+        if (!PlayerUtils.IsInWorld())
+            return;
 
         _udonCache.Clear();
         Il2CppArrayBase<GameObject> allObjs = Object.FindObjectsOfType<GameObject>();
         foreach (GameObject go in allObjs)
+        {
             if (go.TryGetComponent(out UdonBehaviour ub))
                 _udonCache.Add(ub, go.name);
+        }
 
         Plugin.Log.LogInfo($"[UdonInspector] {_udonCache.Count} UdonBehaviours found");
     }

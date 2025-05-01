@@ -7,6 +7,7 @@ using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
+using yajusense.Core.VRC;
 using yajusense.Modules;
 using yajusense.Patches;
 using yajusense.UI;
@@ -54,7 +55,7 @@ public class YjMonoBehaviour : MonoBehaviour
     private void Update()
     {
         ModuleManager.UpdateModules();
-        NetworkManagerOnEvent.OnUpdate();
+        PlayerTracker.Update();
     }
 
     private void OnGUI()

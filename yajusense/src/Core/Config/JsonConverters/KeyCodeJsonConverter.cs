@@ -13,7 +13,8 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
         {
             if (reader.TokenType == JsonTokenType.Number && reader.TryGetInt32(out int intValue))
             {
-                if (Enum.IsDefined(typeof(KeyCode), intValue)) return (KeyCode)intValue;
+                if (Enum.IsDefined(typeof(KeyCode), intValue))
+                    return (KeyCode)intValue;
 
                 Plugin.Log.LogWarning($"Invalid KeyCode value: {intValue}");
                 return KeyCode.None;
@@ -22,9 +23,11 @@ public class KeyCodeJsonConverter : JsonConverter<KeyCode>
             if (reader.TokenType == JsonTokenType.String)
             {
                 string strValue = reader.GetString();
-                if (string.IsNullOrEmpty(strValue)) return KeyCode.None;
+                if (string.IsNullOrEmpty(strValue))
+                    return KeyCode.None;
 
-                if (Enum.TryParse(strValue, true, out KeyCode result)) return result;
+                if (Enum.TryParse(strValue, true, out KeyCode result))
+                    return result;
 
                 Plugin.Log.LogWarning($"Could not parse KeyCode from string: {strValue}");
             }

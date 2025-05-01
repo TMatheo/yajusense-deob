@@ -26,11 +26,13 @@ public class Window
         GUILayout.BeginArea(_position, GUI.skin.window);
         {
             if (!string.IsNullOrEmpty(_title))
+            {
                 GUILayout.Label(_title.Bold(), new GUIStyle(GUI.skin.label)
                 {
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = 18
+                    fontSize = 18,
                 });
+            }
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
@@ -52,19 +54,9 @@ public class Window
         Event currentEvent = Event.current;
         Vector2 mousePos = currentEvent.mousePosition;
 
-        _resizeHandleRect = new Rect(
-            _position.x + _position.width - ResizeHandleSize,
-            _position.y + _position.height - ResizeHandleSize,
-            ResizeHandleSize,
-            ResizeHandleSize
-        );
+        _resizeHandleRect = new Rect(_position.x + _position.width - ResizeHandleSize, _position.y + _position.height - ResizeHandleSize, ResizeHandleSize, ResizeHandleSize);
 
-        var titleBarRect = new Rect(
-            _position.x,
-            _position.y,
-            _position.width,
-            20f
-        );
+        var titleBarRect = new Rect(_position.x, _position.y, _position.width, 20f);
 
         switch (currentEvent.type)
         {
@@ -99,10 +91,7 @@ public class Window
                 }
                 else if (_isResizing)
                 {
-                    _position.size = new Vector2(
-                        Mathf.Max(mousePos.x - _position.x + ResizeHandleSize, 100f),
-                        Mathf.Max(mousePos.y - _position.y + ResizeHandleSize, 100f)
-                    );
+                    _position.size = new Vector2(Mathf.Max(mousePos.x - _position.x + ResizeHandleSize, 100f), Mathf.Max(mousePos.y - _position.y + ResizeHandleSize, 100f));
                     currentEvent.Use();
                 }
 

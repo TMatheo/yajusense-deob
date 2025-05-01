@@ -14,11 +14,9 @@ public static class RichTextUtils
     private static readonly Lazy<Regex> BoldRegex = new(() => new Regex(@"<b>(.*?)<\/b>", RegexOptions.Singleline));
     private static readonly Lazy<Regex> ItalicRegex = new(() => new Regex(@"<i>(.*?)<\/i>", RegexOptions.Singleline));
 
-    private static readonly Lazy<Regex> ColorRegex =
-        new(() => new Regex(@"<color=[^>]+>(.*?)<\/color>", RegexOptions.Singleline));
+    private static readonly Lazy<Regex> ColorRegex = new(() => new Regex(@"<color=[^>]+>(.*?)<\/color>", RegexOptions.Singleline));
 
-    private static readonly Lazy<Regex> SizeRegex =
-        new(() => new Regex(@"<size=\d+>(.*?)<\/size>", RegexOptions.Singleline));
+    private static readonly Lazy<Regex> SizeRegex = new(() => new Regex(@"<size=\d+>(.*?)<\/size>", RegexOptions.Singleline));
 
     public static string Bold(this string text)
     {

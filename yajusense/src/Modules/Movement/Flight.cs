@@ -1,62 +1,82 @@
 ﻿using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
-using yajusense.Utils;
 using yajusense.Utils.VRC;
 
 namespace yajusense.Modules.Movement;
 
 public class Flight : ModuleBase
 {
+    private CharacterController _characterController;
+    private VRCPlayerApi _localPlayerApi;
+    private Transform _playerTransform;
+
     public Flight() : base("Flight", "Allows you to fly", ModuleCategory.Movement, KeyCode.F) { }
 
     [Config("Flight speed", "Flight speed", false, 1.0f, 50.0f)]
     public float Speed { get; set; } = 10.0f;
 
+    private bool EnsurePlayerComponents()
+    {
+        _localPlayerApi = PlayerUtils.GetLocalVRCPlayerApi();
+        if (_localPlayerApi == null)
+        {
+            _playerTransform = null;
+            _characterController = null;
+            return false;
+        }
+
+        if (_playerTransform == null)
+            _playerTransform = _localPlayerApi.gameObject?.transform;
+
+        if (_characterController == null)
+            _characterController = _localPlayerApi.gameObject?.GetComponent<CharacterController>();
+
+        return _playerTransform != null && _characterController != null;
+    }
+
+
     public override void OnUpdate()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
+        if (!EnsurePlayerComponents())
             return;
 
-        VRCPlayerApi localPlayer = Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi();
-
         if (Input.GetKey(KeyCode.W))
-            localPlayer.gameObject.transform.position +=
-                localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+            _playerTransform.position += _playerTransform.forward * (Speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.S))
-            localPlayer.gameObject.transform.position -=
-                localPlayer.gameObject.transform.forward * (Speed * Time.deltaTime);
+            _playerTransform.position -= _playerTransform.forward * (Speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.A))
-            localPlayer.gameObject.transform.position -=
-                localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+            _playerTransform.position -= _playerTransform.right * (Speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.D))
-            localPlayer.gameObject.transform.position +=
-                localPlayer.gameObject.transform.right * (Speed * Time.deltaTime);
+            _playerTransform.position += _playerTransform.right * (Speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.Space))
-            localPlayer.gameObject.transform.position += localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
+            _playerTransform.position += _playerTransform.up * (Speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.LeftShift))
-            localPlayer.gameObject.transform.position -= localPlayer.gameObject.transform.up * (Speed * Time.deltaTime);
+            _playerTransform.position -= _playerTransform.up * (Speed * Time.deltaTime);
 
-        localPlayer.SetVelocity(Vector3.zero);
+        _localPlayerApi.SetVelocity(Vector3.zero);
     }
 
     public override void OnEnable()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
+        if (!EnsurePlayerComponents())
             return;
 
-        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = false;
+        if (_characterController != null)
+            _characterController.enabled = false;
     }
 
     public override void OnDisable()
     {
-        if (!Utils.VRC.PlayerUtils.IsInWorld())
+        if (!EnsurePlayerComponents())
             return;
-        Utils.VRC.PlayerUtils.GetLocalVRCPlayerApi().gameObject.GetComponent<CharacterController>().enabled = true;
+
+        if (_characterController != null)
+            _characterController.enabled = true;
     }
 }

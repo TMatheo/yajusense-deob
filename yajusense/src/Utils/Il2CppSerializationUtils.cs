@@ -20,7 +20,9 @@ public static class Il2CppSerializationUtils
 
     private static byte[] ToByteArray(Object obj)
     {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
+
         var bf = new BinaryFormatter();
         var ms = new MemoryStream();
         bf.Serialize(ms, obj);
@@ -29,7 +31,9 @@ public static class Il2CppSerializationUtils
 
     private static byte[] ToByteArray(object obj)
     {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
+
         var bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         var ms = new System.IO.MemoryStream();
         bf.Serialize(ms, obj);
@@ -38,7 +42,9 @@ public static class Il2CppSerializationUtils
 
     private static T FromByteArray<T>(byte[] data)
     {
-        if (data == null) return default;
+        if (data == null)
+            return default;
+
         var bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         var ms = new System.IO.MemoryStream(data);
         object obj = bf.Deserialize(ms);
@@ -47,7 +53,9 @@ public static class Il2CppSerializationUtils
 
     private static T IL2CPPFromByteArray<T>(byte[] data)
     {
-        if (data == null) return default;
+        if (data == null)
+            return default;
+
         var bf = new BinaryFormatter();
         var ms = new MemoryStream(data);
         object obj = bf.Deserialize(ms);

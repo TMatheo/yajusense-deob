@@ -111,6 +111,7 @@ public class Menu : ModuleBase
     private void DrawModuleConfig(ModuleBase module)
     {
         if (ConfigManager.TryGetConfigProperties(module, out List<ConfigProperty> configProps))
+        {
             foreach (ConfigProperty prop in configProps)
             {
                 if (prop.Attribute.Hidden)
@@ -118,6 +119,7 @@ public class Menu : ModuleBase
 
                 DrawModuleProperty(module, prop);
             }
+        }
     }
 
     private void DrawModuleProperty(ModuleBase module, ConfigProperty prop)
@@ -161,19 +163,23 @@ public class Menu : ModuleBase
 
             case KeyCode key:
                 if (GUILayout.Button(_isDetectingKey && _keyDetectingProp == prop ? "Press any key... (Press ESC to cancel)" : key.ToString()))
+                {
                     if (!_isDetectingKey)
                     {
                         StartDetectKeyPress(module, prop);
                         AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
                     }
+                }
 
                 if ((KeyCode)prop.Property.GetValue(module)! != KeyCode.None)
+                {
                     if (GUILayout.Button("Clear", GUILayout.Width(60)))
                     {
                         prop.Property.SetValue(module, KeyCode.None);
                         ConfigManager.UpdatePropertyValue(module, prop.Property.Name, KeyCode.None);
                         AudioService.PlayAudio(AudioService.AudioClipType.ClickUI);
                     }
+                }
 
                 break;
         }
@@ -233,6 +239,7 @@ public class Menu : ModuleBase
         ClientSettings module = ModuleManager.ClientSettings;
 
         if (ConfigManager.TryGetConfigProperties(module, out List<ConfigProperty> configProps))
+        {
             foreach (ConfigProperty prop in configProps)
             {
                 if (prop.Attribute.Hidden || prop.Attribute.DisplayName == "Toggle Key")
@@ -240,15 +247,18 @@ public class Menu : ModuleBase
 
                 DrawModuleProperty(module, prop);
             }
+        }
     }
 
     private void DrawConfigControls()
     {
         GUILayout.BeginHorizontal();
         {
-            if (GUILayout.Button("Save Config")) ConfigManager.SaveConfig();
+            if (GUILayout.Button("Save Config"))
+                ConfigManager.SaveConfig();
 
-            if (GUILayout.Button("Load Config")) ConfigManager.LoadConfig();
+            if (GUILayout.Button("Load Config"))
+                ConfigManager.LoadConfig();
         }
         GUILayout.EndHorizontal();
     }

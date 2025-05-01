@@ -11,7 +11,7 @@ public class Crasher : ModuleBase
         if (PlayerUtils.IsInWorld())
         {
             ModuleManager.GetModule<HideSelf>().Enable();
-            
+
             PlayerUtils.ChangeAvatar("avtr_187a312a-09a0-48a1-94ab-79786f8d981a");
         }
     }

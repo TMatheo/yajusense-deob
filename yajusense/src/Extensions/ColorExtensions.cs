@@ -1,5 +1,3 @@
-using System;
-using System.Globalization;
 using UnityEngine;
 
 namespace yajusense.Extensions;

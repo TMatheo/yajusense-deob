@@ -6,9 +6,10 @@ public static class HUDUtils
 {
     public static void ShowNotification(string message, Sprite icon = null, float duration = 3f)
     {
-        var hudController = GetHudControllerInstance();
-        if (hudController == null) return;
-        
+        HudController_Internal hudController = GetHudControllerInstance();
+        if (hudController == null)
+            return;
+
         hudController.Method_Public_Void_LocalizableString_Sprite_Single_0(LocalizableStringUtils.Create(message), icon, duration);
     }
 

@@ -7,7 +7,7 @@ public static class TransformExtensions
 {
     public static string GetFullPath(this Transform transform)
     {
-        StringBuilder path = new StringBuilder(transform.name);
+        var path = new StringBuilder(transform.name);
         Transform current = transform.parent;
 
         while (current != null)
