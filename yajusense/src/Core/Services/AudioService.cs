@@ -11,7 +11,7 @@ public static class AudioService
 		ModuleEnable,
 		ModuleDisable,
 		ClickUI,
-		PlayerCrashed,
+		PlayerNotification,
 	}
 
 	private const string BundleName = "audiobundle";
@@ -23,7 +23,7 @@ public static class AudioService
 		{ AudioClipType.ModuleEnable, "module_enable" },
 		{ AudioClipType.ModuleDisable, "module_disable" },
 		{ AudioClipType.ClickUI, "click_ui" },
-		{ AudioClipType.PlayerCrashed, "player_crashed" },
+		{ AudioClipType.PlayerNotification, "player_crashed" },
 	};
 
 	public static void Initialize()

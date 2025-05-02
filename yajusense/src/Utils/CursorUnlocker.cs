@@ -1,19 +1,17 @@
+// referred UnityExplorer
+
 using System;
 using System.Collections;
-using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Modules;
 using yajusense.Modules.Visual;
-using yajusense.Patches;
 
 namespace yajusense.Utils;
 
 public static class CursorUnlocker
 {
-	private const string PatchIdCursorLock = "CursorLockStatePatch";
-	private const string PatchIdCursorVisible = "CursorVisiblePatch";
 	private static bool _currentlySettingCursor;
 	private static CursorLockMode _lastLockMode = CursorLockMode.None;
 	private static bool _lastVisibleState = true;
@@ -25,29 +23,12 @@ public static class CursorUnlocker
 		_lastLockMode = Cursor.lockState;
 		_lastVisibleState = Cursor.visible;
 
-		ApplyPatches();
 		UpdateCursorControl();
 
 		if (_unlockCoroutine != null)
 			CoroutineRunner.StopManagedCoroutine(_unlockCoroutine);
 
 		_unlockCoroutine = CoroutineRunner.StartManagedCoroutine(UnlockCoroutine());
-	}
-
-	private static void ApplyPatches()
-	{
-		MethodInfo lockStateSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.lockState));
-		if (lockStateSetter != null)
-			HarmonyPatcher.ApplyPatch(PatchIdCursorLock, lockStateSetter, new HarmonyMethod(typeof(CursorUnlocker), nameof(Prefix_set_lockState)));
-		else
-			Plugin.Log.LogError("Failed to find Cursor.lockState setter for patching.");
-
-
-		MethodInfo visibleSetter = AccessTools.PropertySetter(typeof(Cursor), nameof(Cursor.visible));
-		if (visibleSetter != null)
-			HarmonyPatcher.ApplyPatch(PatchIdCursorVisible, visibleSetter, new HarmonyMethod(typeof(CursorUnlocker), nameof(Prefix_set_visible)));
-		else
-			Plugin.Log.LogError("Failed to find Cursor.visible setter for patching.");
 	}
 
 	private static bool IsAnyUIShowing()
@@ -112,31 +93,41 @@ public static class CursorUnlocker
 		}
 	}
 
-	public static bool Prefix_set_lockState(ref CursorLockMode value)
+	[HarmonyPatch(typeof(Cursor), nameof(Cursor.lockState), MethodType.Setter)]
+	public static class CursorLockStatePatch
 	{
-		if (_currentlySettingCursor)
+		[HarmonyPrefix]
+		public static bool Prefix(ref CursorLockMode value)
+		{
+			if (_currentlySettingCursor)
+				return true;
+
+			if (!IsAnyUIShowing())
+				_lastLockMode = value;
+
+			if (IsAnyUIShowing())
+				value = CursorLockMode.None;
+
 			return true;
-
-		if (!IsAnyUIShowing())
-			_lastLockMode = value;
-
-		if (IsAnyUIShowing())
-			value = CursorLockMode.None;
-
-		return true;
+		}
 	}
 
-	public static bool Prefix_set_visible(ref bool value)
+	[HarmonyPatch(typeof(Cursor), nameof(Cursor.visible), MethodType.Setter)]
+	public static class CursorVisiblePatch
 	{
-		if (_currentlySettingCursor)
+		[HarmonyPrefix]
+		public static bool Prefix(ref bool value)
+		{
+			if (_currentlySettingCursor)
+				return true;
+
+			if (!IsAnyUIShowing())
+				_lastVisibleState = value;
+
+			if (IsAnyUIShowing())
+				value = true;
+
 			return true;
-
-		if (!IsAnyUIShowing())
-			_lastVisibleState = value;
-
-		if (IsAnyUIShowing())
-			value = true;
-
-		return true;
+		}
 	}
 }

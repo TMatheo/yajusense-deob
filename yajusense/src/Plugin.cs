@@ -3,13 +3,13 @@ using System.IO;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using HarmonyLib;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
 using yajusense.Core.VRC;
 using yajusense.Modules;
-using yajusense.Patches;
 using yajusense.UI;
 using yajusense.Utils;
 
@@ -19,6 +19,7 @@ namespace yajusense;
 public class Plugin : BasePlugin
 {
 	public new static ManualLogSource Log;
+	private Harmony _harmony;
 	public static readonly string ClientDirectory = Path.Combine(Directory.GetCurrentDirectory(), "yajusense");
 
 	public override void Load()
@@ -28,10 +29,13 @@ public class Plugin : BasePlugin
 
 		FileUtils.EnsureDirectoryExists(ClientDirectory);
 
-		HarmonyPatcher.Initialize();
-
-		OpRaiseEvent.ApplyPatch();
-		NetworkManagerOnEvent.ApplyPatch();
+		_harmony = new Harmony("yajusense");
+		Log.LogInfo("Harmony initialized successfully");
+		
+		_harmony.PatchAll();
+		Log.LogInfo("Patches applied successfully");
+		
+		CursorUnlocker.Init();
 
 		AudioService.Initialize();
 
@@ -41,8 +45,6 @@ public class Plugin : BasePlugin
 
 		CoroutineRunner.Initialize(AddComponent<CoroutineRunner>());
 		AddComponent<YjMonoBehaviour>();
-
-		CursorUnlocker.Init();
 
 		Log.LogInfo("yajusense initialized successfully");
 	}

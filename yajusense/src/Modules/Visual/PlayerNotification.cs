@@ -11,12 +11,12 @@ public class PlayerNotification : ModuleBase
 	public override void OnPlayerJoined(VRCPlayerApi player)
 	{
 		NotificationManager.ShowNotification($"{player.displayName} joined the world");
-		AudioService.PlayAudio(AudioService.AudioClipType.PlayerCrashed);
+		AudioService.PlayAudio(AudioService.AudioClipType.PlayerNotification);
 	}
 
 	public override void OnPlayerLeft(VRCPlayerApi player)
 	{
 		NotificationManager.ShowNotification($"{player.displayName} left the world");
-		AudioService.PlayAudio(AudioService.AudioClipType.PlayerCrashed);
+		AudioService.PlayAudio(AudioService.AudioClipType.PlayerNotification);
 	}
 }
