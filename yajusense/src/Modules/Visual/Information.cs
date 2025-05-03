@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using yajusense.UI;
-using yajusense.Utils;
+using yajusense.Utils.UI;
 using yajusense.Utils.VRC;
 
 // Added for StringBuilder

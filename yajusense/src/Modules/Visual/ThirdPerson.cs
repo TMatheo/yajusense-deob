@@ -26,10 +26,10 @@ public class ThirdPerson : ModuleBase
 
 	public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5) { }
 
-    /// <summary>
-    ///     サードパーソンカメラコンポーネントを取得
-    /// </summary>
-    public Camera GetCamera()
+	/// <summary>
+	///     サードパーソンカメラコンポーネントを取得
+	/// </summary>
+	public Camera GetCamera()
 	{
 		return _thirdPersonCameraComponent;
 	}

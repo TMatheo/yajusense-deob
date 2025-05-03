@@ -1,7 +1,7 @@
 using UnityEngine;
 using yajusense.Core.Config;
 using yajusense.UI;
-using yajusense.Utils;
+using yajusense.Utils.UI;
 
 namespace yajusense.Modules.Visual.HUD;
 

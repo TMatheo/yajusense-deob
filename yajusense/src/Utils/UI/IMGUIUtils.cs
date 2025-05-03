@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace yajusense.Utils;
+namespace yajusense.Utils.UI;
 
 public static class IMGUIUtils
 {

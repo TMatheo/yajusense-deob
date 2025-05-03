@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
+using yajusense.Core.Utilities;
 using yajusense.Modules.Other;
 using yajusense.UI;
 using yajusense.Utils;
+using yajusense.Utils.UI;
 
 namespace yajusense.Modules.Visual;
 

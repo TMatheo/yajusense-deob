@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using yajusense.Extensions;
 using yajusense.UI;
-using yajusense.Utils;
+using yajusense.Utils.UI;
 
 namespace yajusense.Modules.Visual;
 
