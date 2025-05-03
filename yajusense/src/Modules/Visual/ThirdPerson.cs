@@ -4,83 +4,96 @@ namespace yajusense.Modules.Visual;
 
 public class ThirdPerson : ModuleBase
 {
+	// 定数
 	private const float MaxZoomOffset = 5f;
 	private const float MinZoomOffset = 0.5f;
 	private const float ZoomLerpSpeed = 10f;
-	private Camera _cachedReferenceCameraComponent;
 
-	private GameObject _cachedReferenceCameraObject;
+	// ズーム関連
+	private float _currentZoomOffset = 2f;
+
+	private Camera _referenceCameraComponent;
+
+	// 参照カメラ関連
+	private GameObject _referenceCameraGameObject;
 	private Transform _referenceCameraTransform;
-
 	private float _targetZoomOffset = 2f;
-	private Camera _tpCameraBackComponent;
-	private GameObject _tpCameraBackObject;
-	private Transform _tpCameraBackTransform;
-	private float _zoomOffset = 2f;
+	private Camera _thirdPersonCameraComponent;
+
+	// サードパーソンカメラ関連
+	private GameObject _thirdPersonCameraGameObject;
+	private Transform _thirdPersonCameraTransform;
 
 	public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5) { }
 
+    /// <summary>
+    ///     サードパーソンカメラコンポーネントを取得
+    /// </summary>
+    public Camera GetCamera()
+	{
+		return _thirdPersonCameraComponent;
+	}
 
 	public override void OnEnable()
 	{
 		if (InitializeCameras())
-			EnableBackCamera();
+			EnableThirdPersonCamera();
 	}
 
 	public override void OnDisable()
 	{
-		DisableBackCamera();
+		DisableThirdPersonCamera();
 	}
 
 	private void ClearCache()
 	{
-		_cachedReferenceCameraObject = null;
-		_cachedReferenceCameraComponent = null;
-		_tpCameraBackObject = null;
-		_tpCameraBackComponent = null;
-		_tpCameraBackTransform = null;
+		_referenceCameraGameObject = null;
+		_referenceCameraComponent = null;
 		_referenceCameraTransform = null;
+
+		_thirdPersonCameraGameObject = null;
+		_thirdPersonCameraComponent = null;
+		_thirdPersonCameraTransform = null;
 	}
 
 	private bool InitializeCameras()
 	{
-		if (_cachedReferenceCameraObject == null)
-			_cachedReferenceCameraObject = GameObject.Find("SteamCamera/[CameraRig]/Neck/Camera");
-
-		if (_cachedReferenceCameraObject == null)
+		// 参照カメラの初期化
+		if (_referenceCameraGameObject == null)
 		{
-			ClearCache();
-			return false;
+			_referenceCameraGameObject = GameObject.Find("SteamCamera/[CameraRig]/Neck/Camera");
+			if (_referenceCameraGameObject == null)
+			{
+				ClearCache();
+				return false;
+			}
+
+			_referenceCameraTransform = _referenceCameraGameObject.transform;
+			_referenceCameraComponent = _referenceCameraGameObject.GetComponent<Camera>();
 		}
 
-		if (_referenceCameraTransform == null)
-			_referenceCameraTransform = _cachedReferenceCameraObject.transform;
-
-		if (_cachedReferenceCameraComponent == null)
-			_cachedReferenceCameraComponent = _cachedReferenceCameraObject.GetComponent<Camera>();
-
-		if (_tpCameraBackObject == null && _referenceCameraTransform != null)
+		// サードパーソンカメラの初期化
+		if (_thirdPersonCameraGameObject == null && _referenceCameraTransform != null)
 		{
-			_tpCameraBackObject = CreateCameraObject("TPCameraBack", _referenceCameraTransform);
-			if (_tpCameraBackObject != null)
+			_thirdPersonCameraGameObject = CreateCameraObject("ThirdPersonCamera", _referenceCameraTransform);
+			if (_thirdPersonCameraGameObject != null)
 			{
-				_tpCameraBackComponent = _tpCameraBackObject.GetComponent<Camera>();
-				_tpCameraBackTransform = _tpCameraBackObject.transform;
+				_thirdPersonCameraComponent = _thirdPersonCameraGameObject.GetComponent<Camera>();
+				_thirdPersonCameraTransform = _thirdPersonCameraGameObject.transform;
 			}
 		}
 
-		if (_cachedReferenceCameraComponent == null || _tpCameraBackObject == null || _tpCameraBackComponent == null || _tpCameraBackTransform == null)
+		// 初期化チェック
+		if (_referenceCameraComponent == null || _thirdPersonCameraGameObject == null || _thirdPersonCameraComponent == null || _thirdPersonCameraTransform == null)
 		{
 			ClearCache();
 			Plugin.Log.LogError("[ThirdPerson] Failed to find/create necessary camera components.");
 			return false;
 		}
 
-
 		UpdateCameraPosition();
 		return true;
 	}
-
 
 	private GameObject CreateCameraObject(string name, Transform parent)
 	{
@@ -91,70 +104,64 @@ public class ThirdPerson : ModuleBase
 		cameraObj.name = name;
 		cameraObj.transform.SetParent(parent, false);
 
-		var rb = cameraObj.AddComponent<Rigidbody>();
-		rb.isKinematic = true;
-		rb.useGravity = false;
+		// 物理挙動を無効化
+		var rigidbody = cameraObj.AddComponent<Rigidbody>();
+		rigidbody.isKinematic = true;
+		rigidbody.useGravity = false;
+
+		// カメラ設定
 		var camera = cameraObj.AddComponent<Camera>();
-		camera.fieldOfView = 75f;
 		camera.nearClipPlane /= 4;
 		camera.enabled = false;
 
 		return cameraObj;
 	}
 
-	private void EnableBackCamera()
+	private void EnableThirdPersonCamera()
 	{
-		// Use cached components
-		if (_tpCameraBackComponent == null || _cachedReferenceCameraComponent == null)
+		if (_thirdPersonCameraComponent == null || _referenceCameraComponent == null)
 		{
-			// Attempt reinitialization if components are missing
 			if (!InitializeCameras())
 				return;
 		}
 
-		if (_cachedReferenceCameraComponent != null)
-			_cachedReferenceCameraComponent.enabled = false;
-
-		if (_tpCameraBackComponent != null)
-			_tpCameraBackComponent.enabled = true;
-
+		_referenceCameraComponent.enabled = false;
+		_thirdPersonCameraComponent.enabled = true;
 		UpdateCameraPosition();
 	}
 
-	private void DisableBackCamera()
+	private void DisableThirdPersonCamera()
 	{
-		// Use cached components
-		// No need to check world state here, just disable/enable based on cache
-		if (_tpCameraBackComponent != null)
-			_tpCameraBackComponent.enabled = false;
+		if (_thirdPersonCameraComponent != null)
+			_thirdPersonCameraComponent.enabled = false;
 
-		if (_cachedReferenceCameraComponent != null)
-			_cachedReferenceCameraComponent.enabled = true;
+		if (_referenceCameraComponent != null)
+			_referenceCameraComponent.enabled = true;
 	}
-
 
 	private void UpdateCameraPosition()
 	{
-		// Use cached transforms
-		if (_referenceCameraTransform == null || _tpCameraBackTransform == null)
+		if (_referenceCameraTransform == null || _thirdPersonCameraTransform == null)
 			return;
 
-		_tpCameraBackTransform.position = _referenceCameraTransform.position - _referenceCameraTransform.forward * _zoomOffset;
+		_thirdPersonCameraTransform.position = _referenceCameraTransform.position - _referenceCameraTransform.forward * _currentZoomOffset;
 	}
 
 	public override void OnUpdate()
 	{
-		if (_cachedReferenceCameraObject == null || _tpCameraBackObject == null)
+		if (_referenceCameraGameObject == null || _thirdPersonCameraGameObject == null)
 		{
 			if (!InitializeCameras())
 				return;
 		}
 
+		// マウスホイールでズーム調整
 		float scroll = Input.GetAxis("Mouse ScrollWheel");
 		if (Mathf.Abs(scroll) > 0.01f)
 			_targetZoomOffset = Mathf.Clamp(_targetZoomOffset - scroll, MinZoomOffset, MaxZoomOffset);
 
-		_zoomOffset = Mathf.Lerp(_zoomOffset, _targetZoomOffset, Time.deltaTime * ZoomLerpSpeed);
+		// スムーズなズーム処理
+		_currentZoomOffset = Mathf.Lerp(_currentZoomOffset, _targetZoomOffset, Time.deltaTime * ZoomLerpSpeed);
 		UpdateCameraPosition();
 	}
 }

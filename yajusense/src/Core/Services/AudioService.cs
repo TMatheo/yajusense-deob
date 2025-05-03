@@ -12,9 +12,10 @@ public static class AudioService
 		ModuleDisable,
 		ClickUI,
 		PlayerNotification,
+		Teleport,
 	}
 
-	private const string BundleName = "audiobundle";
+	private const string BundleName = "assetbundle";
 
 	private static AudioSource _audioSource;
 
@@ -23,7 +24,8 @@ public static class AudioService
 		{ AudioClipType.ModuleEnable, "module_enable" },
 		{ AudioClipType.ModuleDisable, "module_disable" },
 		{ AudioClipType.ClickUI, "click_ui" },
-		{ AudioClipType.PlayerNotification, "player_crashed" },
+		{ AudioClipType.PlayerNotification, "player_notification" },
+		{ AudioClipType.Teleport, "teleport" },
 	};
 
 	public static void Initialize()

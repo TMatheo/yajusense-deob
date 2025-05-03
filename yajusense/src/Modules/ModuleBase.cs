@@ -33,6 +33,7 @@ public abstract class ModuleBase
 	public virtual void OnDisable() { }
 	public virtual void OnPlayerJoined(VRCPlayerApi player) { }
 	public virtual void OnPlayerLeft(VRCPlayerApi player) { }
+	public virtual void OnOpRaiseEvent(byte eventCode, ref Il2CppSystem.Object eventData) { }
 
 	public void Enable()
 	{

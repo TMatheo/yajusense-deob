@@ -4,8 +4,13 @@ using UnityEngine;
 
 namespace yajusense.Utils;
 
-public static class DataConvertionUtils
+public static class DataConversionUtils
 {
+	public static string ToHexString(byte b)
+	{
+		return b.ToString("X2");
+	}
+
 	public static string ToHexString(byte[] bytes)
 	{
 		if (bytes == null || bytes.Length == 0)
@@ -15,7 +20,7 @@ public static class DataConvertionUtils
 
 		for (var i = 0; i < bytes.Length; i++)
 		{
-			hex.Append(bytes[i].ToString("X2"));
+			hex.Append(ToHexString(bytes[i]));
 
 			if (i < bytes.Length - 1)
 				hex.Append(' ');

@@ -19,8 +19,8 @@ namespace yajusense;
 public class Plugin : BasePlugin
 {
 	public new static ManualLogSource Log;
-	private Harmony _harmony;
 	public static readonly string ClientDirectory = Path.Combine(Directory.GetCurrentDirectory(), "yajusense");
+	private Harmony _harmony;
 
 	public override void Load()
 	{
@@ -31,10 +31,10 @@ public class Plugin : BasePlugin
 
 		_harmony = new Harmony("yajusense");
 		Log.LogInfo("Harmony initialized successfully");
-		
+
 		_harmony.PatchAll();
 		Log.LogInfo("Patches applied successfully");
-		
+
 		CursorUnlocker.Init();
 
 		AudioService.Initialize();

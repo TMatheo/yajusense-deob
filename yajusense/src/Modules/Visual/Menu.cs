@@ -26,7 +26,7 @@ public class Menu : ModuleBase
 
 	public Menu() : base("Menu", "Menu", ModuleCategory.Visual, KeyCode.Insert)
 	{
-		_window = new Window(new Rect(0, 0, 600f, 500f), "yajusense");
+		_window = new Window(new Rect(0, 0, 1000f, 800f), "yajusense");
 	}
 
 	public override void OnEnable()

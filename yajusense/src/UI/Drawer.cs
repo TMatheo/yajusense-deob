@@ -151,6 +151,24 @@ public static class Drawer
 		Object.DestroyImmediate(gradientTex);
 	}
 
+	public static void DrawCircle(Vector2 center, float radius, float thickness, Color color)
+	{
+		const int segments = 36;
+		var points = new Vector2[segments];
+
+		for (var i = 0; i < segments; i++)
+		{
+			float angle = Mathf.PI * 2 * i / segments;
+			points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+		}
+
+		for (var i = 0; i < segments; i++)
+		{
+			int next = (i + 1) % segments;
+			DrawLine(points[i], points[next], thickness, color);
+		}
+	}
+
 	public static void DrawText(string text, Vector2 position, Color color, int fontSize = 12, bool shadow = false, bool outline = false, bool bold = false)
 	{
 		if (string.IsNullOrEmpty(text))

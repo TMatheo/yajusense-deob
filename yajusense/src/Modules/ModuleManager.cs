@@ -35,6 +35,7 @@ public static class ModuleManager
 		RegisterModule(new Flight());
 		RegisterModule(new Speed());
 		RegisterModule(new LagSwitch());
+		RegisterModule(new ClickTP());
 
 		// Visual
 		RegisterModule(new Watermark());
@@ -94,6 +95,17 @@ public static class ModuleManager
 			{
 				module.OnPlayerLeft(player);
 			}
+		}
+	}
+
+	public static void NotifyOpRaiseEvent(byte eventCode, ref Il2CppSystem.Object eventData)
+	{
+		foreach (ModuleBase module in Modules)
+		{
+			if (!module.Enabled)
+				continue;
+
+			module.OnOpRaiseEvent(eventCode, ref eventData);
 		}
 	}
 }

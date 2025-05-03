@@ -3,6 +3,7 @@ using HarmonyLib;
 using Il2CppSystem;
 using yajusense.Modules;
 using yajusense.Modules.Movement;
+using yajusense.Networking;
 
 namespace yajusense.Patches;
 
@@ -12,11 +13,22 @@ public static class OpRaiseEventPatch
 	[HarmonyPrefix]
 	public static bool Prefix(byte param_1, ref Object param_2, ObjectPublicObByObInByObObUnique param_3, SendOptions param_4)
 	{
-		if (param_1 == 12)
+		ModuleManager.NotifyOpRaiseEvent(param_1, ref param_2);
+
+		if (param_1 == (byte)PhotonEventType.PlayerData)
 		{
 			if (ModuleManager.GetModule<LagSwitch>().Enabled)
 				return false;
 		}
+
+		// if (param_1 == 1)
+		// {
+		// 	byte[] data = Il2CppSerializationUtils.FromIL2CPPToManaged<byte[]>(param_2);
+		// 	Plugin.Log.LogInfo($"E1: {DataConversionUtils.ToHexString(data)}");
+		// 	
+		// 	byte[] serverTimeBytes = BitConverter.GetBytes(NetworkingUtils.GetServerTimeMS());
+		// 	Plugin.Log.LogInfo($"ServerTime: {DataConversionUtils.ToHexString(serverTimeBytes)}");
+		// }
 
 		return true;
 	}
