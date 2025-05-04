@@ -46,14 +46,13 @@ public class FileConfigStorage : IConfigStorage
 		File.Move(_configPath, backupPath);
 	}
 
-	public void EnsureConfigFileExists()
+	private void EnsureConfigFileExists()
 	{
-		if (!File.Exists(_configPath))
-		{
-			string directory = Path.GetDirectoryName(_configPath)!;
-			FileUtils.EnsureDirectoryExists(directory);
+		if (File.Exists(_configPath))
+			return;
+		string directory = Path.GetDirectoryName(_configPath)!;
+		FileUtils.EnsureDirectoryExists(directory);
 
-			File.WriteAllText(_configPath, "{}");
-		}
+		File.WriteAllText(_configPath, "{}");
 	}
 }
