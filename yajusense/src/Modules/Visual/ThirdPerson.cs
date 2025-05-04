@@ -4,23 +4,18 @@ namespace yajusense.Modules.Visual;
 
 public class ThirdPerson : ModuleBase
 {
-	// 定数
 	private const float MaxZoomOffset = 5f;
 	private const float MinZoomOffset = 0.5f;
 	private const float ZoomLerpSpeed = 10f;
 
-	// ズーム関連
 	private float _currentZoomOffset = 2f;
 
 	private Camera _referenceCameraComponent;
-
-	// 参照カメラ関連
 	private GameObject _referenceCameraGameObject;
 	private Transform _referenceCameraTransform;
 	private float _targetZoomOffset = 2f;
-	private Camera _thirdPersonCameraComponent;
 
-	// サードパーソンカメラ関連
+	private Camera _thirdPersonCameraComponent;
 	private GameObject _thirdPersonCameraGameObject;
 	private Transform _thirdPersonCameraTransform;
 
