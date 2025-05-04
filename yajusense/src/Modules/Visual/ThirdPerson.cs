@@ -20,10 +20,7 @@ public class ThirdPerson : ModuleBase
 	private Transform _thirdPersonCameraTransform;
 
 	public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5) { }
-
-	/// <summary>
-	///     サードパーソンカメラコンポーネントを取得
-	/// </summary>
+	
 	public Camera GetCamera()
 	{
 		return _thirdPersonCameraComponent;
@@ -53,7 +50,6 @@ public class ThirdPerson : ModuleBase
 
 	private bool InitializeCameras()
 	{
-		// 参照カメラの初期化
 		if (_referenceCameraGameObject == null)
 		{
 			_referenceCameraGameObject = GameObject.Find("SteamCamera/[CameraRig]/Neck/Camera");
@@ -66,8 +62,7 @@ public class ThirdPerson : ModuleBase
 			_referenceCameraTransform = _referenceCameraGameObject.transform;
 			_referenceCameraComponent = _referenceCameraGameObject.GetComponent<Camera>();
 		}
-
-		// サードパーソンカメラの初期化
+		
 		if (_thirdPersonCameraGameObject == null && _referenceCameraTransform != null)
 		{
 			_thirdPersonCameraGameObject = CreateCameraObject("ThirdPersonCamera", _referenceCameraTransform);
@@ -77,8 +72,7 @@ public class ThirdPerson : ModuleBase
 				_thirdPersonCameraTransform = _thirdPersonCameraGameObject.transform;
 			}
 		}
-
-		// 初期化チェック
+		
 		if (_referenceCameraComponent == null || _thirdPersonCameraGameObject == null || _thirdPersonCameraComponent == null || _thirdPersonCameraTransform == null)
 		{
 			ClearCache();
@@ -98,13 +92,11 @@ public class ThirdPerson : ModuleBase
 
 		cameraObj.name = name;
 		cameraObj.transform.SetParent(parent, false);
-
-		// 物理挙動を無効化
+		
 		var rigidbody = cameraObj.AddComponent<Rigidbody>();
 		rigidbody.isKinematic = true;
 		rigidbody.useGravity = false;
-
-		// カメラ設定
+		
 		var camera = cameraObj.AddComponent<Camera>();
 		camera.nearClipPlane /= 4;
 		camera.enabled = false;
@@ -149,13 +141,11 @@ public class ThirdPerson : ModuleBase
 			if (!InitializeCameras())
 				return;
 		}
-
-		// マウスホイールでズーム調整
+		
 		float scroll = Input.GetAxis("Mouse ScrollWheel");
 		if (Mathf.Abs(scroll) > 0.01f)
 			_targetZoomOffset = Mathf.Clamp(_targetZoomOffset - scroll, MinZoomOffset, MaxZoomOffset);
 
-		// スムーズなズーム処理
 		_currentZoomOffset = Mathf.Lerp(_currentZoomOffset, _targetZoomOffset, Time.deltaTime * ZoomLerpSpeed);
 		UpdateCameraPosition();
 	}
