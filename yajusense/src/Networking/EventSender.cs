@@ -7,16 +7,15 @@ namespace yajusense.Networking;
 
 public static class EventSender
 {
-	public static void SendVoice(byte[] voiceData)
+	// you can generate a payload with photon_event1_generator.py
+	public static void SendVoice(string payloadBase64)
 	{
-		var data = new byte[4 + voiceData.Length];
+		byte[] payload = Convert.FromBase64String(payloadBase64);
+		
+		byte[] serverTimeBytes = BitConverter.GetBytes(NetworkingUtils.GetServerTimeMS());
+		Buffer.BlockCopy(serverTimeBytes, 0, payload, 0, 4);
 
-		byte[] header = BitConverter.GetBytes(NetworkingUtils.GetServerTimeMS());
-		Buffer.BlockCopy(header, 0, data, 0, 4);
-
-		Buffer.BlockCopy(voiceData, 0, data, 4, voiceData.Length);
-
-		RaiseEvent((byte)PhotonEventType.Voice, data, false);
+		RaiseEvent((byte)PhotonEventType.Voice, payload, false);
 	}
 
 	private static void RaiseEvent(byte code, object content, bool isReliable)
