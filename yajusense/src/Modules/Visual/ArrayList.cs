@@ -45,8 +45,7 @@ public class ArrayList : ModuleBase
 			}
 		}
 	}
-
-
+	
 	public override void OnGUI()
 	{
 		UpdateSortedModulesIfNeeded();
@@ -87,7 +86,7 @@ public class ArrayList : ModuleBase
 				continue;
 
 			var currentRect = new Rect(_modulePositions[module], rectSize);
-			Color color = ColorUtils.GetRainbowColor((visibleModuleIndex > 0 ? visibleModuleIndex - 1 : 0) * ModuleManager.ClientSettings.ColorStep);
+			Color color = ColorUtils.GetRainbowColor(visibleModuleIndex * ModuleManager.ClientSettings.ColorStep);
 
 			Color rectColor = color.Darken(0.2f);
 			rectColor.a = 0.5f;
