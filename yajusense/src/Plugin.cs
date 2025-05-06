@@ -8,10 +8,10 @@ using UnityEngine;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
 using yajusense.Core.Utilities;
-using yajusense.Core.VRC;
 using yajusense.Modules;
 using yajusense.UI;
 using yajusense.Utils;
+using yajusense.VRC;
 
 namespace yajusense;
 

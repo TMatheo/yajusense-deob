@@ -4,7 +4,7 @@ using VRC.SDKBase;
 using yajusense.Modules;
 using yajusense.Utils;
 
-namespace yajusense.Core.VRC;
+namespace yajusense.VRC;
 
 public static class PlayerTracker
 {

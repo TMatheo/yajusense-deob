@@ -3,7 +3,7 @@ using yajusense.Utils;
 
 namespace yajusense.UI;
 
-public static class HUD
+public static class VRCHUD
 {
 	public static void ShowNotification(string message, Sprite icon = null, float duration = 3f)
 	{

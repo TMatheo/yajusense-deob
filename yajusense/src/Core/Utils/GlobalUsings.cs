@@ -5,6 +5,7 @@ global using PhotonNetwork_Internal = ObjectPublicAbstractSealedObInObStInCo2ObI
 
 // VRC
 global using Player_Internal = MonoBehaviourPublicAPOb_vOb_lBo1ObBo_UUnique;
+global using VRCPlayer_Internal = MonoBehaviour1PublicOb_pOb_sBo_p_sGaObStUnique;
 global using HudController_Internal = MonoBehaviourPublicObnoObmousCaObhuGa_gUnique;
 global using UsedToChangeAvatar = ObjectPublicAbstractSealedVoApSt73APAp73BoFaBoUnique;
 
