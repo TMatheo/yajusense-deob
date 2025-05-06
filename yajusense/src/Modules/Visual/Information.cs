@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using yajusense.UI;
-using yajusense.Utils.UI;
-using yajusense.Utils.VRC;
-
-// Added for StringBuilder
+using yajusense.UI.Utils;
+using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 
@@ -29,9 +27,9 @@ public class Information : ModuleBase
 		_textInfos.Add(new TextInfo(() =>
 		{
 			_stringBuilder.Clear();
-			if (PlayerUtils.IsInWorld())
+			if (VRCUtils.IsInWorld())
 			{
-				Vector3 position = PlayerUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
+				Vector3 position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
 				_stringBuilder.Append($"XYZ: {position.x:F0}, {position.y:F0}, {position.z:F0}");
 			}
 			else

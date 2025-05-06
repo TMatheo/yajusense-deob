@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VRC.SDKBase;
 using yajusense.Modules;
-using yajusense.Utils.VRC;
+using yajusense.Utils;
 
 namespace yajusense.Core.VRC;
 
@@ -13,7 +13,7 @@ public static class PlayerTracker
 
 	public static void Update()
 	{
-		if (!PlayerUtils.IsInWorld())
+		if (!VRCUtils.IsInWorld())
 			return;
 
 		_previousPlayers = new Dictionary<int, VRCPlayerApi>(_currentPlayers);

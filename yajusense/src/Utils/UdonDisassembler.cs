@@ -9,7 +9,7 @@ using VRC.Udon.Common.Interfaces;
 using VRC.Udon.VM;
 using VRC.Udon.VM.Common;
 
-namespace yajusense.Utils.VRC;
+namespace yajusense.Utils;
 
 public static class UdonDisassembler
 {

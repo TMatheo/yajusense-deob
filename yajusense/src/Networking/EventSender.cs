@@ -1,7 +1,6 @@
 using System;
 using ExitGames.Client.Photon;
 using yajusense.Utils;
-using yajusense.Utils.VRC;
 
 namespace yajusense.Networking;
 
@@ -11,8 +10,8 @@ public static class EventSender
 	public static void SendVoice(string payloadBase64)
 	{
 		byte[] payload = Convert.FromBase64String(payloadBase64);
-		
-		byte[] serverTimeBytes = BitConverter.GetBytes(NetworkingUtils.GetServerTimeMS());
+
+		byte[] serverTimeBytes = BitConverter.GetBytes(VRCUtils.GetServerTimeMS());
 		Buffer.BlockCopy(serverTimeBytes, 0, payload, 0, 4);
 
 		RaiseEvent((byte)PhotonEventType.Voice, payload, false);

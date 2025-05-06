@@ -3,7 +3,7 @@ using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
 using yajusense.Modules.Visual;
-using yajusense.Utils.VRC;
+using yajusense.Utils;
 
 namespace yajusense.Modules.Movement;
 
@@ -16,7 +16,7 @@ public class ClickTP : ModuleBase
 
 	public override void OnUpdate()
 	{
-		if (!PlayerUtils.IsInWorld() || ModuleManager.GetModule<Menu>().Enabled)
+		if (!VRCUtils.IsInWorld() || ModuleManager.GetModule<Menu>().Enabled)
 			return;
 
 		if (Input.GetKeyDown(TeleportKey))
@@ -28,7 +28,7 @@ public class ClickTP : ModuleBase
 		var thirdPerson = ModuleManager.GetModule<ThirdPerson>();
 		Camera camera = thirdPerson.Enabled ? thirdPerson.GetCamera() : Camera.main;
 
-		VRCPlayerApi localPlayer = PlayerUtils.GetLocalVRCPlayerApi();
+		VRCPlayerApi localPlayer = VRCUtils.GetLocalVRCPlayerApi();
 		Transform playerTransform = localPlayer.gameObject.transform;
 
 		var ray = new Ray(camera.transform.position, camera.transform.forward);

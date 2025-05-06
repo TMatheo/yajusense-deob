@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using yajusense.Extensions;
 using yajusense.UI;
-using yajusense.Utils.UI;
+using yajusense.UI.Utils;
 
 namespace yajusense.Modules.Visual;
 
@@ -45,7 +45,7 @@ public class ArrayList : ModuleBase
 			}
 		}
 	}
-	
+
 	public override void OnGUI()
 	{
 		UpdateSortedModulesIfNeeded();

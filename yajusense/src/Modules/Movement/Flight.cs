@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
-using yajusense.Utils.VRC;
+using yajusense.Utils;
 
 namespace yajusense.Modules.Movement;
 
@@ -18,7 +18,7 @@ public class Flight : ModuleBase
 
 	private bool EnsurePlayerComponents()
 	{
-		_localPlayerApi = PlayerUtils.GetLocalVRCPlayerApi();
+		_localPlayerApi = VRCUtils.GetLocalVRCPlayerApi();
 		if (_localPlayerApi == null)
 		{
 			_playerTransform = null;

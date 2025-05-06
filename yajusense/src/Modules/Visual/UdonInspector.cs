@@ -7,8 +7,6 @@ using UnityEngine;
 using VRC.Udon;
 using yajusense.UI;
 using yajusense.Utils;
-using yajusense.Utils.VRC;
-using Object = UnityEngine.Object;
 
 namespace yajusense.Modules.Visual;
 
@@ -45,7 +43,7 @@ public class UdonInspector : ModuleBase
 
 	public override void OnGUI()
 	{
-		if (!PlayerUtils.IsInWorld())
+		if (!VRCUtils.IsInWorld())
 			return;
 
 		_window.Begin();
@@ -167,11 +165,11 @@ public class UdonInspector : ModuleBase
 
 	private void RefreshUdonCache()
 	{
-		if (!PlayerUtils.IsInWorld())
+		if (!VRCUtils.IsInWorld())
 			return;
 
 		_udonCache.Clear();
-		Il2CppArrayBase<GameObject> allObjs = Object.FindObjectsOfType<GameObject>();
+		Il2CppArrayBase<GameObject> allObjs = UnityEngine.Object.FindObjectsOfType<GameObject>();
 		foreach (GameObject go in allObjs)
 		{
 			if (go.TryGetComponent(out UdonBehaviour ub))

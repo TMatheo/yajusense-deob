@@ -20,7 +20,7 @@ public class ThirdPerson : ModuleBase
 	private Transform _thirdPersonCameraTransform;
 
 	public ThirdPerson() : base("ThirdPerson", "Back view camera", ModuleCategory.Visual, KeyCode.F5) { }
-	
+
 	public Camera GetCamera()
 	{
 		return _thirdPersonCameraComponent;
@@ -62,7 +62,7 @@ public class ThirdPerson : ModuleBase
 			_referenceCameraTransform = _referenceCameraGameObject.transform;
 			_referenceCameraComponent = _referenceCameraGameObject.GetComponent<Camera>();
 		}
-		
+
 		if (_thirdPersonCameraGameObject == null && _referenceCameraTransform != null)
 		{
 			_thirdPersonCameraGameObject = CreateCameraObject("ThirdPersonCamera", _referenceCameraTransform);
@@ -72,7 +72,7 @@ public class ThirdPerson : ModuleBase
 				_thirdPersonCameraTransform = _thirdPersonCameraGameObject.transform;
 			}
 		}
-		
+
 		if (_referenceCameraComponent == null || _thirdPersonCameraGameObject == null || _thirdPersonCameraComponent == null || _thirdPersonCameraTransform == null)
 		{
 			ClearCache();
@@ -92,11 +92,11 @@ public class ThirdPerson : ModuleBase
 
 		cameraObj.name = name;
 		cameraObj.transform.SetParent(parent, false);
-		
+
 		var rigidbody = cameraObj.AddComponent<Rigidbody>();
 		rigidbody.isKinematic = true;
 		rigidbody.useGravity = false;
-		
+
 		var camera = cameraObj.AddComponent<Camera>();
 		camera.nearClipPlane /= 4;
 		camera.enabled = false;
@@ -141,7 +141,7 @@ public class ThirdPerson : ModuleBase
 			if (!InitializeCameras())
 				return;
 		}
-		
+
 		float scroll = Input.GetAxis("Mouse ScrollWheel");
 		if (Mathf.Abs(scroll) > 0.01f)
 			_targetZoomOffset = Mathf.Clamp(_targetZoomOffset - scroll, MinZoomOffset, MaxZoomOffset);
