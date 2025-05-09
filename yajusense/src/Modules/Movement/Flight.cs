@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using VRC.SDKBase;
-using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.VRC;
 

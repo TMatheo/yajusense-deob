@@ -25,7 +25,7 @@ public static class ConfigManager
 	private static readonly IConfigStorage ConfigStorage = new FileConfigStorage(JsonOptions);
 	private static readonly ConfigPropertyManager PropertyManager = new(JsonOptions);
 
-	public static void Initialize()
+	public static void Init()
 	{
 		LoadConfig();
 	}

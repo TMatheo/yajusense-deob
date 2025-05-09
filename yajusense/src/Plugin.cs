@@ -5,7 +5,6 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using UnityEngine;
-using yajusense.Core;
 using yajusense.Core.Config;
 using yajusense.Core.Services;
 using yajusense.Core.Utils;
@@ -38,11 +37,11 @@ public class Plugin : BasePlugin
 
 		CursorUnlocker.Init();
 
-		AudioService.Initialize();
+		AudioService.Init();
 
-		ConfigManager.Initialize();
+		ConfigManager.Init();
 
-		ModuleManager.Initialize();
+		ModuleManager.Init();
 
 		CoroutineRunner.Initialize(AddComponent<CoroutineRunner>());
 		AddComponent<YjMonoBehaviour>();

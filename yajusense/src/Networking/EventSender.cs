@@ -1,6 +1,5 @@
 using System;
 using ExitGames.Client.Photon;
-using yajusense.Core;
 using yajusense.Utils;
 using yajusense.VRC;
 

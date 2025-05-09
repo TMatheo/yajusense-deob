@@ -1,6 +1,5 @@
 using UnityEngine;
 using VRC.SDKBase;
-using yajusense.Core;
 using yajusense.VRC;
 
 namespace yajusense.Modules.Player;

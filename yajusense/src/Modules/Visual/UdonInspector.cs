@@ -5,7 +5,6 @@ using System.Text;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using VRC.Udon;
-using yajusense.Core;
 using yajusense.UI;
 using yajusense.Utils;
 using yajusense.VRC;

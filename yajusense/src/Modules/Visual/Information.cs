@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using yajusense.Core;
 using yajusense.UI;
 using yajusense.Utils;
 using yajusense.VRC;

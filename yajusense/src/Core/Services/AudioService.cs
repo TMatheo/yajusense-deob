@@ -28,7 +28,7 @@ public static class AudioService
 		{ AudioClipType.Teleport, "teleport" },
 	};
 
-	public static void Initialize()
+	public static void Init()
 	{
 		var go = new GameObject("AudioService")
 		{

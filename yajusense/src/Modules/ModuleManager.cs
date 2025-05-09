@@ -26,7 +26,7 @@ public static class ModuleManager
 		return Modules.OfType<T>().FirstOrDefault();
 	}
 
-	public static void Initialize()
+	public static void Init()
 	{
 		ClientSettings = new ClientSettings();
 		ConfigManager.RegisterModuleConfig(ClientSettings);

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VRC.SDKBase;
-using yajusense.Core;
 using yajusense.Modules;
 
 namespace yajusense.VRC;
