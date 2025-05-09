@@ -71,5 +71,6 @@ public enum ModuleCategory
 	Visual,
 	Movement,
 	Player,
+	Photon,
 	ClientSettings,
 }

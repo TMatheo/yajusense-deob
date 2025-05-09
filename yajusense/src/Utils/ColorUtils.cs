@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace yajusense.UI.Utils;
+namespace yajusense.Utils;
 
 public static class ColorUtils
 {

@@ -2,7 +2,7 @@ using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using UnityEngine;
 
-namespace yajusense.Core.Utilities;
+namespace yajusense.Core.Utils;
 
 public class CoroutineRunner : MonoBehaviour
 {

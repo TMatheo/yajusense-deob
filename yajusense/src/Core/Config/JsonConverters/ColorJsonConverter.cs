@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UnityEngine;
-using yajusense.UI.Utils;
+using yajusense.Utils;
 
 namespace yajusense.Core.Config.JsonConverters;
 

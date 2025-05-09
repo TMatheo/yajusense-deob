@@ -5,8 +5,10 @@ using System.Text;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using VRC.Udon;
+using yajusense.Core;
 using yajusense.UI;
 using yajusense.Utils;
+using yajusense.VRC;
 
 namespace yajusense.Modules.Visual;
 
@@ -43,7 +45,7 @@ public class UdonInspector : ModuleBase
 
 	public override void OnGUI()
 	{
-		if (!VRCUtils.IsInWorld())
+		if (!VRCHelper.IsInWorld())
 			return;
 
 		_window.Begin();
@@ -165,7 +167,7 @@ public class UdonInspector : ModuleBase
 
 	private void RefreshUdonCache()
 	{
-		if (!VRCUtils.IsInWorld())
+		if (!VRCHelper.IsInWorld())
 			return;
 
 		_udonCache.Clear();

@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using HarmonyLib;
 using UnityEngine;
-using yajusense.Core.Utilities;
+using yajusense.Core.Utils;
 using yajusense.Modules;
 using yajusense.Modules.Visual;
 

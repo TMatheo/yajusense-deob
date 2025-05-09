@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using yajusense.Utils;
+using yajusense.Core;
+using yajusense.VRC;
 
 namespace yajusense.UI;
 
@@ -11,7 +12,7 @@ public static class VRCHUD
 		if (hudController == null)
 			return;
 
-		hudController.Method_Public_Void_LocalizableString_Sprite_Single_0(VRCUtils.CreateLocalizableString(message), icon, duration);
+		hudController.Method_Public_Void_LocalizableString_Sprite_Single_0(VRCHelper.CreateLocalizableString(message), icon, duration);
 	}
 
 	private static HudController_Internal GetHudControllerInstance()

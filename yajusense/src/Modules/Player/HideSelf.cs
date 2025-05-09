@@ -1,6 +1,7 @@
 using UnityEngine;
 using VRC.SDKBase;
-using yajusense.Utils;
+using yajusense.Core;
+using yajusense.VRC;
 
 namespace yajusense.Modules.Player;
 
@@ -12,10 +13,10 @@ public class HideSelf : ModuleBase
 
 	private bool TryInitialize()
 	{
-		if (!VRCUtils.IsInWorld())
+		if (!VRCHelper.IsInWorld())
 			return false;
 
-		VRCPlayerApi localPlayer = VRCUtils.GetLocalVRCPlayerApi();
+		VRCPlayerApi localPlayer = VRCHelper.GetLocalVRCPlayerApi();
 		if (localPlayer == null)
 			return false;
 
@@ -38,7 +39,7 @@ public class HideSelf : ModuleBase
 
 	public override void OnDisable()
 	{
-		if (VRCUtils.IsInWorld())
+		if (VRCHelper.IsInWorld())
 			SetAvatarElementsActive(true);
 	}
 }

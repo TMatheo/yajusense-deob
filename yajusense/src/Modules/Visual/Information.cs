@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using yajusense.Core;
 using yajusense.UI;
-using yajusense.UI.Utils;
 using yajusense.Utils;
+using yajusense.VRC;
 
 namespace yajusense.Modules.Visual;
 
@@ -27,9 +28,9 @@ public class Information : ModuleBase
 		_textInfos.Add(new TextInfo(() =>
 		{
 			_stringBuilder.Clear();
-			if (VRCUtils.IsInWorld())
+			if (VRCHelper.IsInWorld())
 			{
-				Vector3 position = VRCUtils.GetLocalVRCPlayerApi().gameObject.transform.position;
+				Vector3 position = VRCHelper.GetLocalVRCPlayerApi().gameObject.transform.position;
 				_stringBuilder.Append($"XYZ: {position.x:F0}, {position.y:F0}, {position.z:F0}");
 			}
 			else
