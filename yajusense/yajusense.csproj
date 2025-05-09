@@ -59,6 +59,9 @@
         <Reference Include="UnityEngine.TextRenderingModule">
             <HintPath>libs\UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestModule">
+          <HintPath>libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
         <Reference Include="VRC.Udon">
             <HintPath>libs\VRC.Udon.dll</HintPath>
         </Reference>
