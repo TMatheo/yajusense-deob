@@ -11,7 +11,6 @@ console = Console()
 def run_code2prompt(template_file):
     """Function to execute code2prompt with the specified template file and hardcoded include/exclude patterns"""
     include_pattern = "*.cs"
-    exclude_pattern = "Dusk.AssemblyInfo.cs,MyPluginInfo.cs"
     
     command = [
         "code2prompt",
@@ -20,9 +19,7 @@ def run_code2prompt(template_file):
         template_file,
         "--encoding=r50k_base",
         "--include",
-        include_pattern,
-        "--exclude",
-        exclude_pattern
+        include_pattern
     ]
     
     try:
@@ -32,8 +29,7 @@ def run_code2prompt(template_file):
         console.print(Panel.fit(
             f"[green]✓ Successfully executed code2prompt[/green]\n"
             f"Template: [bold]{template_file}[/bold]\n"
-            f"Include pattern: [bold]{include_pattern}[/bold]\n"
-            f"Exclude pattern: [bold]{exclude_pattern}[/bold]",
+            f"Include pattern: [bold]{include_pattern}[/bold]\n",
             title="[bold]Execution Complete[/bold]",
             border_style="green"
         ))
