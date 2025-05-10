@@ -1,16 +1,12 @@
-// pasted
-
-using Il2CppSystem;
-using Il2CppSystem.IO;
-using Il2CppSystem.Runtime.Serialization.Formatters.Binary;
+#pragma warning disable SYSLIB0011
 
 namespace yajusense.Utils;
 
 public static class Il2CppSerializationUtils
 {
-	public static T FromIL2CPPToManaged<T>(Object obj)
+	public static T FromIL2CPPToManaged<T>(Il2CppSystem.Object obj)
 	{
-		return FromByteArray<T>(ToByteArray(obj));
+		return ManagedFromByteArray<T>(ToByteArray(obj));
 	}
 
 	public static T FromManagedToIL2CPP<T>(object obj)
@@ -18,13 +14,13 @@ public static class Il2CppSerializationUtils
 		return IL2CPPFromByteArray<T>(ToByteArray(obj));
 	}
 
-	private static byte[] ToByteArray(Object obj)
+	private static byte[] ToByteArray(Il2CppSystem.Object obj)
 	{
 		if (obj == null)
 			return null;
 
-		var bf = new BinaryFormatter();
-		var ms = new MemoryStream();
+		var bf = new Il2CppSystem.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+		var ms = new Il2CppSystem.IO.MemoryStream();
 		bf.Serialize(ms, obj);
 		return ms.ToArray();
 	}
@@ -34,13 +30,14 @@ public static class Il2CppSerializationUtils
 		if (obj == null)
 			return null;
 
+
 		var bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 		var ms = new System.IO.MemoryStream();
 		bf.Serialize(ms, obj);
 		return ms.ToArray();
 	}
 
-	private static T FromByteArray<T>(byte[] data)
+	private static T ManagedFromByteArray<T>(byte[] data)
 	{
 		if (data == null)
 			return default;
@@ -56,9 +53,11 @@ public static class Il2CppSerializationUtils
 		if (data == null)
 			return default;
 
-		var bf = new BinaryFormatter();
-		var ms = new MemoryStream(data);
+		var bf = new Il2CppSystem.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+		var ms = new Il2CppSystem.IO.MemoryStream(data);
 		object obj = bf.Deserialize(ms);
 		return (T)obj;
 	}
 }
+
+#pragma warning restore SYSLIB0011

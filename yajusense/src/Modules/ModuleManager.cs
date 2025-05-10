@@ -5,6 +5,7 @@ using VRC.SDKBase;
 using yajusense.Core.Config;
 using yajusense.Modules.Movement;
 using yajusense.Modules.Other;
+using yajusense.Modules.Photon;
 using yajusense.Modules.Player;
 using yajusense.Modules.Visual;
 using yajusense.Modules.Visual.HUD;
@@ -48,6 +49,9 @@ public static class ModuleManager
 
 		// Player
 		RegisterModule(new HideSelf());
+		
+		// Photon
+		RegisterModule(new Earrape());
 	}
 
 	private static void RegisterModule(ModuleBase module)

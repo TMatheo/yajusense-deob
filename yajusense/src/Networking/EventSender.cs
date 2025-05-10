@@ -7,7 +7,6 @@ namespace yajusense.Networking;
 
 public static class EventSender
 {
-	// you can generate a payload with photon_event1_generator.py
 	public static void SendVoice(string payloadBase64)
 	{
 		byte[] payload = Convert.FromBase64String(payloadBase64);
