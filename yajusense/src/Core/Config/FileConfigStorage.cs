@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using yajusense.Utils;
+using yajusense.Core.Utils;
 
 namespace yajusense.Core.Config;
 

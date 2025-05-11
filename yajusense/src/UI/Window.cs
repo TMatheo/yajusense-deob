@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using yajusense.Utils;
+using yajusense.Platform.Unity.Utils;
 
 namespace yajusense.UI;
 

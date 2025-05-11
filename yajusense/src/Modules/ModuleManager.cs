@@ -49,7 +49,7 @@ public static class ModuleManager
 
 		// Player
 		RegisterModule(new HideSelf());
-		
+
 		// Photon
 		RegisterModule(new Earrape());
 	}

@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using UnityEngine;
 
-namespace yajusense.Utils;
+namespace yajusense.Core.Utils;
 
 public static class DataConversionUtils
 {

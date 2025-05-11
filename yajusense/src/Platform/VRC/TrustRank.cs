@@ -1,4 +1,4 @@
-﻿namespace yajusense.VRC;
+﻿namespace yajusense.Platform.VRC;
 
 public enum TrustRank
 {

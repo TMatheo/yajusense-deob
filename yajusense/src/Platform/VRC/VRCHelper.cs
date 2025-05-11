@@ -3,7 +3,7 @@ using VRC.Core;
 using VRC.Localization;
 using VRC.SDKBase;
 
-namespace yajusense.VRC;
+namespace yajusense.Platform.VRC;
 
 public static class VRCHelper
 {

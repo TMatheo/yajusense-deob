@@ -3,7 +3,7 @@ using System.Linq;
 using VRC.SDKBase;
 using yajusense.Modules;
 
-namespace yajusense.VRC;
+namespace yajusense.Platform.VRC;
 
 public static class PlayerTracker
 {

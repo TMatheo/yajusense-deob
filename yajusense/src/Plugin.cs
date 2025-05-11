@@ -1,17 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
-using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
-using yajusense.Core.Services;
+using yajusense.Core.Utils;
 using yajusense.Modules;
-using yajusense.UI;
-using yajusense.Utils;
-using yajusense.VRC;
+using yajusense.Platform.Unity.Utils;
+using yajusense.Services;
 
 namespace yajusense;
 
@@ -29,12 +26,6 @@ public class Plugin : BasePlugin
 
 		FileUtils.EnsureDirectoryExists(ClientDirectory);
 
-		_harmony = new Harmony("yajusense");
-		Log.LogInfo("Harmony initialized successfully");
-
-		_harmony.PatchAll();
-		Log.LogInfo("Patches applied successfully");
-
 		CursorUnlocker.Init();
 
 		AudioService.Init();
@@ -43,26 +34,15 @@ public class Plugin : BasePlugin
 
 		ModuleManager.Init();
 
+		_harmony = new Harmony("yajusense");
+		Log.LogInfo("Harmony initialized successfully");
+
+		_harmony.PatchAll();
+		Log.LogInfo("Patches applied successfully");
+
 		CoroutineRunner.Initialize(AddComponent<CoroutineRunner>());
-		AddComponent<YjMonoBehaviour>();
+		AddComponent<MainMonoBehaviour>();
 
 		Log.LogInfo("yajusense initialized successfully");
-	}
-}
-
-public class YjMonoBehaviour : MonoBehaviour
-{
-	public YjMonoBehaviour(IntPtr handle) : base(handle) { }
-
-	private void Update()
-	{
-		ModuleManager.UpdateModules();
-		PlayerTracker.Update();
-	}
-
-	private void OnGUI()
-	{
-		ModuleManager.RenderModules();
-		NotificationManager.OnGUI();
 	}
 }

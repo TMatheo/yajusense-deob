@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Modules;
-using yajusense.Utils;
+using yajusense.Platform.Unity.Utils;
 
 namespace yajusense.UI;
 

@@ -1,10 +1,14 @@
+using Il2CppSystem;
+using Il2CppSystem.IO;
+using Il2CppSystem.Runtime.Serialization.Formatters.Binary;
+
 #pragma warning disable SYSLIB0011
 
-namespace yajusense.Utils;
+namespace yajusense.Platform.Unity.Utils;
 
 public static class Il2CppSerializationUtils
 {
-	public static T FromIL2CPPToManaged<T>(Il2CppSystem.Object obj)
+	public static T FromIL2CPPToManaged<T>(Object obj)
 	{
 		return ManagedFromByteArray<T>(ToByteArray(obj));
 	}
@@ -14,13 +18,13 @@ public static class Il2CppSerializationUtils
 		return IL2CPPFromByteArray<T>(ToByteArray(obj));
 	}
 
-	private static byte[] ToByteArray(Il2CppSystem.Object obj)
+	private static byte[] ToByteArray(Object obj)
 	{
 		if (obj == null)
 			return null;
 
-		var bf = new Il2CppSystem.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-		var ms = new Il2CppSystem.IO.MemoryStream();
+		var bf = new BinaryFormatter();
+		var ms = new MemoryStream();
 		bf.Serialize(ms, obj);
 		return ms.ToArray();
 	}
@@ -53,8 +57,8 @@ public static class Il2CppSerializationUtils
 		if (data == null)
 			return default;
 
-		var bf = new Il2CppSystem.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-		var ms = new Il2CppSystem.IO.MemoryStream(data);
+		var bf = new BinaryFormatter();
+		var ms = new MemoryStream(data);
 		object obj = bf.Deserialize(ms);
 		return (T)obj;
 	}

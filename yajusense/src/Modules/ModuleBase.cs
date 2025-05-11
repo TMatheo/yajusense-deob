@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
-using yajusense.Core.Services;
+using yajusense.Services;
 using yajusense.UI;
 
 namespace yajusense.Modules;

@@ -1,6 +1,6 @@
 using UnityEngine;
 using yajusense.Extensions;
-using yajusense.Utils;
+using yajusense.Platform.Unity.Utils;
 
 namespace yajusense.UI;
 

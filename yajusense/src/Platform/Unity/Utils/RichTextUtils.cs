@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using yajusense.Extensions;
 
-namespace yajusense.Utils;
+namespace yajusense.Platform.Unity.Utils;
 
 public static class RichTextUtils
 {

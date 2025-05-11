@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using yajusense.Platform.Unity.Utils;
+using yajusense.Platform.VRC;
 using yajusense.UI;
-using yajusense.Utils;
-using yajusense.VRC;
 
 namespace yajusense.Modules.Visual;
 

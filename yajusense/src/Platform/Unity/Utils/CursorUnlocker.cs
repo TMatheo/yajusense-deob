@@ -8,7 +8,7 @@ using yajusense.Core;
 using yajusense.Modules;
 using yajusense.Modules.Visual;
 
-namespace yajusense.Utils;
+namespace yajusense.Platform.Unity.Utils;
 
 public static class CursorUnlocker
 {

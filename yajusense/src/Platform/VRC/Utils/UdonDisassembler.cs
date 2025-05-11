@@ -8,6 +8,7 @@ using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using VRC.Udon.VM;
 using VRC.Udon.VM.Common;
+using yajusense.Core.Utils;
 
 namespace yajusense.Utils;
 

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Core;
 using yajusense.Core.Config;
-using yajusense.Core.Services;
 using yajusense.Modules.Other;
+using yajusense.Platform.Unity.Utils;
+using yajusense.Services;
 using yajusense.UI;
-using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using yajusense.Modules;
 
-namespace yajusense.Core.Services;
+namespace yajusense.Services;
 
 public static class AudioService
 {

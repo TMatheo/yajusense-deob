@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace yajusense.Core.Services;
+namespace yajusense.Services;
 
 public static class AssetBundleService
 {

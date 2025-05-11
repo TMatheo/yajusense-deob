@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using yajusense.Extensions;
+using yajusense.Platform.Unity.Utils;
 using yajusense.UI;
-using yajusense.Utils;
 
 namespace yajusense.Modules.Visual;
 

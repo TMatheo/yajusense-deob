@@ -1,4 +1,5 @@
 // Photon
+
 global using LoadBalancingClient_Internal = ObjectPublicIPhotonPeerListenerObStNuStOb1CoObBoDiUnique;
 global using PhotonNetwork_Internal = ObjectPublicAbstractSealedObInObStInCo2ObInBoUnique;
 

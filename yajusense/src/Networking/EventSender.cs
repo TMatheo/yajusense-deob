@@ -1,7 +1,7 @@
 using System;
 using ExitGames.Client.Photon;
-using yajusense.Utils;
-using yajusense.VRC;
+using yajusense.Platform.Unity.Utils;
+using yajusense.Platform.VRC;
 
 namespace yajusense.Networking;
 

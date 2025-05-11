@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace yajusense.Utils;
+namespace yajusense.Core.Utils;
 
 public static class FileUtils
 {

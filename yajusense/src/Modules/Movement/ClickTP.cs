@@ -1,9 +1,9 @@
 using UnityEngine;
 using VRC.SDKBase;
 using yajusense.Core.Config;
-using yajusense.Core.Services;
 using yajusense.Modules.Visual;
-using yajusense.VRC;
+using yajusense.Platform.VRC;
+using yajusense.Services;
 
 namespace yajusense.Modules.Movement;
 

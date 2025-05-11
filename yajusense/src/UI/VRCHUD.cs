@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using yajusense.VRC;
+using yajusense.Platform.VRC;
 
 namespace yajusense.UI;
 
