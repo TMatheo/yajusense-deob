@@ -42,7 +42,7 @@ public abstract class ModuleBase
 		OnEnable();
 
 		ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
-		NotificationManager.ShowNotification($"Enabled {Name}");
+		UI.NotificationManager.ShowNotification($"Enabled {Name}");
 		AudioService.PlayAudio(AudioService.AudioClipType.ModuleEnable);
 	}
 
@@ -53,7 +53,7 @@ public abstract class ModuleBase
 		OnDisable();
 
 		ConfigManager.UpdatePropertyValue(this, nameof(Enabled), Enabled);
-		NotificationManager.ShowNotification($"Disabled {Name}");
+		UI.NotificationManager.ShowNotification($"Disabled {Name}");
 		AudioService.PlayAudio(AudioService.AudioClipType.ModuleDisable);
 	}
 

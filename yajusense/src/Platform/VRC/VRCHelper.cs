@@ -36,7 +36,7 @@ public static class VRCHelper
 		{
 			id = avatarID,
 		};
-		UsedToChangeAvatar.Method_Public_Static_Void_ApiAvatar_String_0(apiAvatar);
+		//UsedToChangeAvatar.Method_Public_Static_Void_ApiAvatar_String_0(apiAvatar);
 	}
 
 	public static TrustRank GetTrustRank(APIUser user)
@@ -66,26 +66,26 @@ public static class VRCHelper
 	public static Color GetUserColor(APIUser user)
 	{
 		if (APIUser.IsFriendsWith(user.id))
-			return VRCPlayer_Internal.field_Internal_Static_Color_1;
+			return VRCPlayer.field_Internal_Static_Color_1;
 
 		if (user.IsSelf)
-			return VRCPlayer_Internal.field_Internal_Static_Color_0;
+			return VRCPlayer.field_Internal_Static_Color_0;
 
 		switch (GetTrustRank(user))
 		{
 			case TrustRank.TrustedUSer:
-				return VRCPlayer_Internal.field_Internal_Static_Color_6;
+				return VRCPlayer.field_Internal_Static_Color_6;
 
 			case TrustRank.KnownUser:
-				return VRCPlayer_Internal.field_Internal_Static_Color_5;
+				return VRCPlayer.field_Internal_Static_Color_5;
 
 			case TrustRank.User:
-				return VRCPlayer_Internal.field_Internal_Static_Color_4;
+				return VRCPlayer.field_Internal_Static_Color_4;
 
 			case TrustRank.NewUser:
-				return VRCPlayer_Internal.field_Internal_Static_Color_3;
+				return VRCPlayer.field_Internal_Static_Color_3;
 		}
 
-		return VRCPlayer_Internal.field_Internal_Static_Color_2;
+		return VRCPlayer.field_Internal_Static_Color_2;
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using ExitGames.Client.Photon;
+using Photon.Pun;
 using yajusense.Platform.Unity.Utils;
 using yajusense.Platform.VRC;
 
@@ -19,6 +20,6 @@ public static class EventSender
 
 	private static void RaiseEvent(byte code, object content, bool isReliable)
 	{
-		PhotonNetwork_Internal.Method_Public_Static_Boolean_Byte_Object_ObjectPublicObByObInByObObUnique_SendOptions_0(code, Il2CppSerializationUtils.FromManagedToIL2CPP<Il2CppSystem.Object>(content), null, isReliable ? SendOptions.SendReliable : SendOptions.SendUnreliable);
+		PhotonNetwork.Method_Public_Static_Boolean_Byte_Object_RaiseEventOptions_SendOptions_0(code, Il2CppSerializationUtils.FromManagedToIL2CPP<Il2CppSystem.Object>(content), null, isReliable ? SendOptions.SendReliable : SendOptions.SendUnreliable);
 	}
 }

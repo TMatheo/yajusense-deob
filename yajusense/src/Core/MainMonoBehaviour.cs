@@ -19,6 +19,6 @@ public class MainMonoBehaviour : MonoBehaviour
 	private void OnGUI()
 	{
 		ModuleManager.RenderModules();
-		NotificationManager.OnGUI();
+		UI.NotificationManager.OnGUI();
 	}
 }
