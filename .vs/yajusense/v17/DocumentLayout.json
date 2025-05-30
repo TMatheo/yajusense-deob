@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\modules\\visual\\watermark.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\modules\\visual\\watermark.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\modules\\visual\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\modules\\visual\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,14 +27,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Watermark.cs",
-              "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Watermark.cs",
-              "RelativeDocumentMoniker": "yajusense\\src\\Modules\\Visual\\Watermark.cs",
-              "ToolTip": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Watermark.cs",
-              "RelativeToolTip": "yajusense\\src\\Modules\\Visual\\Watermark.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBQAAAAXAAAAAAAAAA==",
+              "Title": "Menu.cs",
+              "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Menu.cs",
+              "RelativeDocumentMoniker": "yajusense\\src\\Modules\\Visual\\Menu.cs",
+              "ToolTip": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Menu.cs",
+              "RelativeToolTip": "yajusense\\src\\Modules\\Visual\\Menu.cs",
+              "ViewState": "AgIAAO4AAAAAAAAAAAAAwAgBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T15:32:30.091Z",
+              "WhenOpened": "2025-05-30T16:10:22.768Z",
               "EditorCaption": ""
             },
             {
@@ -60,8 +60,7 @@
               "RelativeToolTip": "yajusense\\src\\Patches\\SetRequestHeaderPatch.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T15:20:54.457Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-30T15:20:54.457Z"
             }
           ]
         }
