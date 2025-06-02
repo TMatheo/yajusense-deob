@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\modules\\visual\\watermark.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\modules\\visual\\watermark.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\modules\\visual\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\modules\\visual\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|c:\\users\\biscuit\\documents\\github\\yajusense-deob\\yajusense\\src\\patches\\setrequestheaderpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{42FCECDA-456E-4295-B3BE-1ECD31ADB774}|yajusense\\yajusense.csproj|solutionrelative:yajusense\\src\\patches\\setrequestheaderpatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,19 +27,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Watermark.cs",
+              "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Watermark.cs",
+              "RelativeDocumentMoniker": "yajusense\\src\\Modules\\Visual\\Watermark.cs",
+              "ToolTip": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Watermark.cs",
+              "RelativeToolTip": "yajusense\\src\\Modules\\Visual\\Watermark.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABYAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-30T21:47:26.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Menu.cs",
               "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Menu.cs",
               "RelativeDocumentMoniker": "yajusense\\src\\Modules\\Visual\\Menu.cs",
               "ToolTip": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Modules\\Visual\\Menu.cs",
               "RelativeToolTip": "yajusense\\src\\Modules\\Visual\\Menu.cs",
-              "ViewState": "AgIAAO4AAAAAAAAAAAAAwAgBAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBwAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-30T16:10:22.768Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Plugin.cs",
               "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Plugin.cs",
               "RelativeDocumentMoniker": "yajusense\\src\\Plugin.cs",
@@ -47,20 +60,7 @@
               "RelativeToolTip": "yajusense\\src\\Plugin.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAgwCsAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T15:26:00.56Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "SetRequestHeaderPatch.cs",
-              "DocumentMoniker": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Patches\\SetRequestHeaderPatch.cs",
-              "RelativeDocumentMoniker": "yajusense\\src\\Patches\\SetRequestHeaderPatch.cs",
-              "ToolTip": "C:\\Users\\Biscuit\\Documents\\GitHub\\yajusense-deob\\yajusense\\src\\Patches\\SetRequestHeaderPatch.cs",
-              "RelativeToolTip": "yajusense\\src\\Patches\\SetRequestHeaderPatch.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T15:20:54.457Z"
+              "WhenOpened": "2025-05-30T15:26:00.56Z"
             }
           ]
         }
